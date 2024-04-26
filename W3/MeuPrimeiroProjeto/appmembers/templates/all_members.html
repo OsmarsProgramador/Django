@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h1>Membros</h1>
+
+<ul>
+    {% for x in mymembers %}
+    <li><a href="details/{{ x.id }}">{{ x.firstname }} {{ x.lastname }}</a></li>
+    {% endfor %}
+</ul>
+
+<h1>Meu Teste</h1>
+  
+<ul>
+  {% for x in " "|rjust:20 %}
+      <li>{{ forloop.counter }} {{ x }}</li>
+  {% endfor %}
+</ul>  
+
+</body>
+</html>
