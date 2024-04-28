@@ -4,8 +4,10 @@ from . import views
 # definindo a URL desejada utilizando a função path
 # criando uma URL que aponte para uma view chamada members
 urlpatterns = [
+    path('', views.main, name='main'),
     path('appmembers/', views.members, name='members'),
     path('appmembers/details/<int:id>', views.details, name='details'),
+    path('testing/', views.testing, name='testing'),
 ]
 
 """

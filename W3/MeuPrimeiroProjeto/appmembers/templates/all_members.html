@@ -1,22 +1,19 @@
-<!DOCTYPE html>
-<html>
-<body>
+{% extends "master.html" %}
 
-<h1>Membros</h1>
+{% block title %}
+  Meu Clube de Tênis - Lista de todos os membros 
+{% endblock %}
 
-<ul>
-    {% for x in mymembers %}
-    <li><a href="details/{{ x.id }}">{{ x.firstname }} {{ x.lastname }}</a></li>
-    {% endfor %}
-</ul>
 
-<h1>Meu Teste</h1>
+{% block content %}
+
+  <p><a href="/">HOME</a></p>
+
+  <h1>Membros</h1>
   
-<ul>
-  {% for x in " "|rjust:20 %}
-      <li>{{ forloop.counter }} {{ x }}</li>
-  {% endfor %}
-</ul>  
-
-</body>
-</html>
+  <ul>
+    {% for x in mymembers %}
+      <li><a href="details/{{ x.id }}">{{ x.firstname }} {{ x.lastname }}</a></li>
+    {% endfor %}
+  </ul>
+{% endblock %}     
