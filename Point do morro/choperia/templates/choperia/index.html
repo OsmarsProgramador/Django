@@ -1,0 +1,9 @@
+{% if latest_categoria_list %}
+    <ul>
+    {% for categoria in latest_categoria_list %}
+        <li><a href="/choperia/{{ categoria.id }}/">{{ categoria.categoria_text }}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No categoria are available.</p>
+{% endif %}

@@ -6,13 +6,13 @@ from django.utils import timezone
 
 class Categoria(models.Model):
     categoria = models.CharField(max_length=50)
-    data_pub = models.DateTimeField("data de publicação")
+    data_criacao = models.DateTimeField("data de criação")
 
     def __str__(self):
         return self.categoria
 
     def foi_publicado_recentemente(self):
-        return self.data_pub >= timezone.now() - datetime.timedelta(days=1)
+        return self.data_criacao >= timezone.now() - datetime.timedelta(days=1)
 
 
 class Produto(models.Model):
@@ -28,6 +28,3 @@ class Produto(models.Model):
 
     def __str__(self):
         return self.nome_produto
-    
-    """def foi_publicado_recentemente(self):
-        return self.data_pub >= timezone.now() - datetime.timedelta(days=1)"""
