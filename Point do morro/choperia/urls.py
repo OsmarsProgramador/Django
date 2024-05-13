@@ -12,6 +12,6 @@ urlpatterns = [
     path("<int:categoria_id>/results/", views.results, name="results"),
     # ex: /choperia/5/vote/
     path("<int:categoria_id>/vote/", views.vote, name="vote"),
-
+    path('home/', views.home, name = 'home'),
     path('cadastrar_produto/', cadastrar_produto, name='cadastrar_produto'),
 ]

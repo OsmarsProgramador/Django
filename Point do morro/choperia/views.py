@@ -1,22 +1,24 @@
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.template import loader
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+
+from usuarios.models import Usuario
 
 from .models import Categoria, Produto
 
 
 def index(request):
-    latest_categoria_list = Categoria.objects.order_by("-data_criacao")[:5]
-    template = loader.get_template("choperia/detail.html")
+    lista_ultima_categoria = Categoria.objects.order_by("-data_criacao")[:5]
+    template = loader.get_template("choperia/formulario2.html")
     context = {
-        "latest_categoria_list": latest_categoria_list,
+        "lista_ultima_categoria": lista_ultima_categoria,
     }
     return HttpResponse(template.render(context, request))
 """
 def index(request):
-    latest_categoria_list = Categoria.objects.order_by("-data_criacao")[:5]
-    output = ", ".join([q.categoria_text for q in latest_categoria_list])
+    lista_ultima_categoria = Categoria.objects.order_by("-data_criacao")[:5]
+    output = ", ".join([q.categoria_text for q in lista_ultima_categoria])
     return HttpResponse(output)
 
 def index(request):
@@ -62,3 +64,9 @@ def cadastrar_produto(request):
 
         return HttpResponseRedirect('/sucesso/')  # Redireciona para uma página de sucesso
     return render(request, 'cadastrar_produto.html')
+
+def home(request):
+    if request.session.get('usuario'):  
+        usuario = Usuario.objects.get(id = request.session['usuario'])
+        
+    return redirect('/auth/login/?status=2')

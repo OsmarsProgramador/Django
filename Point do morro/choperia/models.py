@@ -22,8 +22,8 @@ class Produto(models.Model):
     custo = models.DecimalField(max_digits=10, decimal_places=2)
     venda = models.DecimalField(max_digits=10, decimal_places=2)
     codigo = models.IntegerField()
-    estoque = models.IntegerField()
-    estoque_total = models.IntegerField()
+    estoque = models.IntegerField(default=0)
+    estoque_total = models.IntegerField(default=0)
     imagem = models.ImageField(upload_to='imagens/')
 
     def __str__(self):

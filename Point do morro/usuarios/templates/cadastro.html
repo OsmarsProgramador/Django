@@ -1,11 +1,13 @@
+<!-- Extendendo do arquivo base -->
 {% extends 'base.html' %}
 
+<!-- Exibindo o titulo da aba -->
 {% block 'titulo' %} Cadastro {% endblock %}
 
+<!-- Lugar onde o conteúdo será escrito no arquivo base.html -->
+{% block 'conteudo' %} 
 
-{% block 'conteudo' %}
-
-<div class="container">
+<div class="container"> <!-- Gera um espaço inicial -->
     <br>
     {% if status == '0'%}
         <div class="alert alert-success" role="alert">
@@ -36,18 +38,21 @@
             Erro interno do sistema
         </div>
     {% endif %}
+
     <div class="row">
-
-        <div class="col-md-3">
-
+    
+        <div class="col-sm-3"> 
         </div>
 
-        <div class="col-md">
-           <h1>Cadastre-se</h1>
-           <hr>
+        <div class="col-sm"> 
+            <h1>Cadastre-se</h1>
+            <hr>
 
-           <form method="POST" action="{% url 'valida_cadastro' %}">{% csrf_token %}
-
+            <form method="POST" action="{% url 'valida_cadastro' %}">
+                {% csrf_token %}
+                <!-- name funciona como uma variável para quando o botão enviar for precionado 
+                a função responsável pelo cadastro conseguirar obter os valores dessas variáveis.
+                Isso ocorre através de uma ação no nosso caso action, que está logo acima -->
                 <label>Nome</label>
                 <input name="nome" class="form-control" type="text" placeholder="Nome..."> 
                 <br>
@@ -60,16 +65,15 @@
                 <input class="btn btn-info btn-lg" type="submit" value="Enviar">
                 <a href="{% url 'login' %}" class="btn btn-warning btn-lg">Login</a>
 
+
            </form>
         </div>
 
-        <div class="col-md-3">
-
+        <div class="col-sm-3"> 
         </div>
 
-
     </div>
-
+    
 </div>
 
 
