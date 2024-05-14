@@ -10,7 +10,7 @@ from .models import Categoria, Produto
 
 def index(request):
     lista_ultima_categoria = Categoria.objects.order_by("-data_criacao")[:5]
-    template = loader.get_template("choperia/formulario2.html")
+    template = loader.get_template("choperia/formulario.html")
     context = {
         "lista_ultima_categoria": lista_ultima_categoria,
     }

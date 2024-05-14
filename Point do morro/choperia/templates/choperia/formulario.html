@@ -1,8 +1,13 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <title>Cadastrar Produto</title>
+<!-- Extendendo do arquivo base -->
+{% extends 'base.html' %}
+
+<!-- Exibindo o titulo da aba -->
+{% block 'titulo' %} Cadastro {% endblock %}
+
+<!-- Lugar onde o conteúdo será escrito no arquivo base.html -->
+{% block 'conteudo' %} 
+
+
     <style>
         .form-group {
             margin-bottom: 10px;
@@ -23,8 +28,6 @@
             min-width: 200px; /* Definindo o tamanho mínimo para os campos de entrada */
         }
     </style>
-</head>
-<body>
     <h1>Cadastrar Novo Produto</h1>
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
@@ -80,5 +83,5 @@
     </form>
         
     </form>
-</body>
-</html>
+
+{% endblock %}
