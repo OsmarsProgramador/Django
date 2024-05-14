@@ -43,7 +43,7 @@ def cadastro(request):
     status = request.GET.get('status')
     return render(request, "cadastro.html", {'status': status})
 
-def valida_cadastro(request):
+def validar_cadastro(request):
     nome = request.POST.get('nome')
     senha = request.POST.get('senha')
     email = request.POST.get('email')

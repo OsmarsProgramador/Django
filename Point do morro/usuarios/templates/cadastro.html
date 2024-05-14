@@ -48,7 +48,7 @@
             <h1>Cadastre-se</h1>
             <hr>
 
-            <form method="POST" action="{% url 'valida_cadastro' %}">
+            <form method="POST" action="{% url 'validar_cadastro' %}">
                 {% csrf_token %}
                 <!-- name funciona como uma variável para quando o botão enviar for precionado 
                 a função responsável pelo cadastro conseguirar obter os valores dessas variáveis.
