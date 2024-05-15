@@ -6,7 +6,10 @@ from hashlib import sha256
 
 
 def login(request):
-    return render(request, "login.html")
+    if request.session.get('usuario'):
+        return redirect('/choperia/')
+    status = request.GET.get('status')
+    return render(request, "login.html", {'status': status})
 
 """
 Os métodos POST e GET são dois dos principais métodos HTTP utilizados para enviar dados de um cliente (navegador) para um servidor web.
@@ -73,6 +76,14 @@ def validar_cadastro(request):
 
 
 def validar_login(request):
+    """
+    é responsável por verificar as credenciais de login (email e senha) enviadas por um formulário HTML via método POST. 
+    Ela primeiro obtém o email e a senha do objeto request, em seguida, criptografa a senha usando o algoritmo SHA-256 e 
+    busca por um usuário com o email e a senha fornecidos no banco de dados. Se nenhum usuário for encontrado, 
+    o código redireciona o usuário de volta para a página de login com um parâmetro status=1 na URL. Caso contrário, 
+    se um usuário for encontrado, o código armazena o ID do usuário na sessão do request e redireciona o usuário para 
+    a página '/choperia/'.
+    """
     email = request.POST.get('email')
     senha = request.POST.get('senha')
 
@@ -90,5 +101,10 @@ def validar_login(request):
 
 
 def sair(request):
-    request.session.flush()
+    """ 
+    é responsável por encerrar a sessão do usuário, deslogando-o. Ao chamar request.session.flush(), 
+    todos os dados da sessão atual são removidos, efetivamente deslogando o usuário, e então 
+    o código redireciona o usuário de volta para a página de login ('/auth/login/'). 
+    """
+    request.session.flush() # Desloga e limpa 
     return redirect('/auth/login/')

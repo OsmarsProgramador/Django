@@ -67,6 +67,6 @@ def cadastrar_produto(request):
 
 def home(request):
     if request.session.get('usuario'):  
-        usuario = Usuario.objects.get(id = request.session['usuario'])
-        
+        usuario = Usuario.objects.get(id = request.session['usuario'])  
+        return HttpResponse(f"Olá {usuario}")      
     return redirect('/auth/login/?status=2')
