@@ -6,10 +6,35 @@ from hashlib import sha256
 
 
 def login(request):
-    if request.session.get('usuario'):
-        return redirect('/choperia/')
+    """if request.session.get('usuario'):
+        return redirect('/choperia/home/')"""
+    """ O tipo do método de envio através da url é o GET """
     status = request.GET.get('status')
     return render(request, "login.html", {'status': status})
+
+def validar_login(request):
+    """
+    é responsável por verificar as credenciais de login (email e senha) enviadas por um formulário HTML via método POST. 
+    Ela primeiro obtém o email e a senha do objeto request, em seguida, criptografa a senha usando o algoritmo SHA-256 e 
+    busca por um usuário com o email e a senha fornecidos no banco de dados. Se nenhum usuário for encontrado, 
+    o código redireciona o usuário de volta para a página de login com um parâmetro status=1 na URL. Caso contrário, 
+    se um usuário for encontrado, o código armazena o ID do usuário na sessão do request e redireciona o usuário para 
+    a página '/choperia/'.
+    """
+    email = request.POST.get('email')
+    senha = request.POST.get('senha')
+
+    senha = sha256(senha.encode()).hexdigest()
+
+    usuario = Usuario.objects.filter(email = email).filter(senha = senha)
+    print(usuario)
+    if len(usuario) == 0:
+        return redirect('/auth/login/?status=1')
+    elif len(usuario) > 0:
+        request.session['usuario'] = usuario[0].id
+        return redirect(f'/choperia/home/')
+
+    # return HttpResponse(f"{email} {senha}")
 
 """
 Os métodos POST e GET são dois dos principais métodos HTTP utilizados para enviar dados de um cliente (navegador) para um servidor web.
@@ -64,40 +89,29 @@ def validar_cadastro(request):
         return redirect('/auth/cadastro/?status=3')
 
     try:
+        """ utilizando a função sha256 do módulo hashlib para codificar a senha antes de 
+        salvar no banco de dados. Aqui está uma explicação passo a passo do que está acontecendo:
+
+        senha.encode(): A senha fornecida é convertida para uma sequência de bytes, 
+        que é necessária para realizar a codificação SHA-256.
+
+        sha256(senha.encode()): A função sha256 calcula o hash SHA-256 dos bytes 
+        da senha, produzindo um objeto de hash.
+
+        .hexdigest(): Este método converte o objeto de hash em uma string legível e utilizável. 
+        Aqui, está sendo usada para obter a representação hexadecimal do hash SHA-256 da senha. 
+        
+        Portanto ao cadastrar a senha ela não será visível no admin"""
         senha = sha256(senha.encode()).hexdigest()
         usuario = Usuario(nome = nome,
                           senha = senha,
                           email = email)
         usuario.save()
+        print("status é 0")
 
         return redirect('/auth/cadastro/?status=0')
     except:
         return redirect('/auth/cadastro/?status=4')
-
-
-def validar_login(request):
-    """
-    é responsável por verificar as credenciais de login (email e senha) enviadas por um formulário HTML via método POST. 
-    Ela primeiro obtém o email e a senha do objeto request, em seguida, criptografa a senha usando o algoritmo SHA-256 e 
-    busca por um usuário com o email e a senha fornecidos no banco de dados. Se nenhum usuário for encontrado, 
-    o código redireciona o usuário de volta para a página de login com um parâmetro status=1 na URL. Caso contrário, 
-    se um usuário for encontrado, o código armazena o ID do usuário na sessão do request e redireciona o usuário para 
-    a página '/choperia/'.
-    """
-    email = request.POST.get('email')
-    senha = request.POST.get('senha')
-
-    senha = sha256(senha.encode()).hexdigest()
-
-    usuario = Usuario.objects.filter(email = email).filter(senha = senha)
-
-    if len(usuario) == 0:
-        return redirect('/auth/login/?status=1')
-    elif len(usuario) > 0:
-        request.session['usuario'] = usuario[0].id
-        return redirect(f'/choperia/')
-
-    return HttpResponse(f"{email} {senha}")
 
 
 def sair(request):

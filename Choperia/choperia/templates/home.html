@@ -1,0 +1,25 @@
+{% extends 'base_menu.html' %}
+
+{% block 'conteudo2' %}
+    {% if status == '0'%}
+        <div class="container d-flex justify-content-center align-items-center vh-100"> <!-- Centraliza o conteúdo na horizontal e verticalmente -->
+            <div class="text-center text-danger"> <!-- Centraliza o texto e define a cor vermelha -->
+                <h1>CHOPERIA POINT DO MORRO</h1>
+            </div>
+        </div>
+    {% else %}
+        <div class="alert alert-danger" role="alert">
+            Realize o login para acessar o sistema!
+        </div>
+
+        <div class="container d-flex justify-content-center align-items-center vh-100">
+            <a href="{% url 'login' %}" class="btn btn-primary">Realizar Login</a>
+        </div>
+        
+        <script>
+            window.location.href = "{% url 'login' %}";
+        </script>
+    {% endif %}
+    
+{% endblock %}
+

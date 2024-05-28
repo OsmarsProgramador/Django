@@ -10,7 +10,7 @@ from .models import Categoria, Produto
 
 def index(request):
     lista_ultima_categoria = Categoria.objects.order_by("-data_criacao")[:5]
-    template = loader.get_template("choperia/formulario.html")
+    template = loader.get_template("choperia/index.html")
     context = {
         "lista_ultima_categoria": lista_ultima_categoria,
     }
@@ -20,19 +20,11 @@ def index(request):
     lista_ultima_categoria = Categoria.objects.order_by("-data_criacao")[:5]
     output = ", ".join([q.categoria_text for q in lista_ultima_categoria])
     return HttpResponse(output)
+"""
 
-def index(request):
-    return HttpResponse("Olá Mundo. Você está no índice de pesquisas.")"""
+def cadastrar(request):
+    return HttpResponse("Olá Mundo. Você está no índice de pesquisas.")
 
-def detail(request, categoria_id):
-    return HttpResponse("Você está vendo a pergunta %s." % categoria_id)
-
-def results(request, categoria_id):
-    response = "Você está vendo os resultados da pergunta %s."
-    return HttpResponse(response % categoria_id)
-
-def vote(request, categoria_id):
-    return HttpResponse("Você está votando na pergunta %s." % categoria_id)
 
 def cadastrar_produto(request):
     if request.method == 'POST':
@@ -66,7 +58,8 @@ def cadastrar_produto(request):
     return render(request, 'cadastrar_produto.html')
 
 def home(request):
-    if request.session.get('usuario'):  
-        usuario = Usuario.objects.get(id = request.session['usuario'])  
-        return HttpResponse(f"Olá {usuario}")      
+    """if request.session.get('usuario'):  
+        usuario = Usuario.objects.get(id = request.session['usuario']).nome  
+        # return HttpResponse(f"Olá {usuario}")   
+        render(request, 'choperia/home.html', {})"""   
     return redirect('/auth/login/?status=2')

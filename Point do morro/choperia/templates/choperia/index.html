@@ -1,3 +1,7 @@
+{% extends 'base.html' %}
+
+{% block 'conteudo' %}
+
 {% if latest_categoria_list %}
     <ul>
     {% for categoria in latest_categoria_list %}
@@ -5,5 +9,7 @@
     {% endfor %}
     </ul>
 {% else %}
-    <p>No categoria are available.</p>
+    <p>Categoria sem availiação.</p>
 {% endif %}
+
+{% endblock %}

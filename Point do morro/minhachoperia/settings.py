@@ -57,6 +57,7 @@ ROOT_URLCONF = "minhachoperia.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
+        # definir onde o django vai buscar os templates
         "DIRS": [os.path.join(BASE_DIR, 'templates')], # busca na raiz do projeto + templates
         "APP_DIRS": True,
         "OPTIONS": {

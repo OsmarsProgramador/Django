@@ -1,0 +1,46 @@
+{% extends 'base_menu.html' %}
+
+{% block 'titulo' %} 
+    Cadastro de Produto
+{% endblock %}
+
+{% block 'conteudo2' %}
+
+    <div class="container">
+        <br>
+        <div class="row">
+            <div class="col-md">
+    
+                <h1>Cadastro de Novo Produto</h1>
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <label for="nome_produto">Nome do Produto:</label><br>
+                    <input type="text" id="nome_produto" name="nome_produto"><br><br>
+
+                    <label for="descricao">Descrição:</label><br>
+                    <textarea id="descricao" name="descricao"></textarea><br><br>
+
+                    <label for="custo">Custo:</label><br>
+                    <input type="text" id="custo" name="custo"><br><br>
+
+                    <label for="venda">Preço de Venda:</label><br>
+                    <input type="text" id="venda" name="venda"><br><br>
+
+                    <label for="codigo">Código:</label><br>
+                    <input type="text" id="codigo" name="codigo"><br><br>
+
+                    <label for="estoque">Estoque:</label><br>
+                    <input type="text" id="estoque" name="estoque"><br><br>
+
+                    <label for="estoque_total">Estoque Total:</label><br>
+                    <input type="text" id="estoque_total" name="estoque_total"><br><br>
+
+                    <label for="categoria">Categoria:</label><br>
+                    <input type="text" id="categoria" name="categoria"><br><br>
+
+                    <label for="imagem">Imagem:</label><br>
+                    <input type="file" id="imagem" name="imagem"><br><br>
+
+                    <input type="submit" value="Cadastrar Produto">
+                </form>
+{% endblock %}

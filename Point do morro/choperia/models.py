@@ -6,7 +6,7 @@ from django.utils import timezone
 
 class Categoria(models.Model):
     categoria = models.CharField(max_length=50)
-    data_criacao = models.DateTimeField("data de criação")
+    data_criacao = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.categoria
@@ -18,7 +18,7 @@ class Categoria(models.Model):
 class Produto(models.Model):
     categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE)
     nome_produto = models.CharField(max_length=50)
-    descricao = models.TextField()
+    descricao = models.TextField(blank=True) # Não é obrigatório o preenchimento de informação
     custo = models.DecimalField(max_digits=10, decimal_places=2)
     venda = models.DecimalField(max_digits=10, decimal_places=2)
     codigo = models.IntegerField()
