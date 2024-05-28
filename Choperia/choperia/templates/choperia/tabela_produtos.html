@@ -1,0 +1,43 @@
+{% extends 'base_menu.html' %}
+
+{% block 'conteudo2' %}
+
+    <div class="container">
+        <br>
+        <div class="row">
+            <div class="col-md">
+            <!--<div class="table-responsive-sm"> A classe .table-responsive-sm cria uma tabela responsiva que rolará horizontalmente em telas com menos de 576px de largura. Funciona retirando <div class="row">-->
+                <!-- <table class="table table-striped"> 'table table-striped' torna a tabela listrada-->
+                <a href="{% url 'cadastrar_produto' %}" class="btn btn-primary">Cadastrar Novo Produto</a>
+                <br><br>
+                <table class="table table-bordered"> <!--A classe .table-bordered adiciona bordas em todos os lados da tabela e nas células-->
+                    <thead class="table-dark"> <!-- Inserindo cor no cabeçalho-->
+                        <tr>
+                            <th>Categoria</th>
+                            <th>Nome do Produto</th>
+                            <th>Custo</th>
+                            <th>Venda</th>
+                            <th>Código</th>
+                            <th>Estoque</th>
+                            <th>Estoque Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for produto in produtos %}
+                            <tr>
+                                <td>{{ produto.categoria }}</td>
+                                <td>{{ produto.nome_produto }}</td>
+                                <td>{{ produto.custo }}</td>
+                                <td>{{ produto.venda }}</td>
+                                <td>{{ produto.codigo }}</td>
+                                <td>{{ produto.estoque }}</td>
+                                <td>{{ produto.estoque_total }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
