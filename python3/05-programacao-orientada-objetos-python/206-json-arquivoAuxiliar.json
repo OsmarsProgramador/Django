@@ -1,0 +1,22 @@
+{
+  "pessoas": [
+    {
+      "nome": "Jorge Nami Harbes",
+      "idade": 39,
+      "email": "jharbes@hotmail.com",
+      "profissao": "Software Developer"
+    },
+    {
+      "nome": "Carolina Ferreira Alcântara",
+      "idade": 28,
+      "email": "carolalcantara94@gmail.com",
+      "profissao": "Professora de Educação Física"
+    },
+    {
+      "nome": "Maria Ferreira Barreto",
+      "idade": 89,
+      "email": "maria@barreto.com",
+      "profissao": "Aposentada"
+    }
+  ]
+}
