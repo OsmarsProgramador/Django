@@ -1,0 +1,15 @@
+Sequencias de comandos
+
+python -m venv venv
+Set-ExecutionPolicy RemoteSigned -Scope Process
+venv\Scripts\Activate
+pip install djang pillow
+python.exe -m pip install --upgrade pip
+django-admin startproject proj_base .
+py manage.py runserver
+py manage.py startapp app_base
+py manage.py makemigrations
+py manage.py migrate
+py manage.py createsuperuser
+pip install -r requirements.txt
+py manage.py shell
