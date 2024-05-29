@@ -1,0 +1,26 @@
+{% load static %}
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--Carregando arquivo static css-->
+    <link rel="stylesheet" href="{% static 'produtos/css/ver_produto.css' %}">
+    <title>Ver Produto</title>
+  </head>
+  <body>
+    <h1>Olá {{nome}} tudo bem?</h1>
+    <form action="{% url 'ver_produto' %}" method="POST">{% csrf_token %}
+        <div class="col-12 p-2">
+            <input type="text" name="nome" placeholder="Digite seu nome">
+        </div>
+        <br>
+        <div class="col-12">
+            <input type="text" name="idade" placeholder="Digite sua idade">
+        </div>
+        <br>
+        <input type="submit" value="Enviar">
+    </form>
+    <!--Carregando arquivo static img-->
+    <!--<img src="{% static 'produtos/img/115.jpg' %}" alt="">-->
+  </body>
