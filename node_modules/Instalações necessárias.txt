@@ -1,0 +1,22 @@
+com o VSC aberto com a pasta do arquivo
+
+vamos instalar Bootstrep, Bootstrep icons e a biblioteca de icones do Bootstrep.
+
+Vamos ver como instalar o Bootstrep usando o node usando o node.
+Basta acessar a página do Bootstrep 5
+https://getbootstrap.com/
+e copiar os comando e colar no shell
+
+npm install bootstrap@next
+ou
+npm install bootstrap@5.3.3
+
+https://icons.getbootstrap.com/
+npm i bootstrap-icons
+
+podemos dar um DIR para ver onde a pasta node foi instalada:
+
+Daí é só ir em arquivo-> Abrir pasta e ir até o diretório e selecionar a pasta NODE_MODULES e abrir. 
+A partir daí podemos criar nosso arquivo base. Vamos criar um novo arquivo na pasta raiz fora da pasta node modules index.html e digitar bs escolhe a versão atual e Enter. Dessa forma um arquivo base é criado.
+
+Depois basta alterar o caminho para os arquivos CSS que foram instalados localmente
