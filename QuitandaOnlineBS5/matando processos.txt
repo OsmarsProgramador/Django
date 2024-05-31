@@ -1,0 +1,39 @@
+1. Para visualizar os processos relacionados ao Python no Windows, você pode usar o comando tasklist juntamente com o filtro para exibir apenas os processos que contenham a palavra "python" no nome.
+
+No terminal do Visual Studio Code, você pode digitar o seguinte comando:
+
+
+tasklist | findstr /i python
+Isso irá listar os processos que contenham a palavra "python" no nome. Assim, você poderá ver os processos relacionados ao Python em execução no seu sistema.
+
+C:\Users\osmar>tasklist | findstr /i python
+python.exe                   18300 Console                    7     56.008 K
+python.exe                   13084 Console                    7      3.480 K
+python.exe                   15212 Console                    7     43.432 K
+python.exe                   13092 Console                    7      3.476 K
+python.exe                    2016 Console                    7     48.680 K
+
+
+2. Se você souber o PID (Identificador de Processo) do processo que deseja encerrar, você pode usar o comando:
+
+
+taskkill /PID PID_do_processo /F
+Substitua PID_do_processo pelo PID do processo que você deseja encerrar. 
+
+C:\Users\osmar>taskkill /PID 18300 /F
+ÊXITO: o processo com PID 18300 foi finalizado.
+
+C:\Users\osmar>taskkill /PID 13084 /F
+ÊXITO: o processo com PID 13084 foi finalizado.
+
+C:\Users\osmar>taskkill /PID 15212 /F
+ERRO: o processo "15212" não foi encontrado.
+
+C:\Users\osmar>taskkill /PID 1 /F
+ERRO: o processo "1" não foi encontrado.
+
+C:\Users\osmar>taskkill /PID 13092 /F
+ÊXITO: o processo com PID 13092 foi finalizado.
+
+C:\Users\osmar>taskkill /PID 2016 /F
+ERRO: o processo "2016" não foi encontrado.
