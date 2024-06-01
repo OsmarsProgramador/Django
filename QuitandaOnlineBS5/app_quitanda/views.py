@@ -68,3 +68,15 @@ def carrinho(request):
 
 def cliente(request):
     return render(request, "app_quitanda/cliente.html")
+
+def privacidade(request):
+    return render(request, "app_quitanda/privacidade.html")
+
+def quemsomos(request):
+    return render(request, "app_quitanda/quemsomos.html")
+
+def termos(request):
+    return render(request, "app_quitanda/termos.html")
+
+def trocas(request):
+    return render(request, "app_quitanda/trocas.html")
