@@ -81,7 +81,6 @@ def termos(request):
 def trocas(request):
     return render(request, "app_quitanda/trocas.html")
 
-
 def cliente_contatos(request):
     return render(request, "app_quitanda/cliente_contatos.html")
 
