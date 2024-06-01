@@ -80,3 +80,49 @@ def termos(request):
 
 def trocas(request):
     return render(request, "app_quitanda/trocas.html")
+
+
+def cliente_contatos(request):
+    return render(request, "app_quitanda/cliente_contatos.html")
+
+def cliente_dados(request):
+    return render(request, "app_quitanda/cliente_dados.html")
+
+def cliente_endereco(request):
+    return render(request, "app_quitanda/cliente_endereco.html")
+
+def cliente_favoritos(request):
+    return render(request, "app_quitanda/cliente_favoritos.html")
+
+def cliente_pedidos(request):
+    return render(request, "app_quitanda/cliente_pedidos.html")
+
+def cliente_senha(request):
+    return render(request, "app_quitanda/cliente_senha.html")
+
+def confirmcadastrosenha(request):
+    return render(request, "app_quitanda/confirmcadastrosenha.html")
+
+def confirmcontato(request):
+    return render(request, "app_quitanda/confirmcontato.html")
+
+def confirmrecupsenha(request):
+    return render(request, "app_quitanda/confirmrecupsenha.html")
+
+def fechamento_endereco(request):
+    return render(request, "app_quitanda/fechamento_endereco.html")
+
+def fechamento_itens(request):
+    return render(request, "app_quitanda/fechamento_itens.html")
+
+def fechamento_pagamento(request):
+    return render(request, "app_quitanda/fechamento_pagamento.html")
+
+def fechamento_pedido(request):
+    return render(request, "app_quitanda/fechamento_pedido.html")
+
+def produto(request):
+    return render(request, "app_quitanda/produto.html")
+
+def recuperarsenha(request):
+    return render(request, "app_quitanda/recuperarsenha.html")

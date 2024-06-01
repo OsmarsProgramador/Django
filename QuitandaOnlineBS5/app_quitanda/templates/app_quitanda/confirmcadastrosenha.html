@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block 'titulo' %} Quitanda Online :: Nova Senha Cadastrada {% endblock %}
+
+{% block 'conteudo' %} 
+    <div class="container">
+        <h1>Nova Senha Cadastrada!</h1>
+        <hr>
+        <p>
+            Caro cliente,
+        </p>
+        <p>
+            Sua nova senha foi cadastrada com sucesso. Para entrar em sua área restrita agora mesmo, <a href="{% url 'login' %}">clique aqui</a>.
+        </p>
+        <p>
+            Agradecemos pela confiança em nossos serviços.
+        </p>
+        <p>
+            Cordialmente,<br>
+            Central de Relacionamento Quitanda Online
+        </p>
+        <p>
+            <a href="{% url 'index' %}" class="btn btn-lg btn-danger">Voltar à Página Principal</a>
+        </p>
+    </div>
+{% endblock %}

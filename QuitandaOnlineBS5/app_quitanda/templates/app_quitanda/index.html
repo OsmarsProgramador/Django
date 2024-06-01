@@ -3,10 +3,6 @@
 {% load static %}
 
 {% block 'titulo' %} Quitanda Online :: Página Principal {% endblock %}
-    
-
-
-
 
 {% block 'conteudo' %} 
     <div class="container">
@@ -62,7 +58,7 @@
                     <a href="#" class="position-absolute end-0 p-2 text-danger">
                         <i class="bi-suit-heart" style="font-size: 24px; line-height: 24px;"></i>
                     </a>
-                    <a href="/produto.html">
+                    <a href="{% url 'produto' %}'">
                         <img src="{% static 'app_quitanda/img/produtos/000001.jpg' %}" class="card-img-top">
                     </a>
                     <div class="card-header">
@@ -75,7 +71,7 @@
                         </p>
                     </div>
                     <div class="card-footer">
-                        <a href="carrinho.html" class="btn btn-danger mt-2 d-block">
+                        <a href="{% url 'carrinho' %}" class="btn btn-danger mt-2 d-block">
                             Adicionar ao Carrinho
                         </a>
                         <small class="text-success">320,5kg em estoque</small>
@@ -98,7 +94,7 @@
                         </p>
                     </div>
                     <div class="card-footer">
-                        <a href="carrinho.html" class="btn btn-danger mt-2 d-block">
+                        <a href="{% url 'carrinho' %}" class="btn btn-danger mt-2 d-block">
                             Adicionar ao Carrinho
                         </a>
                         <small class="text-success">320,5kg em estoque</small>
@@ -146,7 +142,7 @@
                         </p>
                     </div>
                     <div class="card-footer">
-                        <a href="carrinho.html" class="btn btn-danger mt-2 d-block">
+                        <a href="{% url 'carrinho' %}" class="btn btn-danger mt-2 d-block">
                             Adicionar ao Carrinho
                         </a>
                         <small class="text-success">320,5kg em estoque</small>
@@ -169,7 +165,7 @@
                         </p>
                     </div>
                     <div class="card-footer">
-                        <a href="carrinho.html" class="btn btn-danger mt-2 d-block">
+                        <a href="{% url 'carrinho' %}" class="btn btn-danger mt-2 d-block">
                             Adicionar ao Carrinho
                         </a>
                         <small class="text-success">320,5kg em estoque</small>
@@ -192,7 +188,7 @@
                         </p>
                     </div>
                     <div class="card-footer">
-                        <a href="carrinho.html" class="btn btn-danger mt-2 d-block">
+                        <a href="{% url 'carrinho' %}" class="btn btn-danger mt-2 d-block">
                             Adicionar ao Carrinho
                         </a>
                         <small class="text-success">320,5kg em estoque</small>
@@ -215,7 +211,7 @@
                         </p>
                     </div>
                     <div class="card-footer">
-                        <a href="carrinho.html" class="btn btn-danger mt-2 d-block">
+                        <a href="{% url 'carrinho' %}" class="btn btn-danger mt-2 d-block">
                             Adicionar ao Carrinho
                         </a>
                         <small class="text-success">320,5kg em estoque</small>
