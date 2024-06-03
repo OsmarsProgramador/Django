@@ -1,0 +1,73 @@
+Para visualizar a estrutura de diretórios e arquivos do seu projeto Django, você pode utilizar o comando tree no terminal. Se o tree não estiver instalado, você pode instalá-lo utilizando o gerenciador de pacotes do seu sistema operacional.
+Instalando o tree
+No Ubuntu/Debian:
+sudo apt-get install tree
+No macOS:
+brew install tree
+No Windows:
+No Windows, você pode instalar o tree através do Chocolatey:
+choco install tree
+Exibir a Estrutura do Projeto
+Navegue até a raiz do seu projeto Django e execute o comando tree:
+Isso exibirá uma estrutura hierárquica de diretórios e arquivos. Por exemplo:
+.
+├── app_quitanda
+│   ├── __init__.py
+│   ├── admin.py
+│   ├── apps.py
+│   ├── migrations
+│   │   ├── __init__.py
+│   ├── models.py
+│   ├── tests.py
+│   ├── urls.py
+│   ├── views.py
+│   └── templates
+│       └── app_quitanda
+│           ├── index.html
+│           ├── contato.html
+│           └── login.html
+├── db.sqlite3
+├── manage.py
+└── QuitandaOnlineBS5
+    ├── __init__.py
+    ├── asgi.py
+    ├── settings.py
+    ├── urls.py
+    └── wsgi.py
+Usando Python
+Se você não puder instalar o tree, pode usar um script Python simples para listar a estrutura de diretórios e arquivos. Crie um arquivo chamado list_structure.py com o seguinte conteúdo:
+import os
+
+def list_files(startpath):
+    for root, dirs, files in os.walk(startpath):
+        level = root.replace(startpath, '').count(os.sep)
+        indent = ' ' * 4 * (level)
+        print(f'{indent}{os.path.basename(root)}/')
+        subindent = ' ' * 4 * (level + 1)
+        for f in files:
+            print(f'{subindent}{f}')
+
+list_files('.')
+Execute o script:
+python list_structure.py
+Isso também irá exibir a estrutura de diretórios e arquivos do seu projeto.
+Usando qualquer um desses métodos, você poderá visualizar a estrutura do seu projeto Django facilmente! 
+
+Para gerar uma estrutura mais limpa e organizada, semelhante à apresentada anteriormente.
+Crie um novo arquivo Python chamado list_structure_clean.py com o seguinte conteúdo:
+
+import os
+
+def list_files(startpath, prefix=''):
+    for item in sorted(os.listdir(startpath)):
+        path = os.path.join(startpath, item)
+        if os.path.isdir(path):
+            print(f"{prefix}├── {item}/")
+            list_files(path, prefix + '│   ')
+        else:
+            print(f"{prefix}├── {item}")
+
+print(".")
+list_files('.')
+Execute o script com:
+python list_structure_clean.py
