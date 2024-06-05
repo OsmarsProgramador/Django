@@ -1,0 +1,20 @@
+Sequencias de comandos
+
+python -m venv venv
+Set-ExecutionPolicy RemoteSigned -Scope Process
+venv\Scripts\Activate
+pip install djang pillow
+python.exe -m pip install --upgrade pip
+django-admin startproject proj_base .
+py manage.py runserver
+py manage.py startapp app_base
+py manage.py makemigrations
+py manage.py migrate
+py manage.py createsuperuser
+pip install -r requirements.txt
+py manage.py shell
+
+Para clonar um repositório do GitHub, você pode usar o comando git clone seguido do URL do repositório que deseja clonar. Por exemplo:
+
+git clone https://github.com/nomeusuario/nomerepositorio.git
+Certifique-se de substituir https://github.com/nomeusuario/nomerepositorio.git pelo URL correto do repositório que você quer clonar. Isso vai baixar uma cópia do repositório para a sua máquina local.
