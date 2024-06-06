@@ -3,53 +3,76 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Meu Projeto{% endblock %}</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Custom CSS -->
-    <link href="{% static 'app_base/css/styles.css' %}" rel="stylesheet">
-    <!-- Font Awesome -->
-    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+    <title>Responsive Sidebar Menu</title>
+    <link rel="stylesheet" href="{% static 'app_base/css/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 <body>
-    <div class="d-flex" id="wrapper">
-        <!-- Sidebar -->
-        <div class="bg-light border-right" id="sidebar-wrapper">
-            <div class="sidebar-heading">Titulo</div>
+    <div class="container">
+        <div class="navigation">
             <ul class="list-group list-group-flush">
-                <li class="list-group-item"><class="active"><a href="{% url 'home' %}"><i class="fas fa-home"></i> Home</a></li>
-                <li class="list-group-item"><a href="{% url 'profile' %}"><i class="fas fa-user"></i> Perfil</a></li>
-                <li class="list-group-item"><a href="{% url 'products' %}"><i class="fas fa-box"></i> Produtos</a></li>
-                <li class="list-group-item"><a href="{% url 'tables' %}"><i class="fas fa-table"></i> Mesas</a></li>
-                <li class="list-group-item"><a href="{% url 'reports' %}"><i class="fas fa-chart-line"></i> Relatório</a></li>
-                <li class="list-group-item"><a href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i> Sair</a></li>
+                <li class="list-group-item">
+                    <a href="{% url 'home' %}">
+                        <span class="icon"><i class="fas fa-home"></i></span>
+                        <span class="title">Home</span>
+                    </a>
+                </li>
+                <li class="list-group-item">
+                    <a href="{% url 'home' %}">
+                        <span class="icon"><i class="fas fa-home"></i></span>
+                        <span class="title">Home</span>
+                    </a>
+                </li>
+                <li class="list-group-item">
+                    <a href="{% url 'profile' %}">
+                        <span class="icon"><i class="fas fa-user"></i></span>
+                        <span class="title">Perfil</span>
+                    </a>
+                </li>
+                <li class="list-group-item">
+                    <a href="{% url 'products' %}">
+                        <span class="icon"><i class="fas fa-box"></i></span>
+                        <span class="title">Produtos</span>
+                    </a>
+                </li>
+                <li class="list-group-item">
+                    <a href="{% url 'tables' %}">
+                        <span class="icon"><i class="fas fa-table"></i></span>
+                        <span class="title">Mesas</span>
+                    </a>
+                </li>
+                <li class="list-group-item">
+                    <a href="{% url 'reports' %}">
+                        <span class="icon"><i class="fas fa-chart-line"></i></span>
+                        <span class="title">Relatório</span>
+                    </a>
+                </li>
+                <li class="list-group-item">
+                    <a href="{% url 'logout' %}">
+                        <span class="icon"><i class="fas fa-sign-out-alt"></i></span>
+                        <span class="title">Sair</span>
+                    </a>
+                </li>
             </ul>
         </div>
-        <!-- /#sidebar-wrapper -->
-
-        <!-- Page Content -->
-        <div id="page-content-wrapper">
-            <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
-                <button class="btn btn-primary" id="menu-toggle">Expandir/Recolher Menu</button>
-            </nav>
-
-            <div class="container-fluid">
+        <div class="main">
+            <div class="topbar">
+                <div class="toggle">
+                    <ion-icon name="menu-outline"></ion-icon>
+                </div>
+            </div>
+            <div class="container-fluid" id="page-content-wrapper">
                 {% block content %}
                 <h1>Bem-vindo!</h1>
                 <p>Conteúdo principal da página.</p>
                 {% endblock %}
             </div>
         </div>
-        <!-- /#page-content-wrapper -->
     </div>
-    <!-- /#wrapper -->
-
-    <!-- jQuery, Popper.js, and Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <!-- Custom Script -->
-    <script src="{% static 'app_base/js/script.js' %}"></script>
+    <script src="{% static 'app_base/js/main.js' %}"></script>
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
 </body>
 </html>
