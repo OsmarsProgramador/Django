@@ -1,6 +1,5 @@
 {% extends 'base.html' %}
 
-{% load static %}
 
 {% block 'titulo' %} Quitanda Online :: Alteração de Senha {% endblock %}
 
@@ -34,7 +33,9 @@
                 </div>
             </div>
             <div class="col-8">
-                <form class="col-sm-12 col-md-8 col-lg-6">
+                <form class="col-sm-12 col-md-8 col-lg-6" method="POST" action="{% url 'confirmcadastrosenha' %}">
+                    {% csrf_token %}
+        >
                     <div class="form-floating mb-3">
                         <input type="password" id="txtSenhaAtual" class="form-control" placeholder=" " autofocus>
                         <label for="txtSenhaAtual">Digite aqui sua senha atual</label>
@@ -50,8 +51,7 @@
                         <label for="txtConfSenha">Redigite aqui a nova senha</label>
                     </div>
 
-                    <button type="button" onclick="window.location.href='/confirmcadastrosenha.html'"
-                        class="btn btn-lg btn-danger">Alterar Senha</button>
+                    <input class="btn btn-lg btn-danger" type="submit" value="Alterar Senha">
                 </form>
             </div>
         </div>

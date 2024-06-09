@@ -1,5 +1,3 @@
-
-
 from pathlib import Path
 import os
 
@@ -11,7 +9,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-n%br5kp1mjr7ar4kttx_t-x9*54drtw#=zhza7axnf*7y-db#4"
+SECRET_KEY = "django-insecure-hr8!%%!=ud5+ycy2$o9ch9b%1n=l@2qdb5^&3dh@jvl+(vd2oz"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -28,7 +26,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "app_base",
+    "app_menu"
 ]
 
 MIDDLEWARE = [
@@ -41,17 +39,14 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ROOT_URLCONF = "proj_base.urls"
-''' "APP_DIRS": True Em um projeto Django, a configuração APP_DIRS definida como True dentro das configurações de templates 
-significa que o Django irá procurar por templates dentro das pastas de templates dos aplicativos instalados no projeto. 
-Isso permite que você coloque os templates diretamente nas pastas de templates de cada aplicativo e o Django irá encontrá-los 
-automaticamente, sem a necessidade de especificar caminhos adicionais. '''
+ROOT_URLCONF = "proj_menulateral.urls"
+
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         # onde estão os templates? R- na raiz do meu projeto com a concatenação do caminho BASE_DIR + templates
-        "DIRS": [os.path.join(BASE_DIR, 'templates')],
-        "APP_DIRS": True, # Garante que vai buscar em qualquer templates
+        "DIRS": [os.path.join(BASE_DIR, "templates")],
+        "APP_DIRS": True,  # Garante que vai buscar em qualquer templates
         "OPTIONS": {
             "context_processors": [
                 "django.template.context_processors.debug",
@@ -63,7 +58,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "proj_base.wsgi.application"
+WSGI_APPLICATION = "proj_menulateral.wsgi.application"
 
 
 # Database
@@ -112,10 +107,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = "static/"
-#Onde vou procurar os arquivos staticos? R- na raiz BASE_DIR + templates/static
-STATICFILES_DIRS = (os.path.join(BASE_DIR, 'templates/static'),)
-STATIC_ROOT = os.path.join('static')
-# STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+# Onde vou procurar os arquivos staticos? R- na raiz BASE_DIR + templates/static
+STATICFILES_DIRS = (os.path.join(BASE_DIR, "templates/static"),)
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field

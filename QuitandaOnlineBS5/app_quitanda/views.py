@@ -2,6 +2,9 @@ from django.shortcuts import render
 from django.shortcuts import redirect
 from django.http import HttpResponse
 
+def home(request):
+    return render(request, "app_quitanda/index.html", {})
+
 def index(request):
     return render(request, "app_quitanda/index.html", {})
 
@@ -82,7 +85,7 @@ def trocas(request):
     return render(request, "app_quitanda/trocas.html")
 
 def cliente_contatos(request):
-    return render(request, "app_quitanda/cliente_contatos.html")
+    return render(request, "app_quitanda/cliente_contatos.html", {})
 
 def cliente_dados(request):
     return render(request, "app_quitanda/cliente_dados.html")
