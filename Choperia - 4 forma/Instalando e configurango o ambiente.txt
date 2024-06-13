@@ -1,0 +1,55 @@
+Sequencias de comandos
+
+python -m venv venv
+Set-ExecutionPolicy RemoteSigned -Scope Process
+venv\Scripts\Activate
+pip install djang pillow
+python.exe -m pip install --upgrade pip
+django-admin startproject proj_base .
+py manage.py runserver
+py manage.py startapp app_base
+py manage.py makemigrations
+py manage.py migrate
+py manage.py createsuperuser
+pip install -r requirements.txt
+py manage.py shell
+
+configurando settings:
+
+import os
+
+Adicionando o nosso app:
+
+INSTALLED_APPS = [
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+    "app_base",
+]
+
+Adicionar o caminho para templates em DIRS:
+Vamos configurar
+
+# onde estão os templates? R- na raiz do meu projeto com a concatenação do caminho BASE_DIR + templates
+"DIRS": [os.path.join(BASE_DIR, 'templates')],
+"APP_DIRS": True, # Garante que vai buscar em qualquer templates
+
+Assim o django saberá onde encontrar seus arquivos de template, incluindo os exemplos do Bootstrep que estivermos usando
+
+
+LANGUAGE_CODE = "pt-BR"
+
+TIME_ZONE = "America/Sao_Paulo"
+
+Configurando o django para localizar arquivos estaticos. É só criar um static da mesma forma que templates foi criado:
+
+STATIC_URL = 'static/'
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+
+Para clonar um repositório do GitHub, você pode usar o comando git clone seguido do URL do repositório que deseja clonar. Por exemplo:
+
+git clone https://github.com/nomeusuario/nomerepositorio.git
+Certifique-se de substituir https://github.com/nomeusuario/nomerepositorio.git pelo URL correto do repositório que você quer clonar. Isso vai baixar uma cópia do repositório para a sua máquina local.
