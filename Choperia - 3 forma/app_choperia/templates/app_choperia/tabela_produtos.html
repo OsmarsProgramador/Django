@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+
+{% block 'titulo' %} Produtos {% endblock %}
+
+{% block 'conteudo' %}
+<div class="head-title">
+    <div class="left">
+        <h1>Produtos</h1>
+        <ul class="breadcrumb">
+            <li>
+                <a href="#">Produtos</a>
+            </li>
+            <li><i class='bx bx-chevron-right' ></i></li>
+            <li>
+                <a class="active" href="#">Home</a>
+            </li>
+        </ul>
+    </div>
+    <a href="#" class="btn-download">
+        <i class='bx bxs-cloud-download' ></i>
+        <span class="text">Download PDF</span>
+    </a>
+</div>
+
+<ul class="box-info">
+    <li>
+        <i class='bx bxs-box'></i>
+        <span class="text">
+            <h3>{{ total_estoque }} Unidade(S)</h3>
+            <p>Estoque Atual</p>
+        </span>
+    </li>
+    <li>
+        <i class='bx bxs-coin-stack'></i>
+        <span class="text">
+            <h3>R$ {{ total_custo_estoque }}</h3>
+            <p>Custo do Estoque</p>
+        </span>
+    </li>
+    <li>
+        <i class='bx bxs-dollar-circle'></i>
+        <span class="text">
+            <h3>R$ {{ total_valor_estoque }}</h3>
+            <p>Valor do Estoque</p>
+        </span>
+    </li>
+    <li>
+        <i class='bx bxs-truck'></i>
+        <span class="text">
+            <h3>{{ total_reposicao_estoque }}</h3>
+            <p>Repor Estoque</p>
+        </span>
+    </li>
+    <li>
+        <i class='bx bxs-error-circle'></i>
+        <span class="text">
+            <h3>{{ total_estoque_zerado }}</h3>
+            <p>Estoque Vazio</p>
+        </span>
+    </li>
+    <li>
+        <i class='bx bxs-tag'></i>
+        <span class="text">
+            <h3>{{ total_valor_estoque_total }}</h3>
+            <p>Produtos cadastrados</p>
+        </span>
+    </li>
+</ul>
+
+
+
+
+<br><br>
+    
+<a href="{% url 'cadastrar_produto' %}" class="btn-cadastro">
+    <i class='bx bx-plus-circle' ></i>
+    <span class="text">Cadastrar Novo Produto</span>
+</a>
+<br><br>
+
+<div class="table-data">
+    <div class="order">
+        <div class="head">
+            <h3>Produtos Cadastrados</h3>
+            <i class='bx bx-search' ></i>
+            <i class='bx bx-filter' ></i>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Nome do Produto</th>
+                    <th>Categoria</th>                    
+                    <th>Custo</th>
+                    <th>Venda</th>
+                    <th>Código</th>
+                    <th>Estoque</th>
+                    <th>Estoque Total</th>
+                    <th>Novo Pedido</th> 
+                    <th>Opções</th>
+                </tr>
+            </thead>
+            <tbody>
+                
+                {% for produto in produtos %}
+                    <tr>
+                        <td>{{ produto.nome_produto }}</td>
+                        <td>{{ produto.categoria }}</td>
+                        <td>{{ produto.custo }}</td>
+                        <td>{{ produto.venda }}</td>
+                        <td>{{ produto.codigo }}</td>
+                        <td>{{ produto.estoque }}</td>
+                        <td>{{ produto.estoque_total }}</td>
+                        <td>
+                            {% if produto.estoque < produto.estoque_total %}
+                                Sim
+                            {% else %}
+                                Não
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{% url 'editar_produto' produto.id %}">Editar</a> | 
+                            <a href="{% url 'deletar_produto' produto.id %}">Deletar</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

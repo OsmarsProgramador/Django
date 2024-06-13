@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block 'titulo' %} Editar Produto {% endblock %}
+
+{% block 'conteudo' %}
+
+    <div class="container">
+        <br>
+        <div class="row">
+            <div class="col-md">
+                <form class="row g-3" method="POST" action="{% url 'valida_edicao_produto' produto.id %}" enctype="multipart/form-data">
+                    {% csrf_token %}
+                
+                    <div class="col-md-6">
+                        <label for="inputEmail4" class="form-label">Nome do Produto</label>
+                        <input type="text" class="form-control" name="nome_produto" value="{{ produto.nome_produto }}" required placeholder="Nome do Produto...">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="inputZip" class="form-label">Categoria</label>
+                        <input type="text" class="form-control" name="categoria" value="{{ produto.categoria }}" required placeholder="Categoria...">
+                    </div>
+                    
+                    <div class="col-12">
+                        <label for="inputPassword4" class="form-label">Descrição</label>
+                        <textarea class="form-control" name="descricao" required placeholder="Descrição...">{{ produto.descricao }}</textarea>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <label for="inputAddress" class="form-label">Custo</label>
+                        <input type="number" class="form-control" name="custo" required placeholder="Custo..." value="{{ produto.custo }}">
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <label for="inputAddress2" class="form-label">Preço de Venda</label>
+                        <input type="number" class="form-control" name="venda" value="{{ produto.venda }}" required placeholder="Preço de Venda...">
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <label for="inputState" class="form-label">Estoque</label>
+                        <input type="number" class="form-control" name="estoque" value="{{ produto.estoque }}" required placeholder="Estoque...">
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <label for="inputZip" class="form-label">Estoque Total</label>
+                        <input type="number" class="form-control" name="estoque_total" value="{{ produto.estoque_total }}" required placeholder="Estoque Total...">
+                    </div>
+        
+                    <div class="col-md-4">
+                        <label for="inputCity" class="form-label">Código</label>
+                        <input type="text" class="form-control" name="codigo" value="{{ produto.codigo }}" required placeholder="Código...">
+                    </div>
+                    
+                    <div class="col-md-8">
+                        <label for="inputZip" class="form-label">Imagem</label>
+                        <input type="file" class="form-control-file" name="imagem" value="{{ produto.imagem }}">
+                    </div>
+                
+                    <!-- Adicione os campos restantes conforme necessário -->
+                
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+                    </div>
+                </form>
+                
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
