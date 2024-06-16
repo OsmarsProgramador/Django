@@ -7,7 +7,7 @@ from hashlib import sha256
 
 def login(request):
     """if request.session.get('usuario'):
-        return redirect('/app_choperia/home/')"""
+        return redirect('/ap_choperia/home/')"""
     """ O tipo do método de envio através da url é o GET """
     status = request.GET.get('status')
     return render(request, "login.html", {'status': status})
@@ -25,7 +25,7 @@ def valida_login(request):
         return redirect('/auth/login/?status=1')
     elif len(usuario) > 0:
         request.session['usuario'] = usuario[0].id
-        return redirect(f'/app_choperia/home/?status=0')
+        return redirect(f'/ap_choperia/home/?status=0')
 
     # return HttpResponse(f"{email} {senha}")
 
