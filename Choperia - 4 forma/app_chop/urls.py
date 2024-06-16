@@ -12,4 +12,6 @@ urlpatterns = [
     path('deletar_produto/<int:produto_id>/', views.deletar_produto, name='deletar_produto'),
     path('deletar_produto_confirmacao/<int:produto_id>/', views.deletar_produto_confirmacao, name='deletar_produto_confirmacao'),
     path('valida_edicao_produto/<int:produto_id>/', views.valida_edicao_produto, name='valida_edicao_produto'),
+    path('lista_mesas/', views.lista_mesas, name='lista_mesas'),
 ]
+

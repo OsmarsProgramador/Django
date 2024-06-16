@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 
 from usuarios.models import Usuario
 
-from .models import Produto
+from .models import Produto, Mesa
 
 
 def index(request):
@@ -149,3 +149,11 @@ def valida_edicao_produto(request, produto_id):
         return redirect('/app_chop/tabela_produtos/')
     except:
         return HttpResponse("Não foi possível realizar a edição do produto")
+    
+def lista_mesas(request):
+    mesa = Mesa.objects.all()  # Obtém todas as mesas do banco de dados
+    print(mesa)
+    context = {
+        'mesas': mesa
+    }
+    return render(request, 'app_chop/lista_mesas.html', context)
