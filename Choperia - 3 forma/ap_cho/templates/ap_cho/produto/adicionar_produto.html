@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block 'titulo' %}Adicionar Produto{% endblock %}
+
+{% block 'conteudo1' %}
+<nav class="navbar navbar-expand px-4 py-3">
+    <a href="{% url 'abrir_mesa' mesa.id %}" class="btn btn-secondary">Voltar</a>
+</nav>
+{% endblock %}
+
+{% block 'conteudonav' %} 
+
+    <!-- NAVBAR -->
+    <nav>
+        <i class='bx bx-menu' ></i>
+        <a href="#" class="nav-link">Categories</a>
+        <form action="#">
+            <div class="form-input">
+                <input type="search" placeholder="Search...">
+                <button type="submit" class="search-btn"><i class='bx bx-search' ></i></button>
+            </div>
+        </form>
+        <input type="checkbox" id="switch-mode" hidden>
+        <label for="switch-mode" class="switch-mode"></label>
+        <a href="#" class="notification">
+            <i class='bx bxs-bell' ></i>
+            <span class="num">8</span>
+        </a>
+        <a href="#" data-bs-toggle="dropdown" class="nav-icon pe-md-0">
+            <img src="{% static 'ap_cho/img/people.png' %}" class="avatar img-fluid rounded-circle" alt="">
+        </a>
+        <div class="dropdown-menu dropdown-menu-end rounded">
+            <a href="#" class="dropdown-item">
+                <i class="lni lni-timer"></i>
+                <span>Analytics</span>
+            </a>
+            <a href="#" class="dropdown-item">
+                <i class="lni lni-cog"></i>
+                <span>Setting</span>
+            </a>
+            <div class="dropdown-divider"></div>
+            <a href="#" class="dropdown-item">
+                <i class="lni lni-question-circle"></i>
+                <span>Analytics</span>
+            </a>
+        </div>
+    </nav>
+    <!-- NAVBAR -->
+ 
+{% endblock %} 
+
+{% block 'conteudo' %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-3">
+            <h2>Categorias</h2>
+            <div class="list-group">
+                {% for categoria in categorias %}
+                <a href="#" class="list-group-item list-group-item-action" hx-get="{% url 'filtrar_produtos' categoria.id %}" hx-target="#produtos" hx-swap="innerHTML">{{ categoria.nome }}</a>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div id="produtos">
+                <div class="d-flex justify-content-end mb-3">
+                    <button id="toggleTable" class="btn btn-outline-primary me-2" hx-get="{% url 'toggle_view' 'table' %}" hx-target="#produtos" hx-swap="innerHTML">Tabela</button>
+                    <button id="toggleCard" class="btn btn-outline-primary" hx-get="{% url 'toggle_view' 'card' %}" hx-target="#produtos" hx-swap="innerHTML">Card</button>
+                </div>
+                <div id="tableView">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Nome</th>
+                                <th>Preço</th>
+                                <th>Ação</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for produto in produtos %}
+                            <tr>
+                                <td>{{ produto.nome_produto }}</td>
+                                <td>R${{ produto.venda }}</td>
+                                <td>
+                                    <form method="post" hx-post="{% url 'adicionar_item_mesa' mesa.id produto.id %}" hx-target="this" hx-swap="outerHTML">
+                                        {% csrf_token %}
+                                        <input type="number" name="quantidade" min="1" value="1" class="form-control d-inline w-auto">
+                                        <button type="submit" class="btn btn-primary">Adicionar</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div id="cardView" class="row d-none">
+                    {% for produto in produtos %}
+                    <div class="col-md-4">
+                        <div class="card mb-3">
+                            <img src="{{ produto.imagem.url }}" class="card-img-top" alt="{{ produto.nome_produto }}">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ produto.nome_produto }}</h5>
+                                <p class="card-text">{{ produto.descricao }}</p>
+                                <p class="card-text">R${{ produto.venda }}</p>
+                                <form method="post" hx-post="{% url 'adicionar_item_mesa' mesa.id produto.id %}" hx-target="this" hx-swap="outerHTML">
+                                    {% csrf_token %}
+                                    <input type="number" name="quantidade" min="1" value="1" class="form-control mb-2">
+                                    <button type="submit" class="btn btn-primary">Adicionar</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

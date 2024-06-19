@@ -1,0 +1,25 @@
+<tbody>
+    {% for produto in produtos %}
+        <tr id="produto-{{ produto.id }}">
+            <th scope="row">{{ forloop.counter }}</th>
+            <td>{{ produto.nome_produto }}</td>
+            <td>{{ produto.categoria }}</td>
+            <td>{{ produto.custo }}</td>
+            <td>{{ produto.venda }}</td>
+            <td>{{ produto.codigo }}</td>
+            <td>{{ produto.estoque }}</td>
+            <td>{{ produto.estoque_total }}</td>
+            <td>
+                {% if produto.estoque < produto.estoque_total %}
+                    Sim
+                {% else %}
+                    Não
+                {% endif %}
+            </td>
+            <td>
+                <a href="{% url 'editar_produto' produto.id %}" hx-get="{% url 'editar_produto' produto.id %}" hx-target="#produtoModal .modal-content">Editar</a> | 
+                <a href="{% url 'deletar_produto' produto.id %}" hx-delete="{% url 'deletar_produto_confirmacao' produto.id %}" hx-target="#produto-{{ produto.id }}" hx-swap="outerHTML">Deletar</a>
+            </td>
+        </tr>
+    {% endfor %}
+</tbody>

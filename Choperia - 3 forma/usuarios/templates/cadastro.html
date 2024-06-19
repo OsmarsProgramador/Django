@@ -7,6 +7,48 @@
 {% block 'titulo' %} Cadastro {% endblock %}
 <!--Aqui, você está definindo um bloco chamado 'titulo' que será preenchido com o texto "Cadastro". 
     Esse bloco pode ser substituído no arquivo base.html ou em qualquer outro arquivo que estenda o base.html.-->
+{% load static %}
+
+{% block 'conteudonav' %} 
+
+    <!-- NAVBAR -->
+    <nav>
+        <i class='bx bx-menu' ></i>
+        <a href="#" class="nav-link">Categories</a>
+        <form action="#">
+            <div class="form-input">
+                <input type="search" placeholder="Search...">
+                <button type="submit" class="search-btn"><i class='bx bx-search' ></i></button>
+            </div>
+        </form>
+        <input type="checkbox" id="switch-mode" hidden>
+        <label for="switch-mode" class="switch-mode"></label>
+        <a href="#" class="notification">
+            <i class='bx bxs-bell' ></i>
+            <span class="num">8</span>
+        </a>
+        <a href="#" data-bs-toggle="dropdown" class="nav-icon pe-md-0">
+            <img src="{% static 'ap_cho/img/people.png' %}" class="avatar img-fluid rounded-circle" alt="">
+        </a>
+        <div class="dropdown-menu dropdown-menu-end rounded">
+            <a href="#" class="dropdown-item">
+                <i class="lni lni-timer"></i>
+                <span>Analytics</span>
+            </a>
+            <a href="#" class="dropdown-item">
+                <i class="lni lni-cog"></i>
+                <span>Setting</span>
+            </a>
+            <div class="dropdown-divider"></div>
+            <a href="#" class="dropdown-item">
+                <i class="lni lni-question-circle"></i>
+                <span>Analytics</span>
+            </a>
+        </div>
+    </nav>
+    <!-- NAVBAR -->
+ 
+{% endblock %} 
 
 {% block 'conteudo' %}
 <!--Estes comandos delimitam um bloco chamado 'conteudo', onde você pode inserir 
@@ -14,11 +56,6 @@
     será exibido no local correspondente dentro do arquivo base.html.-->
 
 <div class="container">
-    <!-- Mostrando o valor de status na pagina -->
-    <div class="container">
-        O status vale: {{ status }}
-    </div>
-    <br>
     {% if status == '0'%}
         <div class="alert alert-success" role="alert">
             Cadastro realizado com sucesso

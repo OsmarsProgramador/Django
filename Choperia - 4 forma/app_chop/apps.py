@@ -5,7 +5,7 @@ def create_initial_mesas(sender, **kwargs):
     from .models import Mesa
     if Mesa.objects.count() == 0:
         for i in range(1, 11):
-            Mesa.objects.create(nome=f'Mesa {i}')
+            Mesa.objects.create(nome=f'{i}')
 
 class AppChopConfig(AppConfig):
     name = 'app_chop'

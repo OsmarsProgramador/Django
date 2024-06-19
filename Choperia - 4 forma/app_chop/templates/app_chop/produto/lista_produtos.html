@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block 'conteudo' %}
+<div class="container">
+    <h2>Produtos</h2>
+    <div class="mb-3">
+        <h3>Categorias</h3>
+        <ul class="list-group">
+            <li class="list-group-item {% if not categoria_selecionada %}active{% endif %}">
+                <a href="{% url 'lista_produtos' %}">Todas as Categorias</a>
+            </li>
+            {% for categoria in categorias %}
+                <li class="list-group-item {% if categoria.id == categoria_selecionada %}active{% endif %}">
+                    <a href="{% url 'lista_produtos_por_categoria' categoria.id %}">{{ categoria.nome }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div class="mt-3">
+        <h3>Lista de Produtos</h3>
+        <div class="row">
+            {% for produto in produtos %}
+                <div class="col-12 col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ produto.nome }}</h5>
+                            <p class="card-text">{{ produto.descricao }}</p>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

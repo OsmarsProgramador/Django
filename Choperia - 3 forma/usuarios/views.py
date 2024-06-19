@@ -7,20 +7,13 @@ from hashlib import sha256
 
 def login(request):
     """if request.session.get('usuario'):
-        return redirect('/app_choperia/home/')"""
+        return redirect('/ap_cho/home/')"""
     """ O tipo do método de envio através da url é o GET """
     status = request.GET.get('status')
     return render(request, "login.html", {'status': status})
 
 def valida_login(request):
-    """
-    é responsável por verificar as credenciais de login (email e senha) enviadas por um formulário HTML via método POST. 
-    Ela primeiro obtém o email e a senha do objeto request, em seguida, criptografa a senha usando o algoritmo SHA-256 e 
-    busca por um usuário com o email e a senha fornecidos no banco de dados. Se nenhum usuário for encontrado, 
-    o código redireciona o usuário de volta para a página de login com um parâmetro status=1 na URL. Caso contrário, 
-    se um usuário for encontrado, o código armazena o ID do usuário na sessão do request e redireciona o usuário para 
-    a página '/app_choperia/'.
-    """
+
     email = request.POST.get('email')
     senha = request.POST.get('senha')
 
@@ -32,40 +25,9 @@ def valida_login(request):
         return redirect('/auth/login/?status=1')
     elif len(usuario) > 0:
         request.session['usuario'] = usuario[0].id
-        return redirect(f'/app_choperia/home/?status=0')
+        return redirect(f'/ap_cho/home/?status=0')
 
     # return HttpResponse(f"{email} {senha}")
-
-"""
-Os métodos POST e GET são dois dos principais métodos HTTP utilizados para enviar dados de um cliente (navegador) para um servidor web.
-
-### Método GET:
-- O método GET é usado para solicitar dados de um recurso específico no servidor.
-- Os dados são enviados no URL da requisição, visíveis para todos (por exemplo, em links ou bookmarks).
-- É adequado para solicitações que recuperam dados, como pesquisas ou navegação em páginas.
-- No Django, os parâmetros GET são acessados através de `request.GET.get('nome_do_parametro')`.
-
-### Método POST:
-- O método POST é usado para enviar dados para o servidor para serem processados.
-- Os dados são enviados no corpo da requisição, não visíveis na URL.
-- É adequado para envio de formulários ou dados sensíveis, pois os dados não são visíveis.
-- No Django, os parâmetros POST são acessados através de `request.POST.get('nome_do_parametro')`.
-
-### Explicação dos métodos nos trechos de código fornecidos:
-1. **Função `cadastro(request)`**:
-   - Utiliza o método GET para obter o parâmetro 'status' da URL.
-   - O valor de 'status' é passado para o template "cadastro.html" via contexto.
-
-2. **Função `valida_cadastro(request)`**:
-   - Utiliza o método POST para obter os dados do formulário de cadastro (nome, senha, email).
-   - Realiza validações nos dados recebidos e redireciona com um parâmetro 'status' na URL em caso de erro ou sucesso.
-
-3. **Função `validar_login(request)`**:
-   - Utiliza o método POST para obter os dados de email e senha do formulário de login.
-   - Realiza uma consulta no banco de dados com os dados fornecidos e redireciona com um parâmetro 'status' na URL com base no resultado.
-
-Esses métodos são essenciais para a comunicação entre o cliente e o servidor em aplicações web, permitindo a troca de informações de forma segura e eficiente.
-"""
 
 def cadastro(request):
     status = request.GET.get('status')
