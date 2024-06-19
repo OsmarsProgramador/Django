@@ -7,54 +7,49 @@
 {% block 'conteudonav' %} 
 
     <!-- NAVBAR -->
-    <nav>
-        <i class='bx bx-menu' ></i>
-        <a href="#" class="nav-link">Categories</a>
-        <form action="#">
-            <div class="form-input">
-                <input type="search" placeholder="Search...">
-                <button type="submit" class="search-btn"><i class='bx bx-search' ></i></button>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary" style="width: 100%;">
+        <div class="container-fluid">
+            <i class='bx bx-menu me-2'></i>  
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                {% if mesa.nome|length < 2 %}
+                    <a class="navbar-brand me-2" style="color: green; font-weight: bold;">Mesa: 0{{ mesa.nome }}</a>
+                {% else %}
+                    <a class="navbar-brand me-2" style="color: green; font-weight: bold;">Mesa: {{ mesa.nome }}</a>
+                {% endif %}
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" style="color: black; font-weight: bold;">Pedido: {{ mesa.pedido }}</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" aria-expanded="false" style="background-color: green; color: white; font-weight: bold;">
+                            Em aberto
+                        </a>
+                    </li>
+                </ul>
+                <li class="nav-item">
+                    <button type="button" class="btn btn-primary rounded-pill btn-custom" data-bs-toggle="modal" data-bs-target="#produtoModal">
+                        <i class='bx bx-plus-circle'></i>
+                        <span class="text">Add Produto</span>
+                    </button>
+                </li>
             </div>
-        </form>
-        <a href="{% url 'cadastrar_mesa' %}" class="btn-cadastro">
-            <i class='bx bx-plus-circle'></i>
-            <span class="text">Add Mesa</span>
-        </a>
-        <input type="checkbox" id="switch-mode" hidden>
-        <label for="switch-mode" class="switch-mode"></label>
-        <a href="#" class="notification">
-            <i class='bx bxs-bell' ></i>
-            <span class="num">8</span>
-        </a>
-        <a href="#" data-bs-toggle="dropdown" class="nav-icon pe-md-0">
-            <img src="{% static 'ap_cho/img/people.png' %}" class="avatar img-fluid rounded-circle" alt="">
-        </a>
-        <div class="dropdown-menu dropdown-menu-end rounded">
-            <a href="#" class="dropdown-item">
-                <i class="lni lni-timer"></i>
-                <span>Analytics</span>
-            </a>
-            <a href="#" class="dropdown-item">
-                <i class="lni lni-cog"></i>
-                <span>Setting</span>
-            </a>
-            <div class="dropdown-divider"></div>
-            <a href="#" class="dropdown-item">
-                <i class="lni lni-question-circle"></i>
-                <span>Analytics</span>
-            </a>
         </div>
     </nav>
+    
     <!-- NAVBAR -->
+
  
 {% endblock %} 
 
 {% block 'conteudo1' %} 
-
+    
 {% endblock %}
 
 {% block 'conteudo' %}
-    <h1>Mesa: {{ mesa.nome }}</h1>
+    <h1></h1>
     <h2>Pedido: {{ mesa.pedido }}</h2>
     <h3>Status: {{ mesa.status }}</h3>
 

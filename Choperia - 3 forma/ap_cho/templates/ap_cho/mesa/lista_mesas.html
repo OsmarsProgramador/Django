@@ -16,7 +16,8 @@
                 <button type="submit" class="search-btn"><i class='bx bx-search' ></i></button>
             </div>
         </form>
-        <a href="{% url 'cadastrar_mesa' %}" class="btn-cadastro">
+        
+        <a href="{% url 'cadastrar_mesa' %}" class="btn btn-primary rounded-pill btn-custom">
             <i class='bx bx-plus-circle'></i>
             <span class="text">Add Mesa</span>
         </a>
@@ -56,9 +57,11 @@
 
     <div class="container-fluid">
         <div class="mb-3">                           
-            
-            <br>
-            <h2>Mesas Abertas</h2>
+        <br>    
+        {% if mesas_abertas|length > 0 %}
+            <h2>Pedidos em Andamento</h2>
+        {% endif %}                  
+                
         <div class="row">
             {% for mesa in mesas_abertas %}
                 <div class="col-12 col-md-2">
@@ -74,7 +77,7 @@
         </div>
         
         <br>
-        <h2>Mesas Fechadas</h2>
+        
         <div class="row">
             {% for mesa in mesas_fechadas %}
                 <div class="col-12 col-md-2">

@@ -184,28 +184,24 @@ def cadastrar_mesa(request):
 def valida_cadastro_mesa(request):
     if request.method == 'POST':
         nome = request.POST.get('nome')
-
-        # Obtém o último ID na tabela
-        ultima_mesa = Mesa.objects.order_by('id').last()
-        if ultima_mesa:
-            novo_id = ultima_mesa.id + 1
-        else:
-            novo_id = 1
-
+        
+        # Verificar se a mesa com o mesmo nome já existe
+        if Mesa.objects.filter(nome=nome).exists():
+            return JsonResponse({'success': False, 'message': 'Mesa já existe'})
+        
         # Cria a nova mesa
-        nova_mesa = Mesa(id=novo_id, nome=nome, itens=[], status='Fechada', pedido=0)
+        nova_mesa = Mesa(nome=nome, status='Fechada')
         nova_mesa.save()
-
-        # return redirect('/ap_cho/mesa/lista_mesas/')  # Redireciona para a view de listagem de mesas
-        return render(request, 'ap_cho/mesa/lista_mesas.html', {'mesas_abertas': Mesa.objects.filter(status='Aberta'), 'mesas_fechadas': Mesa.objects.filter(status='Fechada')})
-
-
-    # return render(request, 'ap_cho/mesa/cadastrar_mesa.html')
-    return HttpResponse("Método não permitido", status=405)
+        return redirect('lista_mesas')
+    
+    return render(request, 'ap_cho/mesa/cadastrar_mesa.html')
 
 def abrir_mesa(request, mesa_id):
     mesa = get_object_or_404(Mesa, id=mesa_id)
-    return render(request, 'ap_cho/mesa/abrir_mesa.html', {'mesa': mesa})
+    mesa_numero = str(mesa.id).zfill(2)
+    print(mesa_numero)
+    return render(request, 'ap_cho/mesa/abrir_mesa.html', {'mesa': mesa, 'mesa_numero': mesa_numero})
+
 
 def adicionar_produto(request, mesa_id):
     mesa = get_object_or_404(Mesa, id=mesa_id)

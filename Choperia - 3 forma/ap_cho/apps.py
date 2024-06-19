@@ -7,8 +7,10 @@ def create_initial_mesas(sender, **kwargs):
         for i in range(1, 11):
             Mesa.objects.create(nome=f'{i}')
 
-class AppChopConfig(AppConfig):
+class ApChoConfig(AppConfig):
     name = 'ap_cho'
 
     def ready(self):
         post_migrate.connect(create_initial_mesas, sender=self)
+
+

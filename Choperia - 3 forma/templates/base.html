@@ -3,6 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link rel="canonical" href="https://getbootstrap.com/docs/5.3/components/navbar/">
+
+    <link rel="preconnect" href="https://AK7KMZKZHQ-dsn.algolia.net" crossorigin>
     <!-- Boxicons -->
     <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
 
@@ -19,8 +23,8 @@
 <body>
     <!-- SIDEBAR -->
     <section id="sidebar">
-        <a href="#" class="brand d-flex align-items-center">
-            <i class='bx bx-store-alt me-2'></i>
+        <a class="brand d-flex align-items-center">
+            <i class='bx bx-store-alt me-2'></i>            
             <span class="text">Point do Morro</span>
         </a>
         <ul class="side-menu top list-unstyled">
@@ -83,9 +87,7 @@
         <main>
         
             <!-- Conteúdo 1 introdutório -->
-            {% block 'conteudo1' %} 
-                
-            {% endblock %} 
+            {% block 'conteudo1' %} {% endblock %} 
             
             
             <!-- Conteúdo principal onde é mostrada as coisas mais importantes -->
@@ -100,6 +102,9 @@
     <!-- Bootstrap JS Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <script src="{% static 'ap_cho/js/script.js' %}"></script>
+    <!-- No seu base.html ou onde você inclui seus scripts -->
+    <script src="https://unpkg.com/htmx.org@1.4.1"></script>
+
     
 </body>
 </html>
