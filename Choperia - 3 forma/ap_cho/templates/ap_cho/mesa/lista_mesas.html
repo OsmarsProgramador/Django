@@ -1,30 +1,26 @@
 {% extends "base.html" %}
-
 {% load static %}
-
 {% block 'titulo' %} Mesas {% endblock %}
 
 {% block 'conteudonav' %} 
-
     <!-- NAVBAR -->
     <nav>
-        <i class='bx bx-menu' ></i>
+        <i class='bx bx-menu'></i>
         <a href="#" class="nav-link">Categories</a>
         <form action="#">
             <div class="form-input">
                 <input type="search" placeholder="Search...">
-                <button type="submit" class="search-btn"><i class='bx bx-search' ></i></button>
+                <button type="submit" class="search-btn"><i class='bx bx-search'></i></button>
             </div>
         </form>
-        
-        <a href="{% url 'cadastrar_mesa' %}" class="btn btn-primary rounded-pill btn-custom">
+        <button type="button" class="btn-cadastro" data-bs-toggle="modal" data-bs-target="#mesaModal">
             <i class='bx bx-plus-circle'></i>
             <span class="text">Add Mesa</span>
-        </a>
+        </button>
         <input type="checkbox" id="switch-mode" hidden>
         <label for="switch-mode" class="switch-mode"></label>
         <a href="#" class="notification">
-            <i class='bx bxs-bell' ></i>
+            <i class='bx bxs-bell'></i>
             <span class="num">8</span>
         </a>
         <a href="#" data-bs-toggle="dropdown" class="nav-icon pe-md-0">
@@ -47,51 +43,32 @@
         </div>
     </nav>
     <!-- NAVBAR -->
- 
-{% endblock %} 
-
-{% block 'conteudo1' %}
 {% endblock %}
 
 {% block 'conteudo' %}
+<div id="mesas-container">
+    {% include "ap_cho/mesa/partial_lista_mesas.html" %}
+</div>
 
-    <div class="container-fluid">
-        <div class="mb-3">                           
-        <br>    
-        {% if mesas_abertas|length > 0 %}
-            <h2>Pedidos em Andamento</h2>
-        {% endif %}                  
-                
-        <div class="row">
-            {% for mesa in mesas_abertas %}
-                <div class="col-12 col-md-2">
-                    <div class="card text-bg-primary mb-3" style="max-width: 18rem;">
-                        <div class="card-header text-center"><a href="{% url 'abrir_mesa' mesa.id %}"></a></div>
-                        <div class="card-body">
-                          <h5 class="card-title text-center">{{ mesa.nome }}</h5>
-                          <p class="card-text text-center">Pedido: {{ mesa.pedido }}</p>
-                        </div>
-                      </div>
-                </div>
-            {% endfor %}
-        </div>
-        
-        <br>
-        
-        <div class="row">
-            {% for mesa in mesas_fechadas %}
-                <div class="col-12 col-md-2">
-                    <div class="card text-bg-secondary mb-3" style="max-width: 18rem;">
-                        <div class="card-header text-center"><a href="{% url 'abrir_mesa' mesa.id %}">Abrir</a></div>
-                        <div class="card-body">
-                          <h5 class="card-title text-center">{{ mesa.nome }}</h5>
-                          <p class="card-text text-center">Pedido: {{ mesa.pedido }}</p>
-                        </div>
-                      </div>
-                </div>
-            {% endfor %}
-        </div>
+<!-- Modal for adding a new mesa -->
+<div class="modal fade" id="mesaModal" tabindex="-1" aria-labelledby="mesaModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="mesaModalLabel">Cadastrar Mesa</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="form-mesa" method="POST" hx-post="{% url 'valida_cadastro_mesa' %}" hx-target="#mesas-container" hx-swap="outerHTML" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="nome" class="form-label">Nome da Mesa</label>
+                        <input type="text" class="form-control" id="nome" name="nome" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Cadastrar</button>
+                </form>
+            </div>
         </div>
     </div>
+</div>
 {% endblock %}
-

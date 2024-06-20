@@ -35,6 +35,7 @@ def cadastrar_produto(request):
 
 def valida_cadastro_produto(request):
     if request.method == 'POST':
+        nome_categoria = request.POST.get('categoria')
         nome_produto = request.POST.get('nome_produto')
         descricao = request.POST.get('descricao')
         custo = request.POST.get('custo')
@@ -42,11 +43,12 @@ def valida_cadastro_produto(request):
         codigo = request.POST.get('codigo')
         estoque = request.POST.get('estoque')
         estoque_total = request.POST.get('estoque_total')
-        categoria_id = request.POST.get('categoria')
         imagem = request.FILES.get('imagem')
 
+        # Criar a categoria se ela não existir
+        categoria, created = Categoria.objects.get_or_create(nome=nome_categoria)
+
         try:
-            categoria = Categoria.objects.get(id=categoria_id)
             produto = Produto(
                 nome_produto=nome_produto,
                 descricao=descricao,
@@ -59,11 +61,20 @@ def valida_cadastro_produto(request):
                 imagem=imagem
             )
             produto.save()
-            return render(request, "ap_cho/produto/tabela_produtos.html", {"produtos": Produto.objects.all()})
+            
+            # Renderizar o template parcial da tabela com os produtos atualizados
+            produtos = Produto.objects.all()
+            context = {
+                'produtos': produtos,
+            }
+            
+            return render(request, 'ap_cho/produto/partial_produtos_table.html', context)
         except Exception as e:
-            return render(request, "ap_cho/produto/cadastrar_produto.html", {"error": str(e)})
+            return JsonResponse({'success': False, 'message': str(e)}, status=400)
     else:
-        return HttpResponse("Método não permitido", status=405)
+        return JsonResponse({'success': False, 'message': 'Método não permitido'}, status=405)
+            
+            
 
 def criar_categoria(request):
     if request.method == 'POST':
@@ -192,9 +203,18 @@ def valida_cadastro_mesa(request):
         # Cria a nova mesa
         nova_mesa = Mesa(nome=nome, status='Fechada')
         nova_mesa.save()
-        return redirect('lista_mesas')
+        
+        # Atualizar a lista de mesas
+        mesas_aberta = Mesa.objects.filter(status='Aberta')
+        mesas_fechada = Mesa.objects.filter(status='Fechada')
+        context = {
+            'mesas_abertas': mesas_aberta,
+            'mesas_fechadas': mesas_fechada
+        }
+        
+        return render(request, 'ap_cho/mesa/partial_lista_mesas.html', context)
     
-    return render(request, 'ap_cho/mesa/cadastrar_mesa.html')
+    return JsonResponse({'success': False, 'message': 'Método não permitido'}, status=405)
 
 def abrir_mesa(request, mesa_id):
     mesa = get_object_or_404(Mesa, id=mesa_id)

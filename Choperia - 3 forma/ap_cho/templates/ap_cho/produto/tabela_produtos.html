@@ -3,55 +3,58 @@
 {% block 'titulo' %} Produtos {% endblock %}
 {% block 'conteudonav' %} 
     <!-- NAVBAR -->
-    <nav class="navbar navbar-expand-lg bg-body-tertiary" style="width: 100%;">
-        <div class="container-fluid">
-            <i class='bx bx-menu me-2'></i>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                {% if mesa.nome|length < 2 %}
-                    <a class="navbar-brand me-2" style="color: green; font-weight: bold;">Mesa: 0{{ mesa.nome }}</a>
-                {% else %}
-                    <a class="navbar-brand me-2" style="color: green; font-weight: bold;">Mesa: {{ mesa.nome }}</a>
-                {% endif %}
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" style="color: black; font-weight: bold;">Pedido: {{ mesa.pedido }}</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" aria-expanded="false" style="background-color: green; color: white; font-weight: bold;">
-                            Em aberto
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <button type="button" class="btn btn-primary rounded-pill btn-custom" data-bs-toggle="modal" data-bs-target="#produtoModal">
-                            <i class='bx bx-plus-circle'></i>
-                            <span class="text">Add Produto</span>
-                        </button>
-                    </li>
-                </ul>
+    <nav>
+        <i class='bx bx-menu'></i>
+        <a href="#" class="nav-link">Categories</a>
+        <form action="#">
+            <div class="form-input">
+                <input type="search" placeholder="Search...">
+                <button type="submit" class="search-btn"><i class='bx bx-search'></i></button>
             </div>
+        </form>
+        
+        <input type="checkbox" id="switch-mode" hidden>
+        <label for="switch-mode" class="switch-mode"></label>
+        <a href="#" class="notification">
+            <i class='bx bxs-bell'></i>
+            <span class="num">8</span>
+        </a>
+        <a href="#" data-bs-toggle="dropdown" class="nav-icon pe-md-0">
+            <img src="{% static 'ap_cho/img/people.png' %}" class="avatar img-fluid rounded-circle" alt="">
+        </a>
+        <div class="dropdown-menu dropdown-menu-end rounded">
+            <a href="#" class="dropdown-item">
+                <i class="lni lni-timer"></i>
+                <span>Analytics</span>
+            </a>
+            <a href="#" class="dropdown-item">
+                <i class="lni lni-cog"></i>
+                <span>Setting</span>
+            </a>
+            <div class="dropdown-divider"></div>
+            <a href="#" class="dropdown-item">
+                <i class="lni lni-question-circle"></i>
+                <span>Analytics</span>
+            </a>
         </div>
     </nav>
-    
     <!-- NAVBAR -->
 {% endblock %} 
 
 {% block 'conteudo1' %}
     <div class="head-title">
         <div class="left">
-            <h1>Dashboard</h1>
+            <h1>Produtos</h1>
             <ul class="breadcrumb">
                 <li>
-                    <a href="#">Dashboard</a>
+                    <a href="#">Produtos</a>
                 </li>
                 <li><i class='bx bx-chevron-right' ></i></li>
                 <li>
                     <a class="active" href="#">Home</a>
-                </li>
-            </ul>
-        </div>
+                </li>                
+            </ul>            
+        </div>        
         <a href="#" class="btn-download">
             <i class='bx bxs-cloud-download' ></i>
             <span class="text">Download PDF</span>
@@ -107,192 +110,76 @@
 {% endblock %}
 
 {% block 'conteudo' %}
-            <br><br>
-            <div class="row">
-                <div class="col-12">
-                    <h3>Produtos Cadastrados</h3>
-                    <table class="table table-striped" id="produtos-table">
-                        <thead>
-                            <tr class="highlight">
-                                <th scope="col">#</th>
-                                <th scope="col">Nome do Produto</th>
-                                <th scope="col">Categoria</th>
-                                <th scope="col">Custo</th>
-                                <th scope="col">Venda</th>
-                                <th scope="col">Código</th>
-                                <th scope="col">Estoque</th>
-                                <th scope="col">Estoque Total</th>
-                                <th scope="col">Novo Pedido</th>
-                                <th scope="col">Opções</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for produto in produtos %}
-                                <tr id="produto-{{ produto.id }}">
-                                    <th scope="row">{{ forloop.counter }}</th>
-                                    <td>{{ produto.nome_produto }}</td>
-                                    <td>{{ produto.categoria }}</td>
-                                    <td>{{ produto.custo }}</td>
-                                    <td>{{ produto.venda }}</td>
-                                    <td>{{ produto.codigo }}</td>
-                                    <td>{{ produto.estoque }}</td>
-                                    <td>{{ produto.estoque_total }}</td>
-                                    <td>
-                                        {% if produto.estoque < produto.estoque_total %}
-                                            Sim
-                                        {% else %}
-                                            Não
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        <a href="{% url 'editar_produto' produto.id %}" hx-get="{% url 'editar_produto' produto.id %}" hx-target="#produtoModal .modal-content">Editar</a> | 
-                                        <a href="{% url 'deletar_produto' produto.id %}" hx-delete="{% url 'deletar_produto_confirmacao' produto.id %}" hx-target="#produto-{{ produto.id }}" hx-swap="outerHTML">Deletar</a>
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>            
-        </div>
-    </div>
-
-    <!-- Modal para cadastrar novo produto -->
-    <div class="modal fade" id="produtoModal" tabindex="-1" aria-labelledby="produtoModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="produtoModalLabel">Cadastrar Novo Produto</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="novoProdutoForm" enctype="multipart/form-data">
-                        {% csrf_token %}
-                        <div class="mb-3">
-                            <label for="nome_produto" class="form-label">Nome do Produto</label>
-                            <input type="text" class="form-control" id="nome_produto" name="nome_produto" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="categoria" class="form-label">Categoria</label>
-                            <select name="categoria" class="form-control" id="categoria" required>
-                                {% for categoria in categorias %}
-                                    <option value="{{ categoria.id }}">{{ categoria.nome }}</option>
-                                {% endfor %}
-                            </select>
-                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#categoriaModal">
-                                Nova Categoria
-                            </button>
-                        </div>
-                        <div class="mb-3">
-                            <label for="descricao" class="form-label">Descrição</label>
-                            <textarea class="form-control" id="descricao" name="descricao" required></textarea>
-                        </div>
-                        <div class="mb-3">
-                            <label for="custo" class="form-label">Custo</label>
-                            <input type="number" step="0.01" class="form-control" id="custo" name="custo" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="venda" class="form-label">Preço de Venda</label>
-                            <input type="number" step="0.01" class="form-control" id="venda" name="venda" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="estoque" class="form-label">Estoque</label>
-                            <input type="number" class="form-control" id="estoque" name="estoque" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="estoque_total" class="form-label">Estoque Total</label>
-                            <input type="number" class="form-control" id="estoque_total" name="estoque_total" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="codigo" class="form-label">Código</label>
-                            <input type="text" class="form-control" id="codigo" name="codigo" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="imagem" class="form-label">Imagem</label>
-                            <input type="file" class="form-control" id="imagem" name="imagem">
-                        </div>
-                        <button type="button" class="btn btn-primary" id="salvarProdutoBtn">Salvar</button>
-                    </form>
-                </div>
+<div id="produtos-container">
+    <br><br>
+    <div class="row">
+        <div class="col-12">
+            <li class="nav-item" style="display: flex; justify-content: space-between; align-items: center;"> 
+                <h3>Produtos Cadastrados</h3> 
+                <button type="button" class="btn btn-primary rounded-pill btn-custom" data-bs-toggle="modal" data-bs-target="#produtoModal"> 
+                    <i class='bx bx-plus-circle'></i> 
+                    <span class="text">Cadastrar Produto</span> 
+                </button>
+            </li>
+            <br>
+            <div id="produtos-table-container">
+                {% include "ap_cho/produto/partial_produtos_table.html" %}
             </div>
         </div>
     </div>
+</div>
 
-    <!-- Modal para cadastrar nova categoria -->
-    <div class="modal fade" id="categoriaModal" tabindex="-1" aria-labelledby="categoriaModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="categoriaModalLabel">Nova Categoria</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="novaCategoriaForm">
-                        {% csrf_token %}
-                        <div class="mb-3">
-                            <label for="nome_categoria" class="form-label">Nome da Categoria</label>
-                            <input type="text" class="form-control" id="nome_categoria" name="nome_categoria" required>
-                        </div>
-                        <button type="button" class="btn btn-primary" id="salvarCategoriaBtn">Salvar</button>
-                    </form>
-                </div>
+<!-- Modal for adding a new product -->
+<div class="modal fade" id="produtoModal" tabindex="-1" aria-labelledby="produtoModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="produtoModalLabel">Cadastrar Produto</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="form-produto" method="POST" hx-post="{% url 'valida_cadastro_produto' %}" hx-target="#produtos-table-container" hx-swap="outerHTML" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="categoria" class="form-label">Categoria</label>
+                        <input type="text" class="form-control" id="categoria" name="categoria" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="nome_produto" class="form-label">Nome do Produto</label>
+                        <input type="text" class="form-control" id="nome_produto" name="nome_produto" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="descricao" class="form-label">Descrição</label>
+                        <textarea class="form-control" id="descricao" name="descricao" rows="3"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="custo" class="form-label">Custo</label>
+                        <input type="number" class="form-control" id="custo" name="custo" step="0.01" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="venda" class="form-label">Venda</label>
+                        <input type="number" class="form-control" id="venda" name="venda" step="0.01" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="codigo" class="form-label">Código</label>
+                        <input type="number" class="form-control" id="codigo" name="codigo" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="estoque" class="form-label">Estoque</label>
+                        <input type="number" class="form-control" id="estoque" name="estoque" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="estoque_total" class="form-label">Estoque Total</label>
+                        <input type="number" class="form-control" id="estoque_total" name="estoque_total" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="imagem" class="form-label">Imagem</label>
+                        <input type="file" class="form-control" id="imagem" name="imagem">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Cadastrar</button>
+                </form>
             </div>
         </div>
     </div>
-
-    <script>
-    document.getElementById('salvarCategoriaBtn').addEventListener('click', function() {
-        const nomeCategoria = document.getElementById('nome_categoria').value;
-        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-
-        fetch("{% url 'criar_categoria' %}", {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': csrfToken
-            },
-            body: JSON.stringify({ nome: nomeCategoria })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                const categoriaSelect = document.getElementById('categoria');
-                const newOption = new Option(data.categoria_nome, data.categoria_id);
-                categoriaSelect.add(newOption, undefined);
-                categoriaSelect.value = data.categoria_id;
-
-                const categoriaModal = bootstrap.Modal.getInstance(document.getElementById('categoriaModal'));
-                categoriaModal.hide();
-            } else {
-                alert('Erro ao criar categoria');
-            }
-        });
-    });
-
-    document.getElementById('salvarProdutoBtn').addEventListener('click', function() {
-        const form = document.getElementById('novoProdutoForm');
-        const formData = new FormData(form);
-        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-
-        fetch("{% url 'valida_cadastro_produto' %}", {
-            method: 'POST',
-            headers: {
-                'X-CSRFToken': csrfToken
-            },
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                location.reload();  // Recarrega a página para exibir o novo produto na tabela
-            } else {
-                alert('Erro ao cadastrar produto');
-            }
-        });
-    });
-    </script>
-
+</div>
 {% endblock %}
-
-
-

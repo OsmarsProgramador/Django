@@ -1,0 +1,36 @@
+<!-- ap_cho/mesa/partial_lista_mesas.html -->
+<div>
+    {% if mesas_abertas %}
+        <h2>Mesas Abertas</h2>
+        <div class="row">
+            {% for mesa in mesas_abertas %}
+                <div class="col-12 col-md-2">
+                    <div class="card text-bg-primary mb-3" style="max-width: 18rem;">
+                        <div class="card-header text-center"><a href="{% url 'abrir_mesa' mesa.id %}"></a></div>
+                        <div class="card-body">
+                          <h5 class="card-title text-center">{{ mesa.nome }}</h5>
+                          <p class="card-text text-center">Pedido: {{ mesa.pedido }}</p>
+                        </div>
+                      </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+    
+    {% if mesas_fechadas %}
+        <h2>Mesas Fechadas</h2>
+        <div class="row">
+            {% for mesa in mesas_fechadas %}
+                <div class="col-12 col-md-2">
+                    <div class="card text-bg-secondary mb-3" style="max-width: 18rem;">
+                        <div class="card-header text-center"><a href="{% url 'abrir_mesa' mesa.id %}">Abrir</a></div>
+                        <div class="card-body">
+                          <h5 class="card-title text-center">{{ mesa.nome }}</h5>
+                          <p class="card-text text-center">Pedido: {{ mesa.pedido }}</p>
+                        </div>
+                      </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
