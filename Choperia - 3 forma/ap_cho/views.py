@@ -3,6 +3,8 @@ from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 
 from usuarios.models import Usuario
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User  # Importe o modelo User para restar usuarios do app
 
 from .models import Categoria, Produto, Mesa
 import json
@@ -25,10 +27,8 @@ def home(request):
 
 def cadastrar_produto(request):
     context = {
-        'status': request.GET.get('status'),
         'categorias': Categoria.objects.all()
     }   
-    
     return render(request, "ap_cho/produto/cadastrar_produto.html", context)
 
         
@@ -45,8 +45,11 @@ def valida_cadastro_produto(request):
         estoque_total = request.POST.get('estoque_total')
         imagem = request.FILES.get('imagem')
 
-        # Criar a categoria se ela não existir
-        categoria, created = Categoria.objects.get_or_create(nome=nome_categoria)
+        # Verificar se a categoria existe e criar se não existir
+        if Categoria.objects.filter(nome=nome_categoria).exists():
+            categoria = Categoria.objects.get(nome=nome_categoria)
+        else:
+            categoria = Categoria.objects.create(nome=nome_categoria)
 
         try:
             produto = Produto(
@@ -61,7 +64,6 @@ def valida_cadastro_produto(request):
                 imagem=imagem
             )
             produto.save()
-            
             # Renderizar o template parcial da tabela com os produtos atualizados
             produtos = Produto.objects.all()
             context = {
@@ -115,45 +117,30 @@ def tabela_produtos(request):
 
 
 def editar_produto(request, produto_id):
-    produto = Produto.objects.get(id=produto_id)
-    status = request.GET.get('status')
+    produto = get_object_or_404(Produto, id=produto_id)
+    if request.method == "POST":
+        produto.nome_produto = request.POST.get('nome_produto')
+        produto.descricao = request.POST.get('descricao')
+        produto.custo = request.POST.get('custo')
+        produto.venda = request.POST.get('venda')
+        produto.codigo = request.POST.get('codigo')
+        produto.estoque = request.POST.get('estoque')
+        produto.estoque_total = request.POST.get('estoque_total')
+        produto.categoria = request.POST.get('categoria')
+        
+        if 'imagem' in request.FILES:
+            produto.imagem = request.FILES['imagem']
+
+        try:
+            produto.save()
+            return redirect('tabela_produtos')
+        except:
+            return HttpResponse("Não foi possível realizar a edição do produto")
     context = {
         'produto_id': produto_id,
         'produto': produto,
-        'status': status,
     }
-
     return render(request, 'ap_cho/produto/editar_produto.html', context)
-
-
-def deletar_produto(request, produto_id):
-    # Obtém o objeto do Produto a ser deletado
-    produto = get_object_or_404(Produto, id=produto_id)
-    status = request.GET.get('status')
-    
-    context = {
-        'produto_id': produto_id,
-        'produto': produto,
-    }
-
-    return render(request, 'ap_cho/produto/deletar_produto.html', context)
-
-def deletar_produto_confirmacao(request, produto_id): # O parâmetro para o produto.id, foi enviado através do caminho da url
-    # Obtém o objeto do Produto a ser deletado
-    produto = get_object_or_404(Produto, id=produto_id)
-    # Exclui o produto do banco de dados
-    produto.delete()
-
-    """# Obtem todos os produtos
-    produto = Produto.objects.all()
-    context = {
-        'produtos': produto,
-    }
-
-    # Redireciona para a página de tabela de produtos após a exclusão
-    return render(request, 'ap_cho/produto/tabela_produtos.html', context)"""
-    return redirect('tabela_produtos')
-    # return redirect('/ap_cho/produto/tabela_produtos/')
 
 def valida_edicao_produto(request, produto_id):
     produto = Produto.objects.get(id=produto_id)  # Obtenha o produto existente a ser editado
@@ -178,6 +165,31 @@ def valida_edicao_produto(request, produto_id):
         return redirect('tabela_produtos')
     except:
         return HttpResponse("Não foi possível realizar a edição do produto")
+
+def deletar_produto(request, produto_id):
+    produto = get_object_or_404(Produto, id=produto_id)
+    context = {
+        'produto_id': produto_id,
+        'produto': produto,
+    }
+    return render(request, 'ap_cho/produto/deletar_produto.html', context)
+
+def deletar_produto_confirmacao(request, produto_id): # O parâmetro para o produto.id, foi enviado através do caminho da url
+    # Obtém o objeto do Produto a ser deletado
+    produto = get_object_or_404(Produto, id=produto_id)
+    # Exclui o produto do banco de dados
+    produto.delete()
+
+    """# Obtem todos os produtos
+    produto = Produto.objects.all()
+    context = {
+        'produtos': produto,
+    }
+
+    # Redireciona para a página de tabela de produtos após a exclusão
+    return render(request, 'ap_cho/produto/tabela_produtos.html', context)"""
+    return redirect('tabela_produtos')
+    # return redirect('/ap_cho/produto/tabela_produtos/')
     
 def lista_mesas(request):
     # Obtém todas as mesas do banco de dados
@@ -216,18 +228,56 @@ def valida_cadastro_mesa(request):
     
     return JsonResponse({'success': False, 'message': 'Método não permitido'}, status=405)
 
+@login_required
 def abrir_mesa(request, mesa_id):
-    mesa = get_object_or_404(Mesa, id=mesa_id)
-    mesa_numero = str(mesa.id).zfill(2)
-    print(mesa_numero)
-    return render(request, 'ap_cho/mesa/abrir_mesa.html', {'mesa': mesa, 'mesa_numero': mesa_numero})
+    try:
+        mesa = Mesa.objects.get(id=mesa_id)
+    except Mesa.DoesNotExist:
+        return HttpResponse("Mesa não encontrada", status=404)
 
+    usuario_id = request.session.get('usuario')
+    if not usuario_id:
+        return HttpResponse("Usuário não autenticado", status=401)
 
-def adicionar_produto(request, mesa_id):
+    try:
+        usuario = Usuario.objects.get(id=usuario_id)
+    except Usuario.DoesNotExist:
+        return HttpResponse("Usuário não encontrado", status=404)
+
+    usuarios = Usuario.objects.all()  # Obtenha todos os usuários para o dropdown
+    produtos = Produto.objects.all()  # Obtenha todos os produtos para o modal
+
+    context = {
+        'mesa': mesa,
+        'usuario': usuario,
+        'usuarios': usuarios,
+        'produtos': produtos,
+    }
+
+    return render(request, 'ap_cho/mesa/abrir_mesa.html', context)
+
+@login_required
+def update_user(request, mesa_id):
+    if request.method == 'POST':
+        usuario_id = request.POST.get('usuario')
+        try:
+            usuario = Usuario.objects.get(id=usuario_id)
+            request.session['usuario'] = usuario.id
+        except Usuario.DoesNotExist:
+            return HttpResponse("Usuário não encontrado", status=404)
+        
+        return redirect('abrir_mesa', mesa_id=mesa_id)
+
+    return HttpResponse("Método não permitido", status=405)
+
+"""def adicionar_produto(request, mesa_id):
     mesa = get_object_or_404(Mesa, id=mesa_id)
     categorias = Categoria.objects.all()
     produtos = Produto.objects.all()
     return render(request, 'ap_cho/produto/adicionar_produto.html', {'mesa': mesa, 'categorias': categorias, 'produtos': produtos})
+"""
+from decimal import Decimal
+from django.core.exceptions import ValidationError
 
 def adicionar_item_mesa(request, mesa_id, produto_id):
     mesa = get_object_or_404(Mesa, id=mesa_id)
@@ -237,33 +287,70 @@ def adicionar_item_mesa(request, mesa_id, produto_id):
     if produto.estoque >= quantidade:
         produto.estoque -= quantidade
         produto.save()
-        
+
         item_ja_existente = False
         for item in mesa.itens:
             if item['codigo'] == produto.codigo:
                 item['quantidade'] += quantidade
                 item_ja_existente = True
                 break
+        
         if not item_ja_existente:
             mesa.itens.append({
                 'nome_produto': produto.nome_produto,
+                'categoria': produto.categoria.nome,
+                'custo': float(produto.custo),
+                'venda': float(produto.venda),
                 'codigo': produto.codigo,
+                'estoque': produto.estoque,
+                'estoque_total': produto.estoque_total,
+                'descricao': produto.descricao,
+                'imagem': produto.imagem.url if produto.imagem else '',
                 'quantidade': quantidade,
-                'preco_unitario': produto.venda
+                'preco_unitario': float(produto.venda)  # Convertendo Decimal para float
             })
-        mesa.status = 'Aberta'
-        mesa.pedido += 1
-        mesa.save()
-        messages.success(request, 'Produto adicionado com sucesso!')
-    else:
-        messages.error(request, 'Estoque insuficiente para o produto solicitado.')
-    
-    return redirect('abrir_mesa', mesa_id=mesa.id)
 
+        mesa.status = 'Aberta'
+
+        if mesa.pedido == 0:
+            ultimo_pedido = Mesa.objects.filter().order_by('-pedido').first()
+            if ultimo_pedido:
+                mesa.pedido = ultimo_pedido.pedido + 1
+            else:
+                mesa.pedido = 1
+
+        mesa.save()
+        return redirect('abrir_mesa', mesa_id=mesa.id)
+    else:
+        return HttpResponse('Estoque insuficiente para o produto solicitado.')
+    
 def excluir_item_mesa(request, mesa_id, item_codigo):
     mesa = get_object_or_404(Mesa, id=mesa_id)
-    mesa.itens = [item for item in mesa.itens if item['codigo'] != item_codigo]
-    mesa.save()
+    quantidade = int(request.POST.get('quantidade', 1))
+    
+    item_removido = False
+    for item in mesa.itens:
+        if item['codigo'] == item_codigo:
+            if item['quantidade'] > 0:
+                item['quantidade'] -= quantidade
+            else:
+                mesa.itens.remove(item)
+            item_removido = True
+            break
+    
+    if item_removido:
+        # Atualizar o estoque do produto correspondente
+        produto = get_object_or_404(Produto, codigo=item_codigo)
+        produto.estoque += quantidade
+        produto.save()
+
+        # Verifica se a quantidade de itens é menor ou igual a zero
+        total_itens = sum(item['quantidade'] for item in mesa.itens)
+        if total_itens <= 0:
+            mesa.status = 'Fechada'
+            mesa.pedido = 0
+        mesa.save()
+    
     return redirect('abrir_mesa', mesa_id=mesa.id)
 
 def finalizar_pagamento(request, mesa_id):
@@ -274,5 +361,29 @@ def finalizar_pagamento(request, mesa_id):
     mesa.save()
     messages.success(request, 'Pagamento finalizado e mesa liberada para novo pedido.')
     return redirect('/ap_cho/mesa/listar_mesas/')
+
+
+# resgata usuário admin
+@login_required
+def get_user_info_adm(request):
+    user = request.user
+    user_info = {
+        'username': user.username,
+        'email': user.email,
+        # Adicione outras informações necessárias
+    }
+    return JsonResponse(user_info)
+
+#Resgata usuarios do app
+@login_required
+def get_user_info(request):
+    user = request.user
+    usuario = Usuario.objects.get(user=user)
+    user_info = {
+        'username': usuario.nome,
+        'email': usuario.email,
+        # Adicione mais campos conforme necessário
+    }
+    return JsonResponse(user_info)
 
 

@@ -8,7 +8,7 @@ Mesa: O modelo que queremos criar instâncias iniciais.
 
 from django.db.models.signals import post_migrate
 from django.dispatch import receiver
-from .models import Mesa
+from .models import Mesa, Categoria
 
 @receiver(post_migrate)
 def create_initial_mesas(sender, **kwargs):
@@ -16,3 +16,13 @@ def create_initial_mesas(sender, **kwargs):
         if Mesa.objects.count() == 0:
             for i in range(1, 11):
                 Mesa.objects.create(nome=f'{i}')
+
+@receiver(post_migrate)
+def create_initial_categories(sender, **kwargs):
+    if sender.name == 'ap_cho':
+        initial_categories = ['Suco', 'Cerveja', 'Balde', 'Pizza', 'Lanches', 'Tapioca', 'Refrigerante']
+        for category in initial_categories:
+            Categoria.objects.get_or_create(nome=category)
+
+
+          

@@ -1,11 +1,5 @@
 from django.contrib import admin
-from .models import Produto, Mesa
-
-"""@admin.register(Categoria)
-class CategoriaAdmin(admin.ModelAdmin):
-    list_display = ['nome', 'data_criacao']  # Campos a serem exibidos na lista de objetos
-    list_filter = ['data_criacao']  # Filtros laterais para a data de criação
-    search_fields = ['nome']  # Campos pelos quais a busca será realizada"""
+from .models import Produto, Mesa, Categoria
 
 @admin.register(Produto)
 class ProdutoAdmin(admin.ModelAdmin):
@@ -18,3 +12,9 @@ class MesaAdmin(admin.ModelAdmin):
     list_display = ['nome']  
     list_filter = ['nome']  
     search_fields = ['nome']  
+
+@admin.register(Categoria)
+class CategoriaAdmin(admin.ModelAdmin):
+    list_display = ['nome']  
+    list_filter = ['nome']  
+    search_fields = ['nome'] 

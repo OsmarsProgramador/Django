@@ -16,6 +16,7 @@ class Produto(models.Model):
     codigo = models.IntegerField()
     estoque = models.IntegerField(default=0)
     estoque_total = models.IntegerField(default=0)
+    # caminho de upload da imagem para armazenamento de imagens
     imagem = models.ImageField(upload_to='imagens/')
 
     def __str__(self):
@@ -30,3 +31,5 @@ class Mesa(models.Model):
 
     def __str__(self):
         return self.nome
+
+

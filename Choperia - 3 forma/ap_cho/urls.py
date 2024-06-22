@@ -16,7 +16,13 @@ urlpatterns = [
     path('cadastrar_mesa/', views.cadastrar_mesa, name='cadastrar_mesa'),
     path('valida_cadastro_mesa/', views.valida_cadastro_mesa, name='valida_cadastro_mesa'),
     path('abrir_mesa/<int:mesa_id>/', views.abrir_mesa, name='abrir_mesa'),  # Nova rota para abrir mesa
+    path('update_user/<int:mesa_id>/', views.update_user, name='update_user'),
+    path('adicionar_item_mesa/<int:mesa_id>/<int:produto_id>/', views.adicionar_item_mesa, name='adicionar_item_mesa'),
+    path('excluir_item_mesa/<int:mesa_id>/<int:item_codigo>/', views.excluir_item_mesa, name='excluir_item_mesa'),
     path('finalizar_pagamento/<int:mesa_id>/', views.finalizar_pagamento, name='finalizar_pagamento'),
-    path('adicionar_produto/<int:mesa_id>/', views.adicionar_produto, name='adicionar_produto'),
+    # path('adicionar_produto/<int:mesa_id>/', views.adicionar_produto, name='adicionar_produto'),
     path('criar_categoria/', views.criar_categoria, name='criar_categoria'),
+    path('get_user_info/', views.get_user_info, name='get_user_info'),
 ]
+
+
