@@ -4,7 +4,6 @@ from django.shortcuts import render, redirect, get_object_or_404
 
 from usuarios.models import Usuario
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User  # Importe o modelo User para restar usuarios do app
 
 from .models import Categoria, Produto, Mesa
 import json
@@ -70,7 +69,8 @@ def valida_cadastro_produto(request):
                 'produtos': produtos,
             }
             
-            return render(request, 'ap_cho/produto/partial_produtos_table.html', context)
+            return redirect('tabela_produtos')
+            # return render(request, 'ap_cho/produto/partial_produtos_table.html', context)
         except Exception as e:
             return JsonResponse({'success': False, 'message': str(e)}, status=400)
     else:
@@ -190,16 +190,6 @@ def deletar_produto_confirmacao(request, produto_id): # O parâmetro para o prod
     return render(request, 'ap_cho/produto/tabela_produtos.html', context)"""
     return redirect('tabela_produtos')
     # return redirect('/ap_cho/produto/tabela_produtos/')
-    
-def lista_mesas(request):
-    # Obtém todas as mesas do banco de dados
-    mesas_aberta = Mesa.objects.filter(status='Aberta')
-    mesas_fechada = Mesa.objects.filter(status='Fechada')
-    context = {
-        'mesas_abertas': mesas_aberta,
-        'mesas_fechadas': mesas_fechada
-    }
-    return render(request, 'ap_cho/mesa/lista_mesas.html', context)
 
 def cadastrar_mesa(request):
     return render(request, 'ap_cho/mesa/cadastrar_mesa.html')
@@ -227,8 +217,17 @@ def valida_cadastro_mesa(request):
         return render(request, 'ap_cho/mesa/partial_lista_mesas.html', context)
     
     return JsonResponse({'success': False, 'message': 'Método não permitido'}, status=405)
+    
+def lista_mesas(request):
+    # Obtém todas as mesas do banco de dados
+    mesas_aberta = Mesa.objects.filter(status='Aberta')
+    mesas_fechada = Mesa.objects.filter(status='Fechada')
+    context = {
+        'mesas_abertas': mesas_aberta,
+        'mesas_fechadas': mesas_fechada
+    }
+    return render(request, 'ap_cho/mesa/lista_mesas.html', context)
 
-@login_required
 def abrir_mesa(request, mesa_id):
     try:
         mesa = Mesa.objects.get(id=mesa_id)
@@ -253,10 +252,8 @@ def abrir_mesa(request, mesa_id):
         'usuarios': usuarios,
         'produtos': produtos,
     }
-
     return render(request, 'ap_cho/mesa/abrir_mesa.html', context)
 
-@login_required
 def update_user(request, mesa_id):
     if request.method == 'POST':
         usuario_id = request.POST.get('usuario')

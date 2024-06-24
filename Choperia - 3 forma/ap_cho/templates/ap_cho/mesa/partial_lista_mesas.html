@@ -7,13 +7,13 @@
                 <div class="col-12 col-md-2">
                     <div class="card text-bg-primary mb-3" style="max-width: 18rem;">
                         <div class="card-header text-center">
-                            <a href="{% url 'abrir_mesa' mesa.id %}" style="color: white;">Ver pedido</a>
+                            <a href="{% url 'abrir_mesa' mesa.id %}" class="abrir-mesa-link"  style="color: white;">Ver pedido</a>
                         </div>
                         <div class="card-body">
                           <h5 class="card-title text-center">{{ mesa.nome }}</h5>
                           <p class="card-text text-center">Pedido: {{ mesa.pedido }}</p>
                         </div>
-                      </div>
+                    </div>
                 </div>
             {% endfor %}
         </div>
@@ -25,16 +25,16 @@
             {% for mesa in mesas_fechadas %}
                 <div class="col-12 col-md-2">
                     <div class="card text-bg-secondary mb-3" style="max-width: 18rem;">
-                        <div class="card-header text-center"><a href="{% url 'abrir_mesa' mesa.id %}" style="color: white;">Abrir</a></div>
+                        <div class="card-header text-center">
+                            <a href="{% url 'abrir_mesa' mesa.id %}" class="abrir-mesa-link"  style="color: white;">Abrir</a>
+                        </div>
                         <div class="card-body">
                           <h5 class="card-title text-center">{{ mesa.nome }}</h5>
                           <p class="card-text text-center">Pedido: {{ mesa.pedido }}</p>
                         </div>
-                      </div>
+                    </div>
                 </div>
             {% endfor %}
         </div>
     {% endif %}
 </div>
-
-

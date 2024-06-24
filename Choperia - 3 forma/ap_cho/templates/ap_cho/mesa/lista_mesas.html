@@ -46,29 +46,33 @@
 {% endblock %}
 
 {% block 'conteudo' %}
-<div id="mesas-container">
-    {% include "ap_cho/mesa/partial_lista_mesas.html" %}
-</div>
+    <div id="mesas-container">
+        {% include "ap_cho/mesa/partial_lista_mesas.html" %}
+    </div>
 
-<!-- Modal for adding a new mesa -->
-<div class="modal fade" id="mesaModal" tabindex="-1" aria-labelledby="mesaModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="mesaModalLabel">Cadastrar Mesa</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="form-mesa" method="POST" hx-post="{% url 'valida_cadastro_mesa' %}" hx-target="#mesas-container" hx-swap="outerHTML" enctype="multipart/form-data">
-                    {% csrf_token %}
-                    <div class="mb-3">
-                        <label for="nome" class="form-label">Nome da Mesa</label>
-                        <input type="text" class="form-control" id="nome" name="nome" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Cadastrar</button>
-                </form>
+    <!-- Modal for adding a new mesa -->
+    <div class="modal fade" id="mesaModal" tabindex="-1" aria-labelledby="mesaModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="mesaModalLabel">Cadastrar Mesa</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="form-mesa" method="POST" hx-post="{% url 'valida_cadastro_mesa' %}" hx-target="#mesas-container" hx-swap="outerHTML" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="nome" class="form-label">Nome da Mesa</label>
+                            <input type="text" class="form-control" id="nome" name="nome" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Cadastrar</button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-</div>
+    
 {% endblock %}
+
+
+
