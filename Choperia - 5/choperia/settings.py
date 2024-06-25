@@ -1,4 +1,3 @@
-
 from pathlib import Path
 import os
 
@@ -10,7 +9,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-h8*mft(5z0d7)o$ugw)phq74qrm2sj4g*kky@h+v99yt^4bz=%'
+SECRET_KEY = 'django-insecure-km-6_xq*2k!*v&y*-w+$g37)790#cu396n-*h9a68r*4y8j=)a'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -27,14 +26,16 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # Apps de terceiros
+    # Apps de terceiros:
     'django_extensions', # pip install django_extensions
-    'widget_tweaks', # pip install widget_tweaks   
+    'widget_tweaks', # pip install django-widget-tweaks   
     'bootstrapform', # pip install django-bootstrap-form
     # Minhas apps
     'core',
+    'empresa',
     'produto',
     'estoque',
+    'mesa',
 ]
 
 MIDDLEWARE = [
@@ -47,12 +48,12 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'projeto.urls'
+ROOT_URLCONF = 'choperia.urls'
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'core/templates')],  # Diretório de templates
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -65,7 +66,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'projeto.wsgi.application'
+WSGI_APPLICATION = 'choperia.wsgi.application'
 
 
 # Database

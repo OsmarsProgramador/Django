@@ -25,8 +25,8 @@ class Estoque(TimeStampedModel):
 
     def __str__(self):
         if self.nf:
-            return '{} - {} - {}'.format(self.pk, self.nf, self.created.strftime('%d-%m-%Y'))
-        return '{} --- {}'.format(self.pk, self.created.strftime('%d-%m-%Y'))
+            return f'{self.pk} - {self.nf} - {self.created.strftime('%d-%m-%Y')}'
+        return f'{self.pk} --- {self.created.strftime('%d-%m-%Y')}'
 
     def nf_formated(self):
         if self.nf:
@@ -68,7 +68,7 @@ class EstoqueItens(models.Model):
         ordering = ('pk',)
 
     def __str__(self):
-        return '{} - {} - {}'.format(self.pk, self.estoque.pk, self.produto)
+        return f'{self.pk} - {self.estoque.pk} - {self.produto}'
 
 
 class ProtocoloEntrega(TimeStampedModel):
@@ -92,6 +92,6 @@ class ProtocoloEntregaItens(models.Model):
     quantidade = models.PositiveIntegerField()
 
     def __str__(self):
-        return '{} - {} - {}'.format(self.pk, self.protocolo_entrega.pk, self.produto)
+        return f'{self.pk} - {self.protocolo_entrega.pk} - {self.produto}'
 
 

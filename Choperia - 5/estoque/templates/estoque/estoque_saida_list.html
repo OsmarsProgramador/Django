@@ -1,0 +1,26 @@
+<!-- estoque/templates/estoque/estoque_saida_list.html -->
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h1>Saídas de Estoque</h1>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Produto</th>
+                <th>Quantidade</th>
+                <th>Data</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for saida in saidas %}
+            <tr>
+                <td>{{ saida.produto.nome_produto }}</td>
+                <td>{{ saida.quantidade }}</td>
+                <td>{{ saida.data }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock content %}

@@ -1,0 +1,32 @@
+<!-- produto/templates/produto/produto_list.html -->
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h1>Listagem de Produtos</h1>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Categoria</th>
+                <th>Descrição</th>
+                <th>Custo</th>
+                <th>Venda</th>
+                <th>Estoque</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for produto in produtos %}
+            <tr>
+                <td>{{ produto.nome_produto }}</td>
+                <td>{{ produto.categoria.nome }}</td>
+                <td>{{ produto.descricao }}</td>
+                <td>{{ produto.custo }}</td>
+                <td>{{ produto.venda }}</td>
+                <td>{{ produto.estoque }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock content %}
