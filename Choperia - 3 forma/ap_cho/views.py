@@ -8,6 +8,30 @@ from django.contrib.auth.decorators import login_required
 from .models import Categoria, Produto, Mesa
 import json
 
+# pip install reportlab - para imprimir comanda
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
+ 
+
+def gerar_comanda_pdf(request, mesa_id):
+    mesa = get_object_or_404(Mesa, id=mesa_id)
+    
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="comanda_{mesa.nome}.pdf"'
+    
+    p = canvas.Canvas(response, pagesize=letter)
+    p.drawString(100, 750, f'Comanda da Mesa: {mesa.nome}')
+    p.drawString(100, 730, f'Pedido: {mesa.pedido}')
+    p.drawString(100, 710, 'Itens:')
+
+    y = 690
+    for item in mesa.itens:
+        p.drawString(100, y, f'{item["nome_produto"]} - {item["quantidade"]}x - R${item["preco_unitario"]}')
+        y -= 20
+
+    p.showPage()
+    p.save()
+    return response
 
 def index(request):
     return render(request, "ap_cho/index.html")    
@@ -337,17 +361,22 @@ def excluir_item_mesa(request, mesa_id, item_codigo):
     
     if item_removido:
         # Atualizar o estoque do produto correspondente
-        produto = get_object_or_404(Produto, codigo=item_codigo)
-        produto.estoque += quantidade
-        produto.save()
+        try: # tenta adicionar produto ao estoque
+            produto = Produto.objects.get(codigo=item_codigo)
+            produto.estoque += quantidade
+            produto.save()
+        except Produto.DoesNotExist:
+            pass  # Não fazer nada se o produto não existir
 
         # Verifica se a quantidade de itens é menor ou igual a zero
         total_itens = sum(item['quantidade'] for item in mesa.itens)
+
+        # Aplica o estado inicial de cadastro
         if total_itens <= 0:
+            mesa.itens = []
             mesa.status = 'Fechada'
             mesa.pedido = 0
         mesa.save()
-    
     return redirect('abrir_mesa', mesa_id=mesa.id)
 
 def finalizar_pagamento(request, mesa_id):

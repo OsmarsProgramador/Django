@@ -1,0 +1,13 @@
+<!-- empresa/templates/empresa/empresa_list.html -->
+{% extends "base.html" %}
+
+{% block content %}
+  <h2>Lista de Empresas</h2>
+  <ul>
+    {% for empresa in empresas %}
+      <li><a href="{% url 'empresa:empresa_detail' empresa.pk %}">{{ empresa.nome }}</a></li>
+    {% endfor %}
+  </ul>
+{% endblock %}
+
+

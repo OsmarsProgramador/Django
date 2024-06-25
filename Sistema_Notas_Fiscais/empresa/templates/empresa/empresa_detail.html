@@ -1,0 +1,16 @@
+<!-- empresa/templates/empresa/empresa_detail.html -->
+{% extends "base.html" %}
+
+{% block content %}
+  <h2>Detalhes da Empresa</h2>
+  <p>Nome: {{ empresa.nome }}</p>
+  <p>CNPJ: {{ empresa.cnpj }}</p>
+  <h3>Notas Fiscais</h3>
+  <ul>
+    {% for nota in empresa.notas_fiscais.all %}
+      <li>{{ nota.numero }} - {{ nota.descricao }}</li>
+    {% endfor %}
+  </ul>
+{% endblock %}
+
+

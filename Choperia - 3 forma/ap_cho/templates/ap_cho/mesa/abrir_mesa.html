@@ -109,15 +109,18 @@
                 <div class="card border-light mb-3 h-100">
                     <!-- Lista de itens na mesa -->
                     {% if mesa.itens %}
-                    <h2 class="mt-3 px-2"> Comanda de pedido: {{ mesa.pedido }} </h2>
-                    <ul>
-                        {% for item in mesa.itens %}
-                        <li>{{ item.nome_produto }} - {{ item.quantidade }} - R${{ item.preco_unitario }}</li>
-                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#excluirItemModal" data-item-codigo="{{ item.codigo }}">Excluir</button>
-                        {% endfor %}
-                    </ul>
+                        <h2 class="mt-3 px-2"> Comanda de pedido: {{ mesa.pedido }} </h2>
+                        <ul>
+                            {% for item in mesa.itens %}
+                                {% if item.quantidade > 0 %}
+                                    <li>{{ item.nome_produto }} - {{ item.quantidade }} - R${{ item.preco_unitario }}</li>
+                                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#excluirItemModal" data-item-codigo="{{ item.codigo }}">Excluir</button>
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
+                        <a href="{% url 'gerar_comanda_pdf' mesa.id %}" class="btn btn-secondary mt-3">Imprimir Comanda</a>
                     {% else %}
-                    <h>Nenhum produto na comandada</h>
+                        <h>Nenhum produto na comandada</h>
                     {% endif %}
                 </div>
             </div>
@@ -242,3 +245,5 @@
     </script>
     
 {% endblock %}
+
+

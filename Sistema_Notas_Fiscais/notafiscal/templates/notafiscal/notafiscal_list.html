@@ -1,0 +1,65 @@
+<!-- notafiscal/templates/notafiscal/notafiscal_list.html -->
+{% extends "base.html" %}
+
+{% block content %}
+  <h2>Lista de Notas Fiscais</h2>
+  <form method="get">
+    <input type="text" name="q" placeholder="Buscar por número ou descrição" value="{{ request.GET.q }}">
+    <button type="submit">Buscar</button>
+  </form>
+  <table>
+    <thead>
+      <tr>
+        <th>Empresa</th>
+        <th>Série</th>
+        <th>Número</th>
+        <th>Descrição</th>
+        <th>Peso (kg)</th>
+        <th>Cubagem (m³)</th>
+        <th>Data de Emissão</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% if notas_fiscais %}
+        {% for nota in notas_fiscais %}
+          <tr>
+            <td>{{ nota.empresa.nome }}</td>
+            <td>{{ nota.serie }}</td>
+            <td>{{ nota.numero }}</td>
+            <td>{{ nota.descricao }}</td>
+            <td>{{ nota.peso }}</td>
+            <td>{{ nota.cubagem }}</td>
+            <td>{{ nota.data_emissao }}</td>
+          </tr>
+        {% endfor %}
+      {% else %}
+        <tr>
+          <td colspan="7">Nenhuma nota fiscal encontrada.</td>
+        </tr>
+      {% endif %}
+    </tbody>
+  </table>
+  <div class="pagination">
+    {% if is_paginated %}
+      <div class="pagination">
+        <span class="step-links">
+          {% if page_obj.has_previous %}
+            <a href="?page=1">&laquo; first</a>
+            <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+          {% endif %}
+
+          <span class="current">
+            Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}.
+          </span>
+
+          {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">next</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+          {% endif %}
+        </span>
+      </div>
+    {% endif %}
+  </div>
+{% endblock %}
+
+
