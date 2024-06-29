@@ -1,3 +1,4 @@
+# scripts/generate_data.py
 import os
 import sys
 import django
@@ -38,30 +39,36 @@ def create_empresas_and_notas():
                 data=fake.date_this_decade()
             )
 
-def create_categorias():
-    categorias_nomes = [
-        'Refrigerantes', 'Sucos', 'Porções', 'Alcoólicas',
-        'Baldes', 'Pizzas', 'Lanches', 'Sobremesas', 'Tapiocas'
-    ]
-    categorias = []
-    for nome in categorias_nomes:
-        categoria = Categoria.objects.create(nome=nome)
-        categorias.append(categoria)
-    return categorias
 
-def create_produtos(categorias):
-    for _ in range(50):
-        categoria = random.choice(categorias)
-        Produto.objects.create(
-            nome_produto=fake.word().capitalize(),
+from django.shortcuts import render, redirect
+from django.conf import settings
+import os
+import pandas as pd
+def create_produtos():
+    """if Produto.objects.exists():
+        return redirect('produto:produto_list')
+    else:"""
+    # caminho do arquivo
+    file_path = os.path.join(settings.BASE_DIR, 'produto', 'tabelas/produtos.xlsx')
+    df = pd.read_excel(file_path, header=1)  # Lendo o cabeçalho a partir da linha 2
+
+    for index, item in df.iterrows():
+        categoria_nome = item['categoria']
+        # Categoria.objects.create(nome=nome)
+        categoria, created = Categoria.objects.get_or_create(nome=categoria_nome)
+        Produto.objects.create( # já cria no BD direto
+            nome_produto=item['nome_produto'],
             categoria=categoria,
-            descricao=fake.text(max_nb_chars=200),
-            custo=fake.random_number(digits=5, fix_len=True) / 100,
-            venda=fake.random_number(digits=5, fix_len=True) / 100,
-            codigo=fake.bothify(text='PROD-#####'),
-            estoque=fake.random_int(min=0, max=100),
-            estoque_total=fake.random_int(min=0, max=200)
+            descricao=item['descricao'],
+            custo=item['custo'],
+            venda=item['venda'],
+            codigo=item['codigo'],
+            estoque=item['estoque'],
+            estoque_total=item['estoque_total'],
+            imagem=item['imagem']
         )
+        # Redirecionar para a listagem de produtos na visualização de cards após a importação
+        # return redirect('prodoto:produto_list')
 
 def create_mesas():
     for i in range(1, 11):
@@ -92,8 +99,9 @@ def create_estoque():
 
 if __name__ == '__main__':
     create_empresas_and_notas()
-    categorias = create_categorias()
-    create_produtos(categorias)
+    create_produtos()
     create_mesas()
     add_produtos_to_mesas()
     create_estoque()
+
+

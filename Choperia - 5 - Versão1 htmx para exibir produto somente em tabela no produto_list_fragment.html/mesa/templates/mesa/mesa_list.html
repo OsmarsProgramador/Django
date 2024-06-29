@@ -1,0 +1,30 @@
+<!-- mesa/templates/mesa/mesa_list.html -->
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h1>Mesas</h1>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>Itens</th>
+                <th>Status</th>
+                <th>Pedido</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for mesa in mesas %}
+            <tr>
+                <td>{{ mesa.id }}</td>
+                <td>{{ mesa.nome }}</td>
+                <td>{{ mesa.itens }}</td>
+                <td>{{ mesa.status }}</td>
+                <td>{{ mesa.pedido }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock content %}

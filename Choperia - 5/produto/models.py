@@ -7,7 +7,6 @@ class Categoria(models.Model):
     def __str__(self):
         return self.nome
 
-
 class Produto(models.Model):
     nome_produto = models.CharField(max_length=255)
     categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE)
@@ -21,5 +20,4 @@ class Produto(models.Model):
 
     def __str__(self):
         return self.nome_produto
-
 

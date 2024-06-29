@@ -1,0 +1,29 @@
+<!-- fragmento HTML para a listagem de produtos que foi chmado quando
+ a views import_xlsx retornou os dados dos produtos atualizados -->
+<!--produto/produto_list_fragment.html-->
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Nome</th>
+            <th>Categoria</th>
+            <th>Descrição</th>
+            <th>Custo</th>
+            <th>Venda</th>
+            <th>Estoque</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for produto in produtos %}
+        <tr>
+            <td>{{ produto.nome_produto }}</td>
+            <td>{{ produto.categoria.nome }}</td>
+            <td>{{ produto.descricao }}</td>
+            <td>{{ produto.custo }}</td>
+            <td>{{ produto.venda }}</td>
+            <td>{{ produto.estoque }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+

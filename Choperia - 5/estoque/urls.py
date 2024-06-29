@@ -1,11 +1,11 @@
 # estoque/urls.py
 from django.urls import path
-from . import views
+from .views import EstoqueListView, EstoqueCreateView
 
 app_name = 'estoque'
 
 urlpatterns = [
-    path('entrada/', views.EstoqueEntradaListView.as_view(), name='estoque_entrada_list'),
-    path('saida/', views.EstoqueSaidaListView.as_view(), name='estoque_saida_list'),
-    path('protocolo/', views.ProtocoloEntregaListView.as_view(), name='protocolo_de_entrega_list'),
+    path('', EstoqueListView.as_view(), name='estoque_list'),
+    path('new/', EstoqueCreateView.as_view(), name='estoque_create'),
 ]
+

@@ -1,10 +1,11 @@
 # mesa/urls.py
 from django.urls import path
-from . import views
+from .views import MesaListView, MesaDetailView
 
 app_name = 'mesa'
 
 urlpatterns = [
-    path('', views.MesaListView.as_view(), name='mesa_list'),
-    # Adicione outras rotas aqui se necessário
+    path('', MesaListView.as_view(), name='mesa_list'),
+    path('<int:pk>/', MesaDetailView.as_view(), name='mesa_detail'),
 ]
+

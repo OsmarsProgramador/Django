@@ -7,7 +7,7 @@ class Empresa(models.Model):
     endereco = models.CharField(max_length=255, blank=True, null=True)
     telefone = models.CharField(max_length=20, blank=True, null=True)
     email = models.EmailField(blank=True, null=True)
-    cnpj = models.CharField(max_length=18, unique=True, validators=[MinLengthValidator(18)])  # Adicionado campo CNPJ
+    cnpj = models.CharField(max_length=18, unique=True, validators=[MinLengthValidator(18)])
 
     def __str__(self):
         return self.nome
@@ -21,4 +21,5 @@ class NotaFiscal(models.Model):
 
     def __str__(self):
         return f"{self.serie} - {self.numero}"
-    
+
+

@@ -1,3 +1,5 @@
+
+
 <!-- core/templates/base.html -->
 <!doctype html>
 <html lang="pt-BR">
@@ -26,12 +28,15 @@
       <div class="collapse navbar-collapse" id="navbarsExampleDefault">
         <ul class="navbar-nav mr-auto">
           <li class="nav-item active">
-            <a class="nav-link" href="{% url 'core:index' %}">Home</a>
+            <!-- No template, ao usar a tag href="{ url %}", você deve incluir o namespace
+            Nesse caso estou usando core: -->
+            <a class="nav-link" href="{% url 'core:index' %}">Home</a>''
           </li>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown">Produtos</a>
             <div class="dropdown-menu">
               <a class="dropdown-item" href="{% url 'produto:produto_list' %}">Produtos</a>
+              <a class="dropdown-item" href="{% url 'produto:import_xlsx' %}">Importar XLSX</a>
             </div>
           </li>
           <li class="nav-item dropdown">
@@ -45,6 +50,20 @@
             <a class="nav-link dropdown-toggle" href="#" id="dropdown03" data-toggle="dropdown">Protocolo de Entrega</a>
             <div class="dropdown-menu">
               <a class="dropdown-item" href="{% url 'estoque:protocolo_de_entrega_list' %}">Entrega</a>
+            </div>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown04" data-toggle="dropdown">Mesas</a>
+            <div class="dropdown-menu">
+              <a class="dropdown-item" href="{% url 'mesa:mesa_list' %}">Listar mesas</a>
+            </div>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown05" data-toggle="dropdown">Empresas</a>
+            <div class="dropdown-menu">
+              <!-- Se não houver um pk disponível, remova o link de detalhes -->
+              <!-- <a class="dropdown-item" href="{% url 'empresa:empresa_detail' pk=1 %}">Detalhes das empresas</a> -->
+              <a class="dropdown-item" href="{% url 'empresa:empresa_list' %}">Lista das empresas</a>
             </div>
           </li>
         </ul>
@@ -67,6 +86,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
+    <script src="https://unpkg.com/htmx.org@1.6.1/dist/htmx.min.js"></script>
 
     {% block js %}{% endblock js %}
   </body>

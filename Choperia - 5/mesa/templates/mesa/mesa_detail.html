@@ -1,0 +1,21 @@
+<!--mesa/templates/mesa/mesa_detail.html-->
+{% extends "core/base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Detalhes da Mesa</h2>
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">{{ mesa.nome }}</h5>
+            <p class="card-text"><strong>Status:</strong> {{ mesa.status }}</p>
+            <p class="card-text"><strong>Pedido:</strong> {{ mesa.pedido }}</p>
+            <h3 class="mt-4">Itens</h3>
+            <ul>
+                {% for item in mesa.itens %}
+                <li>Produto ID: {{ item.produto_id }}, Quantidade: {{ item.quantidade }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

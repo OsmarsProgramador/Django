@@ -1,18 +1,19 @@
-<!-- empresa/templates/empresa/empresa_detail.htmll -->
-{% extends 'base.html' %}
+<!--empresa/templates/empresa/empresa_detail.html-->
+{% extends "core/base.html" %}
+
 {% block content %}
-<div class="container">
-    <h1>{{ object.nome }}</h1>
-    <p>{{ object.endereco }}</p>
-    <p>{{ object.telefone }}</p>
-    <p>{{ object.email }}</p>
-
-    <h2>Notas Fiscais</h2>
-    <form method="GET" action="">
-        <input type="text" name="q" placeholder="Buscar por número ou nome">
-        <button type="submit">Buscar</button>
-    </form>
-
+<div class="container mt-4">
+    <h2>Detalhes da Empresa</h2>
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">{{ empresa.nome }}</h5>
+            <p class="card-text"><strong>Endereço:</strong> {{ empresa.endereco }}</p>
+            <p class="card-text"><strong>Telefone:</strong> {{ empresa.telefone }}</p>
+            <p class="card-text"><strong>Email:</strong> {{ empresa.email }}</p>
+            <p class="card-text"><strong>CNPJ:</strong> {{ empresa.cnpj }}</p>
+        </div>
+    </div>
+    <h3 class="mt-4">Notas Fiscais</h3>
     <table class="table table-striped">
         <thead>
             <tr>
@@ -35,4 +36,3 @@
     </table>
 </div>
 {% endblock %}
-

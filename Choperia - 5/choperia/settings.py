@@ -1,5 +1,5 @@
-from pathlib import Path
 import os
+from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -9,7 +9,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-km-6_xq*2k!*v&y*-w+$g37)790#cu396n-*h9a68r*4y8j=)a'
+SECRET_KEY = 'django-insecure-j1yz#s-@2$-tfr3)rk5*el)6hd&-jg!woa(*rae@7weqx6jgg)'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -27,15 +27,16 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # Apps de terceiros:
-    'django_extensions', # pip install django_extensions
-    'widget_tweaks', # pip install django-widget-tweaks   
-    'bootstrapform', # pip install django-bootstrap-form
+    # 'django_extensions', # pip install django_extensions
+    # 'widget_tweaks', # pip install django-widget-tweaks   
+    # 'bootstrapform', # pip install django-bootstrap-form
     # Minhas apps
     'core',
     'empresa',
     'produto',
     'estoque',
     'mesa',
+    'usuario',
 ]
 
 MIDDLEWARE = [
@@ -53,7 +54,7 @@ ROOT_URLCONF = 'choperia.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'core/templates')],  # Diretório de templates
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -67,6 +68,10 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'choperia.wsgi.application'
+
+LOGIN_URL = 'usuario:login'
+LOGIN_REDIRECT_URL = 'core:index'
+LOGOUT_REDIRECT_URL = 'usuario:login'
 
 
 # Database
@@ -115,6 +120,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = 'static/'
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+
+# Media files (Uploaded files) tem como objetivo mapear o caminho para imagens
+MEDIA_URL = 'media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field

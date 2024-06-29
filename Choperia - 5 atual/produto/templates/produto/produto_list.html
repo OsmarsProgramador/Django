@@ -1,0 +1,39 @@
+
+
+<!-- produto/templates/produto/produto_list.html -->
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h1>Listagem de Produtos</h1>
+    <button id="import-btn" class="btn btn-primary" hx-get="{% url 'produto:import_xlsx' %}" hx-trigger="click" hx-target="#produto-list" hx-swap="innerHTML">Importar Produtos</button>
+
+    <!-- Abas de navegação -->
+    <ul class="nav nav-tabs" id="produtoTab" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" id="tabela-tab" data-toggle="tab" href="#tabela" role="tab" aria-controls="tabela" aria-selected="true">Lista (Tabela)</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="grade-tab" data-toggle="tab" href="#grade" role="tab" aria-controls="grade" aria-selected="false">Grade (Cards)</a>
+        </li>
+    </ul>
+
+    <!-- Conteúdo das abas -->
+    <div class="tab-content" id="produtoTabContent">
+        <div class="tab-pane fade show active" id="tabela" role="tabpanel" aria-labelledby="tabela-tab">
+            <div id="produto-list-tabela">
+                {% include 'produto/produto_list_table.html' %}
+            </div>
+        </div>
+        <div class="tab-pane fade" id="grade" role="tabpanel" aria-labelledby="grade-tab">
+            <div id="produto-list-grade">
+                {% include 'produto/produto_list_cards.html' %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+
+
+

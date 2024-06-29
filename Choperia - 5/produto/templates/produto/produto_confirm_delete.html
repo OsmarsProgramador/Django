@@ -1,0 +1,14 @@
+<!--produto/templates/produto/produto_confirm_delete.html-->
+{% extends "core/base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Excluir Produto</h2>
+    <p>Tem certeza que deseja excluir o produto "{{ object.nome_produto }}"?</p>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Excluir</button>
+        <a href="{% url 'produto:produto_list' %}" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>
+{% endblock %}

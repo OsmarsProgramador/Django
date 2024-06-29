@@ -1,0 +1,10 @@
+<!-- produto/templates/produto/index.html -->
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h1>Produtos</h1>
+    <p>Bem-vindo à página de produtos.</p>
+    <a href="{% url 'produto:produto_list' %}">Ver todos os produtos</a>
+</div>
+{% endblock content %}
