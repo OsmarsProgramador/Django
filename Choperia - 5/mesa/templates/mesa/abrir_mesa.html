@@ -1,4 +1,7 @@
 <!--mesa/templates/mesa/abrir_mesa.html-->
+{% extends "core/base.html" %}
+
+{% block content %}
 <div class="container-fluid mt-0 pt-0">
     <div class="row" style="height: 80vh;">
         <div class="col-md-4" style="height: 100%;">
@@ -65,11 +68,49 @@
                     </ul>
                     <a href="{% url 'mesa:gerar_comanda_pdf' mesa.id %}" class="btn btn-secondary mt-3">Imprimir Comanda</a>
                 {% else %}
-                    <h>Nenhum produto na comandada</h>
+                    <h>Nenhum produto na comanda</h>
                 {% endif %}
             </div>
         </div>
         
     </div>
 </div>
+
+<!-- Modal para exclusão de itens -->
+<div class="modal fade" id="excluirItemModal" tabindex="-1" aria-labelledby="excluirItemModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="excluirItemModalLabel">Excluir Item</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Tem certeza que deseja excluir este item?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <form method="post" action="{% url 'mesa:excluir_item' mesa.id %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="item_codigo" id="itemCodigo">
+                    <button type="submit" class="btn btn-danger">Excluir</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var excluirItemModal = document.getElementById('excluirItemModal');
+        excluirItemModal.addEventListener('show.bs.modal', function(event) {
+            var button = event.relatedTarget;
+            var itemCodigo = button.getAttribute('data-item-codigo');
+            var modalInput = excluirItemModal.querySelector('#itemCodigo');
+            modalInput.value = itemCodigo;
+        });
+    });
+</script>
+{% endblock %}
+
+
 

@@ -5,6 +5,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 
+#usuario: osmarnegao
+# senha: 2324*-9+
 class UserLoginView(View):
     def get(self, request):
         return render(request, 'usuario/login.html')

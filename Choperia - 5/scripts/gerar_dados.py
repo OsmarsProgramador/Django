@@ -74,12 +74,12 @@ def create_mesas():
     for i in range(1, 11):
         Mesa.objects.create(nome=f'Mesa {i}')
 
-def add_produtos_to_mesas():
+"""def add_produtos_to_mesas():
     produtos = list(Produto.objects.all())
     for mesa in Mesa.objects.all():
         itens = random.sample(produtos, k=random.randint(1, 5))
         mesa.itens = [{"produto_id": produto.id, "quantidade": random.randint(1, 5)} for produto in itens]
-        mesa.save()
+        mesa.save()"""
 
 def create_estoque():
     empresas = list(Empresa.objects.all())
@@ -101,7 +101,7 @@ if __name__ == '__main__':
     create_empresas_and_notas()
     create_produtos()
     create_mesas()
-    add_produtos_to_mesas()
+    # add_produtos_to_mesas()
     create_estoque()
 
 
