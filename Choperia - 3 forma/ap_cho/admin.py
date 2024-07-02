@@ -7,14 +7,14 @@ class ProdutoAdmin(admin.ModelAdmin):
     list_filter = ['categoria']  # Filtro lateral para a categoria
     search_fields = ['nome_produto', 'descricao']  # Campos pelos quais a busca será realizada
 
-@admin.register(Mesa)
-class MesaAdmin(admin.ModelAdmin):
-    list_display = ['nome']  
-    list_filter = ['nome']  
-    search_fields = ['nome']  
-
 @admin.register(Categoria)
 class CategoriaAdmin(admin.ModelAdmin):
+    list_display = ['nome']  
+    list_filter = ['nome']  
+    search_fields = ['nome'] 
+
+@admin.register(Mesa)
+class MesaAdmin(admin.ModelAdmin):
     list_display = ['nome']  
     list_filter = ['nome']  
     search_fields = ['nome'] 

@@ -11,7 +11,8 @@ from django.http import HttpResponse
 from reportlab.pdfgen import canvas
 
 
-""" Resumo Visual do Passo a Passo
+""" 
+Resumo Visual do Passo a Passo
 Template URL Tag: {% url 'mesa:mesa_list' %}
 Resolução da URL: Encontrar a URL correspondente em urls.py
 Mapeamento para View: views.MesaListView.as_view()
@@ -21,7 +22,8 @@ Método get: Chamar get_context_data
 Método get_context_data: Adicionar dados ao contexto
 Renderização: Renderizar o template com o contexto
 Isso mostra como Django sabe como chegar ao método get_context_data quando você clica no link "Listar mesas".
- """
+"""
+"""O uso do LoginRequiredMixin tem como objetivo garantir que apenas usuários autenticados possam acessar essa view."""
 
 class MesaListView(LoginRequiredMixin, ListView):
     model = Mesa
@@ -42,7 +44,7 @@ class MesaDetailView(LoginRequiredMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['usuarios'] = User.objects.all()
+        context['usuarios'] = User.objects.filter(is_active=True)
         return context
 
 class UpdateUserView(LoginRequiredMixin, View):

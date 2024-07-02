@@ -1,3 +1,8 @@
 from django.contrib import admin
+from .models import Estoque
 
-# Register your models here.
+@admin.register(Estoque)
+class EstoqueAdmin(admin.ModelAdmin):
+    list_display = ['produto']  
+    list_filter = ['produto']  
+    search_fields = ['produto']

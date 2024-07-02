@@ -2,11 +2,26 @@
 from django.shortcuts import render, redirect
 from django.views.generic import View
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.forms import UserCreationForm
+from .forms import CustomUserCreationForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-#usuario: osmarnegao
+# usuario: osmarnegao
 # senha: 2324*-9+
+"""
+O uso do LoginRequiredMixin tem como objetivo garantir que apenas usuários autenticados possam acessar essa view.
+Caso o usuário não esteja autenticado, o Django irá redirecionar o usuário para a página de login especificada.
+
+Quando um usuário não está autenticada, a classe de redirecionamento, é aquela para 
+o redirecionamento é configurado no arquivo settings.py, na variável LOGIN_URL. 
+Essa variável define a URL para a qual o usuário será redirecionado quando uma view que 
+requer autenticação for acessada por um usuário não autenticado.
+configuração no settings.py: LOGIN_URL = 'usuario:login'
+
+A classe de redirecionamento seria a UserLoginView
+
+"""
+
+
 class UserLoginView(View):
     def get(self, request):
         return render(request, 'usuario/login.html')
@@ -28,14 +43,13 @@ class UserLogoutView(LoginRequiredMixin, View):
 
 class UserSignupView(View):
     def get(self, request):
-        form = UserCreationForm()
+        form = CustomUserCreationForm()
         return render(request, 'usuario/cadastro.html', {'form': form})
 
     def post(self, request):
-        form = UserCreationForm(request.POST)
+        form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             form.save()
             return redirect('usuario:login')
         return render(request, 'usuario/cadastro.html', {'form': form})
-
 

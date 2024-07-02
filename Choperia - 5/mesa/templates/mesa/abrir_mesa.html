@@ -41,8 +41,8 @@
                             <label for="usuario">Atendente:</label>
                             <select id="usuario" name="usuario" class="form-control">
                                 {% for user in usuarios %}
-                                    <option value="{{ user.id }}" {% if user.id == usuario.id %}selected{% endif %}>
-                                        {{ user.nome }} ({{ user.email }})
+                                    <option value="{{ user.id }}" {% if user.id == mesa.usuario.id %}selected{% endif %}>
+                                        {{ user.username }} ({{ user.email }})
                                     </option>
                                 {% endfor %}
                             </select>
@@ -102,15 +102,16 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         var excluirItemModal = document.getElementById('excluirItemModal');
-        excluirItemModal.addEventListener('show.bs.modal', function(event) {
+        excluirItemModal.addEventListener('show.bs.modal', function (event) {
             var button = event.relatedTarget;
             var itemCodigo = button.getAttribute('data-item-codigo');
-            var modalInput = excluirItemModal.querySelector('#itemCodigo');
-            modalInput.value = itemCodigo;
+            var inputItemCodigo = excluirItemModal.querySelector('#itemCodigo');
+            inputItemCodigo.value = itemCodigo;
         });
     });
 </script>
 {% endblock %}
+
 
 
 
