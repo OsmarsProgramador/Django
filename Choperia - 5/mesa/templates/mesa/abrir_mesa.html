@@ -42,7 +42,7 @@
                             <select id="usuario" name="usuario" class="form-control">
                                 {% for user in usuarios %}
                                     <option value="{{ user.id }}" {% if user.id == mesa.usuario.id %}selected{% endif %}>
-                                        {{ user.username }} ({{ user.email }})
+                                        {{ user.username }}
                                     </option>
                                 {% endfor %}
                             </select>

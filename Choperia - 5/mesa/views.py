@@ -37,14 +37,17 @@ class MesaListView(LoginRequiredMixin, ListView):
         context['mesas_fechadas'] = Mesa.objects.filter(status='Fechada')
         return context
 
-class MesaDetailView(LoginRequiredMixin, DetailView):
+class AbrirMesaView(LoginRequiredMixin, DetailView):
     model = Mesa
     template_name = 'mesa/abrir_mesa.html'
     context_object_name = 'mesa'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['usuarios'] = User.objects.filter(is_active=True)
+        # passa todos os usuários ativos para o contexto.
+        # Exclui o usuário administrador
+        context['usuarios'] = User.objects.exclude(is_superuser=True)
+        return context
         return context
 
 class UpdateUserView(LoginRequiredMixin, View):
