@@ -1,7 +1,10 @@
 # mesa/views.py
-from django.views.generic import ListView, DetailView, View
-from django.shortcuts import redirect, get_object_or_404
+from django.views.generic import ListView, View
+from django.views.generic.edit import UpdateView
+from django.urls import reverse_lazy
+from django.shortcuts import redirect, get_object_or_404, render
 from .models import Mesa
+from produto.models import Produto
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.http import HttpResponse
@@ -37,26 +40,30 @@ class MesaListView(LoginRequiredMixin, ListView):
         context['mesas_fechadas'] = Mesa.objects.filter(status='Fechada')
         return context
 
-class AbrirMesaView(LoginRequiredMixin, DetailView):
-    model = Mesa
-    template_name = 'mesa/abrir_mesa.html'
-    context_object_name = 'mesa'
+class AbrirMesaView(View):
+    def get(self, request, pk):
+        mesa = get_object_or_404(Mesa, pk=pk)
+        usuarios = User.objects.exclude(username='admin')
+        produtos = Produto.objects.all()
+        return render(request, 'mesa/abrir_mesa.html', {'mesa': mesa, 'usuarios': usuarios, 'produtos': produtos})
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        # passa todos os usuários ativos para o contexto.
-        # Exclui o usuário administrador
-        context['usuarios'] = User.objects.exclude(is_superuser=True)
-        return context
-        return context
-
-class UpdateUserView(LoginRequiredMixin, View):
+class UpdateUserView(View):
     def post(self, request, pk):
         mesa = get_object_or_404(Mesa, pk=pk)
         usuario_id = request.POST.get('usuario')
         usuario = get_object_or_404(User, pk=usuario_id)
+
+        # Debugging
+        print(f"Received user ID: {usuario_id}")
+        print(f"Usuario: {usuario.username}")
+        print(f"Mesa: {mesa.nome}")
+
         mesa.usuario = usuario
         mesa.save()
+
+        # Debugging
+        print(f"Updated Mesa: {mesa.nome}, New User: {mesa.usuario.username}")
+
         return redirect('mesa:abrir_mesa', pk=pk)
     
 
@@ -85,3 +92,55 @@ class ExcluirItemView(LoginRequiredMixin, View):
         if item:
             item.delete()
         return redirect('mesa:abrir_mesa', pk=pk)
+    
+"""class AdicionarProdutoView(View):
+    def post(self, request, mesa_id, produto_id):
+        mesa = get_object_or_404(Mesa, pk=mesa_id)
+        produto = get_object_or_404(Produto, pk=produto_id)
+        quantidade = int(request.POST.get('quantidade', 1))
+        
+        item_encontrado = False
+        for item in mesa.itens:
+            if item['id'] == produto.id:
+                item['quantidade'] += quantidade
+                item_encontrado = True
+                break
+        
+        if not item_encontrado:
+            mesa.itens.append({
+                'id': produto.id,
+                'nome_produto': produto.nome_produto,
+                'quantidade': quantidade,
+                'preco_unitario': produto.venda
+            })
+        
+        mesa.save()
+        return redirect('mesa:abrir_mesa', pk=mesa_id)"""
+
+class AdicionarProdutoView(View):
+    def post(self, request, mesa_id, produto_id):
+        mesa = get_object_or_404(Mesa, pk=mesa_id)
+        produto = get_object_or_404(Produto, pk=produto_id)
+        quantidade = int(request.POST.get('quantidade', 1))
+        
+        # Atualizar os itens na mesa
+        itens = mesa.itens
+        encontrou = False
+        for item in itens:
+            if item['id'] == produto_id:
+                item['quantidade'] += quantidade
+                encontrou = True
+                break
+        
+        if not encontrou:
+            itens.append({
+                'id': produto_id,
+                'nome_produto': produto.nome_produto,
+                'quantidade': quantidade,
+                'preco_unitario': produto.venda
+            })
+        
+        mesa.itens = itens
+        mesa.save()
+        return redirect('mesa:abrir_mesa', pk=mesa.id)
+    
