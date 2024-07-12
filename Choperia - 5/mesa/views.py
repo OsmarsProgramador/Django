@@ -1,6 +1,5 @@
 # mesa/views.py
 from django.views.generic import ListView, View
-from django.views.generic.edit import UpdateView
 from django.urls import reverse_lazy
 from django.shortcuts import redirect, get_object_or_404, render
 from .models import Mesa
@@ -8,6 +7,9 @@ from produto.models import Produto
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.http import HttpResponse
+
+from django.views.generic.edit import CreateView
+from .forms import MesaForm
 
 # pip install reportlab - para imprimir comanda
 # from reportlab.lib.pagesizes import letter
@@ -89,14 +91,12 @@ class GerarComandaPDFView(LoginRequiredMixin, View):
         return response
 
 
-"""class ExcluirItemView(LoginRequiredMixin, View):
-    def post(self, request, pk):
-        mesa = get_object_or_404(Mesa, pk=pk)
-        item_codigo = request.POST.get('item_codigo')
-        # Encontrar e remover o item da lista de itens
-        mesa.itens = [item for item in mesa.itens if item['codigo'] != item_codigo]
-        mesa.save()
-        return redirect('mesa:abrir_mesa', pk=pk)"""
+class MesaCreateView(LoginRequiredMixin, CreateView):
+    model = Mesa
+    form_class = MesaForm
+    template_name = 'mesa/mesa_form.html'
+    success_url = reverse_lazy('mesa:mesa_list')
+
 
 
 class ExcluirItemView(LoginRequiredMixin, View):

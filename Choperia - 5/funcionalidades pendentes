@@ -1,5 +1,5 @@
 Mesa: comparar com a views da choperia - 3 forma
-    -implementar mostrar atendente para get_user_info
+    """-implementar mostrar atendente para get_user_info""" ok
     -cadastrar_mesa
     """-adicionar_item_mesa """ tá ok
     """-arrumar ExcluirItemView ok""" tá ok

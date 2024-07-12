@@ -1,6 +1,6 @@
 # mesa/urls.py
 from django.urls import path
-from .views import MesaListView, AbrirMesaView, UpdateUserView, GerarComandaPDFView, ExcluirItemView, AdicionarProdutoView
+from .views import MesaListView, AbrirMesaView, UpdateUserView, GerarComandaPDFView, ExcluirItemView, AdicionarProdutoView, MesaCreateView
 
 app_name = 'mesa'
 
@@ -11,6 +11,7 @@ urlpatterns = [
     path('gerar_comanda_pdf/<int:mesa_id>/', GerarComandaPDFView.as_view(), name='gerar_comanda_pdf'),
     path('excluir_item/<int:pk>/', ExcluirItemView.as_view(), name='excluir_item'),
     path('adicionar_item_mesa/<int:mesa_id>/<int:produto_id>/', AdicionarProdutoView.as_view(), name='adicionar_item_mesa'),
+    path('nova/', MesaCreateView.as_view(), name='nova_mesa'),
 ]
 
 

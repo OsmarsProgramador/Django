@@ -2,6 +2,9 @@
 {% extends "core/base.html" %}
 
 {% block content %}
+<!-- Por exemplo, no template mesa_list.html -->
+<a href="{% url 'mesa:nova_mesa' %}" class="btn btn-success">Cadastrar Nova Mesa</a>
+
 <div class="container">
     {% if mesas_abertas %}
         <h2 style="color:green;">Pedido(s) em andamento</h2>
