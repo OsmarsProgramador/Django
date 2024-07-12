@@ -68,54 +68,73 @@ class UpdateUserView(View):
     
 
 class GerarComandaPDFView(LoginRequiredMixin, View):
-    def get(self, request, pk):
-        mesa = get_object_or_404(Mesa, pk=pk)
+    def get(self, request, mesa_id):
+        mesa = get_object_or_404(Mesa, pk=mesa_id)
+
         response = HttpResponse(content_type='application/pdf')
-        response['Content-Disposition'] = f'attachment; filename="comanda_{mesa.id}.pdf"'
+        response['Content-Disposition'] = f'attachment; filename="comanda_{mesa_id}.pdf"'
+
         p = canvas.Canvas(response)
-        p.drawString(100, 800, f"Comanda da Mesa {mesa.nome}")
-        p.drawString(100, 780, f"Pedido: {mesa.pedido}")
-        y = 760
+
+        y = 800  # Starting position for the first line
+        p.drawString(100, y, f"Comanda de Pedido: {mesa.pedido}")
+        y -= 20
+
         for item in mesa.itens:
-            p.drawString(100, y, f"{item.nome_produto} - {item.quantidade} - R${item.preco_unitario}")
+            p.drawString(100, y, f"{item['nome_produto']} - {item['quantidade']} - R${item['preco_unitario']:.2f}")
             y -= 20
+
         p.showPage()
         p.save()
         return response
+
+
+"""class ExcluirItemView(LoginRequiredMixin, View):
+    def post(self, request, pk):
+        mesa = get_object_or_404(Mesa, pk=pk)
+        item_codigo = request.POST.get('item_codigo')
+        # Encontrar e remover o item da lista de itens
+        mesa.itens = [item for item in mesa.itens if item['codigo'] != item_codigo]
+        mesa.save()
+        return redirect('mesa:abrir_mesa', pk=pk)"""
 
 
 class ExcluirItemView(LoginRequiredMixin, View):
     def post(self, request, pk):
         mesa = get_object_or_404(Mesa, pk=pk)
         item_codigo = request.POST.get('item_codigo')
-        item = mesa.itens.filter(codigo=item_codigo).first()
-        if item:
-            item.delete()
-        return redirect('mesa:abrir_mesa', pk=pk)
-    
-"""class AdicionarProdutoView(View):
-    def post(self, request, mesa_id, produto_id):
-        mesa = get_object_or_404(Mesa, pk=mesa_id)
-        produto = get_object_or_404(Produto, pk=produto_id)
         quantidade = int(request.POST.get('quantidade', 1))
-        
-        item_encontrado = False
+
+        item_removido = False
         for item in mesa.itens:
-            if item['id'] == produto.id:
-                item['quantidade'] += quantidade
-                item_encontrado = True
+            if item['codigo'] == item_codigo:
+                if item['quantidade'] > quantidade:
+                    item['quantidade'] -= quantidade
+                else:
+                    mesa.itens.remove(item)
+                item_removido = True
                 break
-        
-        if not item_encontrado:
-            mesa.itens.append({
-                'id': produto.id,
-                'nome_produto': produto.nome_produto,
-                'quantidade': quantidade,
-                'preco_unitario': produto.venda
-            })
-        
-        mesa.save()
-        return redirect('mesa:abrir_mesa', pk=mesa_id)"""
+
+        if item_removido:
+            try:
+                produto = Produto.objects.get(codigo=item_codigo)
+                produto.estoque += quantidade
+                produto.save()
+            except Produto.DoesNotExist:
+                pass
+
+            total_itens = sum(item['quantidade'] for item in mesa.itens)
+
+            if total_itens <= 0:
+                mesa.itens = []
+                mesa.status = 'Fechada'
+                mesa.pedido = 0
+
+            mesa.save()
+
+        return redirect('mesa:abrir_mesa', pk=pk)
+
+    
 
 class AdicionarProdutoView(View):
     def post(self, request, mesa_id, produto_id):
@@ -123,24 +142,45 @@ class AdicionarProdutoView(View):
         produto = get_object_or_404(Produto, pk=produto_id)
         quantidade = int(request.POST.get('quantidade', 1))
         
-        # Atualizar os itens na mesa
-        itens = mesa.itens
-        encontrou = False
-        for item in itens:
-            if item['id'] == produto_id:
-                item['quantidade'] += quantidade
-                encontrou = True
-                break
+        if produto.estoque >= quantidade:
+            produto.estoque -= quantidade
+            produto.save()
+
         
-        if not encontrou:
-            itens.append({
-                'id': produto_id,
-                'nome_produto': produto.nome_produto,
-                'quantidade': quantidade,
-                'preco_unitario': produto.venda
-            })
-        
-        mesa.itens = itens
-        mesa.save()
-        return redirect('mesa:abrir_mesa', pk=mesa.id)
-    
+            # Atualizar os itens na mesa
+            encontrou = False
+            for item in mesa.itens:
+                if item['codigo'] == produto.codigo:
+                    item['quantidade'] += quantidade
+                    encontrou = True
+                    break
+            
+            if not encontrou:
+                mesa.itens.append({
+                    'nome_produto': produto.nome_produto,
+                    'categoria': produto.categoria.nome,
+                    'custo': float(produto.custo),
+                    'venda': float(produto.venda),
+                    'codigo': produto.codigo,
+                    'estoque': produto.estoque,
+                    'estoque_total': produto.estoque_total,
+                    'descricao': produto.descricao,
+                    'imagem': produto.imagem.url if produto.imagem else '',
+                    'quantidade': quantidade,
+                    'preco_unitario': float(produto.venda)  # Convertendo Decimal para float
+                })
+
+            mesa.status = 'Aberta'
+
+            if mesa.pedido == 0:
+                ultimo_pedido = Mesa.objects.filter().order_by('-pedido').first()
+                if ultimo_pedido:
+                    mesa.pedido = ultimo_pedido.pedido + 1
+                else:
+                    mesa.pedido = 1
+            mesa.save()
+            return redirect('mesa:abrir_mesa', pk=mesa.id)
+        else:
+            return HttpResponse('Estoque insuficiente para o produto solicitado.')
+
+

@@ -291,12 +291,7 @@ def update_user(request, mesa_id):
 
     return HttpResponse("Método não permitido", status=405)
 
-"""def adicionar_produto(request, mesa_id):
-    mesa = get_object_or_404(Mesa, id=mesa_id)
-    categorias = Categoria.objects.all()
-    produtos = Produto.objects.all()
-    return render(request, 'ap_cho/produto/adicionar_produto.html', {'mesa': mesa, 'categorias': categorias, 'produtos': produtos})
-"""
+
 from decimal import Decimal
 from django.core.exceptions import ValidationError
 

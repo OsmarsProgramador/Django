@@ -72,7 +72,8 @@ def create_produtos():
 
 def create_mesas():
     for i in range(1, 11):
-        Mesa.objects.create(nome=f'Mesa {i}')
+        Mesa.objects.create(nome=f'{str(i).zfill(2)}') # Cria um numero com 2 digitos
+
 
 """def add_produtos_to_mesas():
     produtos = list(Produto.objects.all())

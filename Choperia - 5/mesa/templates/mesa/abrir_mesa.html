@@ -4,40 +4,59 @@
 {% load static %}
 
 {% block content %}
+<nav class="navbar navbar-expand-md" style="width: 65%; margin: 0 auto;">
+    <div class="ms-auto d-flex justify-content-center">
+        <button type="button" class="btn btn-primary rounded-pill btn-custom" data-bs-toggle="modal" data-bs-target="#produtoModal"> 
+            <i class='bx bx-plus-circle'></i> 
+            <span class="text">Add Produto</span> 
+        </button>
+    </div>
+</nav>
 <div class="container-fluid mt-0 pt-0">
     <div class="row" style="height: 80vh;">
         <div class="col-md-4" style="height: 100%;">
             <div class="card border-light mb-3 h-100">
-                <div class="card-header" style="margin-right: 5px;">
-                    <span style="color: green; font-weight: bold;">Mesa: {{ mesa.nome }}</span>
+                <div class="card-header">
+                    <div class="card-header" style="margin-right: 5px;">
+                        <span style="color: green; font-weight: bold;">Mesa: {{ mesa.nome }}</span>
+                    </div>
                 </div>
-                <div class="card-body" style="display: flex; align-items: center;">
-                    <ul class="list-group list-group-flush" style="display: flex; align-items: center; list-style: none; padding: 0; margin: 0;">
-                        <li class="list-group-item" style="color: black; font-weight: bold; margin-right: 5px;">Pedido: {{ mesa.pedido }}</li>
-                    </ul>
-                    <ul class="list-group list-group-flush" style="display: flex; align-items: center; list-style: none; padding: 0; margin: 0;">
-                        <li class="list-group-item" style="background-color: green; color: white; font-weight: bold;">Em aberto</li>
-                    </ul>
-                </div>
-                <!-- Seção do Usuário Logado -->
-                <div class="col-md">
-                    <hr>
-                    <form method="post" action="{% url 'mesa:update_user' mesa.id %}">
-                        {% csrf_token %}
-                        <div class="form-group mx-2">
-                            <label for="usuario">Atendente:</label>
-                            <select id="usuario" name="usuario" class="form-control">
-                                {% for user in usuarios %}
-                                    <option value="{{ user.id }}" {% if user.id == mesa.usuario.id %}selected{% endif %}>
-                                        {{ user.username }}
-                                    </option>
-                                {% endfor %}
-                            </select>
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <div class="card-body" style="display: flex; align-items: center; height: 5vh;">
+                            <ul class="list-group list-group-flush" style="display: flex; align-items: center; list-style: none; padding: 0; margin: 0;">
+                                <li class="list-group-item" style="color: green; font-weight: bold; margin-right: 5px;">{{ mesa.nome }}</li>
+                            </ul>
+                            <ul class="list-group list-group-flush" style="display: flex; align-items: center; list-style: none; padding: 0; margin: 0;">
+                                <li class="list-group-item" style="color: black; font-weight: bold; margin-right: 5px;">Pedido: {{ mesa.pedido }}</li>
+                            </ul>
+                            <ul class="list-group list-group-flush" style="display: flex; align-items: center; list-style: none; padding: 0; margin: 0;">
+                                <li class="list-group-item" style="background-color: green; color: white; font-weight: bold;">Em aberto</li>
+                            </ul>
                         </div>
-                        <button type="submit" class="btn btn-primary mt-3 mx-2">Atualizar Usuário</button>
-                    </form>
+                    </h5>
+                    <p class="card-text">
+                        <!-- Seção do Usuário Logado -->
+                        <div class="col-md">
+                            <hr>
+                            <form method="post" action="{% url 'mesa:update_user' mesa.id %}">
+                                {% csrf_token %}
+                                <div class="form-group mx-2">
+                                    <label for="usuario">Atendente:</label>
+                                    <select id="usuario" name="usuario" class="form-control">
+                                        {% for user in usuarios %}
+                                            <option value="{{ user.id }}" {% if user.id == mesa.usuario.id %}selected{% endif %}>
+                                                {{ user.username }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <button type="submit" class="btn btn-primary mt-3 mx-2">Atualizar Usuário</button>
+                            </form>
+                        </div>
+                    </p>
                 </div>
-            </div>
+            </div> 
         </div>
 
         <div class="col-md-6" style="height: 100%;">
@@ -48,8 +67,10 @@
                     <ul>
                         {% for item in mesa.itens %}
                             {% if item.quantidade > 0 %}
-                                <li>{{ item.nome_produto }} - {{ item.quantidade }} - R${{ item.preco_unitario }}</li>
-                                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#excluirItemModal" data-item-codigo="{{ item.codigo }}">Excluir</button>
+                            <li class="d-flex justify-content-between align-items-center">
+                                <span>{{ item.nome_produto }} - {{ item.quantidade }} - R$ {{ item.preco_unitario|floatformat:2 }}</span>
+                                <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#excluirItemModal" data-item-codigo="{{ item.codigo }}">Excluir</button>
+                            </li>
                             {% endif %}
                         {% endfor %}
                     </ul>
@@ -63,10 +84,6 @@
 </div>
 
 <!-- Modal para adicionar produto -->
- <button type="button" class="btn btn-primary rounded-pill btn-custom" data-bs-toggle="modal" data-bs-target="#produtoModal"> 
-    <i class='bx bx-plus-circle'></i> 
-    <span class="text">Add Produto</span> 
-</button>
 <div class="modal fade" id="produtoModal" tabindex="-1" aria-labelledby="produtoModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -146,25 +163,29 @@
     </div>
 </div>
 
-<!-- Modal para exclusão de itens -->
+<!-- Modal de confirmação para excluir item -->
 <div class="modal fade" id="excluirItemModal" tabindex="-1" aria-labelledby="excluirItemModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="excluirItemModalLabel">Excluir Item</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
-            </div>
-            <div class="modal-body">
-                Tem certeza de que deseja excluir este item?
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <form method="post" action="{% url 'mesa:excluir_item' mesa.id %}">
-                    {% csrf_token %}
+            <form method="post" action="{% url 'mesa:excluir_item' mesa.id %}">
+                {% csrf_token %}
+                <div class="modal-header">
+                    <h5 class="modal-title" id="excluirItemModalLabel">Excluir Item</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Você tem certeza que deseja excluir este item?</p>
+                    <div class="form-group">
+                        <label for="quantidade">Quantidade:</label>
+                        <input type="number" name="quantidade" id="quantidade" class="form-control" value="1" min="1">
+                    </div>
                     <input type="hidden" name="item_codigo" id="itemCodigo">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                     <button type="submit" class="btn btn-danger">Excluir</button>
-                </form>
-            </div>
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -180,6 +201,7 @@
         });
     });
 </script>
+
 {% endblock %}
 
 
