@@ -1,0 +1,17 @@
+<!-- templates/partials/htmx_componentes/list_all_produtos.html -->
+{% if produtos %}
+    <ul class="list-group">
+        {% for produto in produtos %}
+            <li class="list-group-item">{{produto.nome}}
+                <p style="float: right; cursor: pointer;" class="badge bg-danger"
+                    hx-delete="{% url 'delete_produto' produto.id %}"
+                    hx-trigger="click"
+                    hx-target="#list-produto"
+                >x</p>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <h4>Nenum produto cadastrado.</h4>
+{% endif %}
+

@@ -1,4 +1,4 @@
-
+//static/js/script.js
 // Código para inicializar o select2
 $(document).ready(function() {
     $('.select2').select2();
@@ -53,3 +53,9 @@ function applyTheme() {
 // Aplicar tema ao carregar a página
 applyTheme();
 window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', applyTheme);
+
+// Para o htmx, para atualizar a lista de itens sem fechar o modal
+
+
+
+

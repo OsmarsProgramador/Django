@@ -1,0 +1,24 @@
+<!-- templates/partials/htmx_componentes/list_all_produtos.html -->
+{% if produtos %}
+    <ul class="list-group">
+        {% for produto in produtos %}
+            <li class="list-group-item">
+                <span>{{produto.nome}} - {{produto.preco}}</span>
+                <p style="float: right; cursor: pointer;" class="badge bg-danger"
+                    hx-delete="{% url 'delete_produto' produto.id %}"
+                    hx-trigger="click"
+                    hx-target="#list-produto"
+                >x</p>
+                <p style="float: right; cursor: pointer; margin-right: 10px;" class="badge bg-primary"
+                    hx-get="{% url 'edit_produto' produto.id %}"
+                    hx-target="#edit-produto-{{produto.id}}"
+                >Editar</p>
+                <div id="edit-produto-{{produto.id}}"></div>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <h4>Nenhum produto cadastrado.</h4>
+{% endif %}
+
+

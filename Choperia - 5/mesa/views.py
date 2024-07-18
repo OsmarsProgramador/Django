@@ -6,7 +6,7 @@ from .models import Mesa
 from produto.models import Produto
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 
 from django.views.generic.edit import CreateView
 from .forms import MesaForm
@@ -36,10 +36,14 @@ class MesaListView(LoginRequiredMixin, ListView):
     context_object_name = 'mesas'
     paginate_by = 10
 
+    def get_queryset(self):
+        # Ordena o queryset antes da paginação
+        return Mesa.objects.all().order_by('nome')
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['mesas_abertas'] = Mesa.objects.filter(status='Aberta')
-        context['mesas_fechadas'] = Mesa.objects.filter(status='Fechada')
+        context['mesas_abertas'] = Mesa.objects.filter(status='Aberta').order_by('nome')
+        context['mesas_fechadas'] = Mesa.objects.filter(status='Fechada').order_by('nome')
         return context
 
 class AbrirMesaView(View):
@@ -135,19 +139,22 @@ class ExcluirItemView(LoginRequiredMixin, View):
         return redirect('mesa:abrir_mesa', pk=pk)
 
     
+from django.template.loader import render_to_string
 
 class AdicionarProdutoView(View):
     def post(self, request, mesa_id, produto_id):
+        print("Iniciando AdicionarProdutoView...")  # Debugging inicial
         mesa = get_object_or_404(Mesa, pk=mesa_id)
         produto = get_object_or_404(Produto, pk=produto_id)
         quantidade = int(request.POST.get('quantidade', 1))
-        
+
+        print(f"Produto: {produto.nome_produto}, Quantidade: {quantidade}")  # Debugging
+        print(f"Estoque disponível: {produto.estoque}")
+
         if produto.estoque >= quantidade:
             produto.estoque -= quantidade
             produto.save()
 
-        
-            # Atualizar os itens na mesa
             encontrou = False
             for item in mesa.itens:
                 if item['codigo'] == produto.codigo:
@@ -167,7 +174,7 @@ class AdicionarProdutoView(View):
                     'descricao': produto.descricao,
                     'imagem': produto.imagem.url if produto.imagem else '',
                     'quantidade': quantidade,
-                    'preco_unitario': float(produto.venda)  # Convertendo Decimal para float
+                    'preco_unitario': float(produto.venda)
                 })
 
             mesa.status = 'Aberta'
@@ -179,8 +186,14 @@ class AdicionarProdutoView(View):
                 else:
                     mesa.pedido = 1
             mesa.save()
-            return redirect('mesa:abrir_mesa', pk=mesa.id)
+            
+            context = {
+                'mesa': mesa
+            }
+            item_list_html = render_to_string('mesa/partials/item_list.html', context)
+            print("Produto adicionado com sucesso!")  # Debugging
+            return JsonResponse({'success': True, 'item_list_html': item_list_html})
         else:
-            return HttpResponse('Estoque insuficiente para o produto solicitado.')
-
+            print("Estoque insuficiente.")  # Debugging
+            return JsonResponse({'success': False, 'error': 'Estoque insuficiente'})
 
