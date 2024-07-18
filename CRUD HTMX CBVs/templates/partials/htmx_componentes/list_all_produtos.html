@@ -1,24 +1,38 @@
 <!-- templates/partials/htmx_componentes/list_all_produtos.html -->
 {% if produtos %}
-    <ul class="list-group">
-        {% for produto in produtos %}
-            <li class="list-group-item">
-                <span>{{produto.nome}} - {{produto.preco}}</span>
-                <p style="float: right; cursor: pointer;" class="badge bg-danger"
-                    hx-delete="{% url 'delete_produto' produto.id %}"
-                    hx-trigger="click"
-                    hx-target="#list-produto"
-                >x</p>
-                <p style="float: right; cursor: pointer; margin-right: 10px;" class="badge bg-primary"
-                    hx-get="{% url 'edit_produto' produto.id %}"
-                    hx-target="#edit-produto-{{produto.id}}"
-                >Editar</p>
-                <div id="edit-produto-{{produto.id}}"></div>
-            </li>
-        {% endfor %}
-    </ul>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">Nome</th>
+                <th scope="col">Preço</th>
+                <th scope="col" class="text-end">Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for produto in produtos %}
+                <tr>
+                    <td>{{ produto.nome }}</td>
+                    <td>{{ produto.preco }}</td>
+                    <td>
+                        <p style="float: right; cursor: pointer;" class="badge bg-danger"
+                            hx-delete="{% url 'delete_produto' produto.id %}"
+                            hx-trigger="click"
+                            hx-target="#list-produto"
+                        >x</p>
+                        <p style="float: right; cursor: pointer; margin-right: 10px;" class="badge bg-primary edit-produto-link"
+                            hx-get="{% url 'edit_produto' produto.id %}"
+                            hx-target="#edit-produto-content"
+                        >Editar</p>
+                        <div id="edit-produto-{{ produto.id }}"></div>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 {% else %}
     <h4>Nenhum produto cadastrado.</h4>
 {% endif %}
+
+
 
 
