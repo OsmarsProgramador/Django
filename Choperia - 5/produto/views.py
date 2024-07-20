@@ -16,7 +16,15 @@ class ProdutoListView(LoginRequiredMixin, ListView):
     context_object_name = 'produtos'
     paginate_by = 10
 
-class ProdutoCreateView(LoginRequiredMixin, CreateView):
+    def get_queryset(self): # garantir que os objetos sejam ordenados antes de serem paginados.
+        return Produto.objects.all().order_by('nome_produto')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['categorias'] = Categoria.objects.all()
+        return context
+
+'''class ProdutoCreateView(LoginRequiredMixin, CreateView):
     """
     Essa view herda de LoginRequiredMixin e CreateView.
     O LoginRequiredMixin garante que apenas usuários autenticados possam acessar essa view.
@@ -52,11 +60,14 @@ class ProdutoDeleteView(LoginRequiredMixin, DeleteView):
     """
     model = Produto
     template_name = 'produto/produto_confirm_delete.html'
-    success_url = reverse_lazy('produto:produto_list')
+    success_url = reverse_lazy('produto:produto_list')'''
 
 class CategoriaListView(LoginRequiredMixin, ListView):
     model = Categoria
     template_name = 'produto/categoria_list.html'
     context_object_name = 'categorias'
     paginate_by = 10
+
+    def get_queryset(self): # garantir que os objetos sejam ordenados antes de serem paginados.
+        return Categoria.objects.all().order_by('nome')
 

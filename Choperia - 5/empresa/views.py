@@ -9,6 +9,9 @@ class EmpresaListView(LoginRequiredMixin, ListView):
     context_object_name = 'empresas'
     paginate_by = 10
 
+    def get_queryset(self): # garantir que os objetos sejam ordenados antes de serem paginados.
+        return Empresa.objects.all().order_by('nome')
+
 class EmpresaDetailView(LoginRequiredMixin, DetailView):
     model = Empresa
     template_name = 'empresa/empresa_detail.html'

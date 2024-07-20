@@ -101,6 +101,7 @@ Estrutura do meu projeto:
 │   ├── __init__.py
 │   ├── admin.py
 │   ├── apps.py
+│   ├── htmx_views.py
 │   ├── migrations/
 │   │   ├── 0001_initial.py
 │   │   ├── __init__.py
@@ -142,6 +143,25 @@ Estrutura do meu projeto:
 │   │   ├── usuario/
 │   │   │   ├── cadastro.html
 │   │   │   ├── login.html
+│   ├── tests.py
+│   ├── urls.py
+│   ├── views.py
+PS D:\Django\Choperia - 5>
+│   │   │   ├── login.html
+│   ├── tests.py
+│   ├── urls.py
+│   ├── views.py
+│   │   │   ├── login.html
+│   ├── tests.py
+│   ├── urls.py
+│   │   │   ├── login.html
+│   │   │   ├── login.html
+│   ├── tests.py
+│   │   │   ├── login.html
+│   ├── tests.py
+│   ├── urls.py
+│   │   │   ├── login.html
+│   ├── tests.py
 │   ├── tests.py
 │   ├── urls.py
 │   ├── views.py
