@@ -16,6 +16,7 @@ list_files('.')
 
 """
 Estrutura do meu projeto:
+
 .
 ├── .gitignore
 ├── Planilha de Controle de Estoque.xlsx
@@ -101,6 +102,7 @@ Estrutura do meu projeto:
 │   ├── __init__.py
 │   ├── admin.py
 │   ├── apps.py
+│   ├── forms.py
 │   ├── htmx_views.py
 │   ├── migrations/
 │   │   ├── 0001_initial.py
@@ -111,9 +113,13 @@ Estrutura do meu projeto:
 │   ├── templates/
 │   │   ├── produto/
 │   │   │   ├── categoria_list.html
-│   │   │   ├── produto_confirm_delete.html
-│   │   │   ├── produto_form.html
-│   │   │   ├── produto_list.html
+│   │   │   ├── list_produto.html
+│   │   │   ├── partials/
+│   │   │   │   ├── htmx_componentes/
+│   │   │   │   │   ├── add_categoria_form.html
+│   │   │   │   │   ├── check_produto.html
+│   │   │   │   │   ├── edit_produto.html
+│   │   │   │   │   ├── list_all_produtos.html
 │   ├── tests.py
 │   ├── urls.py
 │   ├── views.py
@@ -125,6 +131,8 @@ Estrutura do meu projeto:
 │   ├── img/
 │   ├── js/
 │   │   ├── script.js
+├── t2.html
+├── teste.html
 ├── testes.py
 ├── usuario/
 │   ├── __init__.py
@@ -146,25 +154,7 @@ Estrutura do meu projeto:
 │   ├── tests.py
 │   ├── urls.py
 │   ├── views.py
-PS D:\Django\Choperia - 5>
-│   │   │   ├── login.html
-│   ├── tests.py
-│   ├── urls.py
-│   ├── views.py
-│   │   │   ├── login.html
-│   ├── tests.py
-│   ├── urls.py
-│   │   │   ├── login.html
-│   │   │   ├── login.html
-│   ├── tests.py
-│   │   │   ├── login.html
-│   ├── tests.py
-│   ├── urls.py
-│   │   │   ├── login.html
-│   ├── tests.py
-│   ├── tests.py
-│   ├── urls.py
-│   ├── views.py
+
 
 
 

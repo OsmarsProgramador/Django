@@ -12,12 +12,9 @@ class ProdutoListView(LoginRequiredMixin, ListView):
     -paginate_by: Determina a quantidade de itens a serem exibidos por página.
     """
     model = Produto
-    template_name = 'produto/produto_list.html'
+    template_name = 'produto/list_produto.html'
     context_object_name = 'produtos'
     paginate_by = 10
-
-    def get_queryset(self): # garantir que os objetos sejam ordenados antes de serem paginados.
-        return Produto.objects.all().order_by('nome_produto')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -37,7 +34,7 @@ class ProdutoListView(LoginRequiredMixin, ListView):
     model = Produto
     fields = '__all__'
     template_name = 'produto/produto_form.html'
-    success_url = reverse_lazy('produto:produto_list')
+    success_url = reverse_lazy('produto:list_produto')
 
 class ProdutoUpdateView(LoginRequiredMixin, UpdateView):
     """
@@ -50,7 +47,7 @@ class ProdutoUpdateView(LoginRequiredMixin, UpdateView):
     model = Produto
     fields = '__all__'
     template_name = 'produto/produto_form.html'
-    success_url = reverse_lazy('produto:produto_list')
+    success_url = reverse_lazy('produto:list_produto')
 
 class ProdutoDeleteView(LoginRequiredMixin, DeleteView):
     """
@@ -60,7 +57,7 @@ class ProdutoDeleteView(LoginRequiredMixin, DeleteView):
     """
     model = Produto
     template_name = 'produto/produto_confirm_delete.html'
-    success_url = reverse_lazy('produto:produto_list')'''
+    success_url = reverse_lazy('produto:list_produto')'''
 
 class CategoriaListView(LoginRequiredMixin, ListView):
     model = Categoria

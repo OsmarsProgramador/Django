@@ -107,7 +107,16 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+# Diretório para onde os arquivos estáticos serão coletados
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# Diretórios adicionais onde o Django vai procurar por arquivos estáticos
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'produto', 'static'),
+]
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+

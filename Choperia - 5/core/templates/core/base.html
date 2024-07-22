@@ -41,7 +41,7 @@
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-bs-toggle="dropdown">Produtos</a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{% url 'produto:produto_list' %}">Listar Produtos</a></li>
+                            <li><a class="dropdown-item" href="{% url 'produto:list_produto' %}">Listar Produtos</a></li>
                             <li><a class="dropdown-item" href="{% url 'produto:categoria_list' %}">Listar Categorias</a></li>
                         </ul>
                     </li>
@@ -93,6 +93,10 @@
         {% block content %}
         {% endblock %}
     </main>
+    {% block modals %}
+        <!-- Modal para Cadastrar Produto --> 
+        <!-- Modal para Editar Produto -->
+    {% endblock %}
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>

@@ -25,8 +25,12 @@ class CreateProdutoView(View): # equivalente a SaveProdutoView
 class EditProdutoView(View):
     def get(self, request, id):
         produto = get_object_or_404(Produto, id=id)
-        return render(request, 'produto/partials/htmx_componentes/edit_produto.html', {'produto': produto})
-
+        categorias = Categoria.objects.all()
+        return render(request, 'produto/partials/htmx_componentes/edit_produto.html', 
+            {'produto': produto,
+            'categorias': categorias
+        })
+    
 class UpdateProdutoView(View):
     def post(self, request, id):
         produto = get_object_or_404(Produto, id=id)
