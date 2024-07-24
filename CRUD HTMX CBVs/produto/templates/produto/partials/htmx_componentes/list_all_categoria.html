@@ -2,22 +2,22 @@
 <!-- Responsável por atualizar os valores da tabela de categoria
  após uma nova categoria ser add -->
  {% if categorias %}
- <table class="table table-striped">
-     <thead>
-         <tr>
-             <th scope="col">Nome</th>
-         </tr>
-     </thead>
-     <tbody>
-         {% for categoria in categorias %}
-             <tr>
-                 <td>{{ categoria.nome }}</td>
-             </tr>
-         {% endfor %}
-     </tbody>
- </table>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">Nome</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for categoria in categorias %}
+                <tr>
+                    <td>{{ categoria.nome }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table> 
 {% else %}
- <h4>Nenhuma categoria cadastrada.</h4>
+    <h4>Nenhuma categoria cadastrada.</h4>
 {% endif %}
 
 

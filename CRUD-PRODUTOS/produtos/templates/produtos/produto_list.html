@@ -1,0 +1,62 @@
+<!-- produtos/templates/produtos/produto_list.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Lista de Produtos</h2>
+<button class="btn btn-primary" hx-get="{% url 'produto_create' %}" hx-target="#modal" hx-trigger="click">Novo Produto</button>
+<div id="modal" hx-swap="outerHTML"></div>
+<div id="produtos-list">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Descrição</th>
+                <th>Preço</th>
+                <th>Quantidade</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody hx-target="this" hx-swap="outerHTML">
+            {% for produto in produtos %}
+            <tr>
+                <td>{{ produto.nome }}</td>
+                <td>{{ produto.descricao }}</td>
+                <td>{{ produto.preco }}</td>
+                <td>{{ produto.quantidade }}</td>
+                <td>
+                    <button class="btn btn-warning" hx-get="{% url 'produto_update' produto.id %}" hx-target="#modal" hx-trigger="click">Editar</button>
+                    <button class="btn btn-danger" hx-get="{% url 'produto_delete' produto.id %}" hx-target="#modal" hx-trigger="click">Excluir</button>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div>
+        <nav aria-label="Page navigation">
+            <ul class="pagination">
+                {% if produtos.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" hx-get="?page={{ produtos.previous_page_number }}" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                {% endif %}
+                {% for page_num in produtos.paginator.page_range %}
+                <li class="page-item {% if produtos.number == page_num %}active{% endif %}">
+                    <a class="page-link" hx-get="?page={{ page_num }}">{{ page_num }}</a>
+                </li>
+                {% endfor %}
+                {% if produtos.has_next %}
+                <li class="page-item">
+                    <a class="page-link" hx-get="?page={{ produtos.next_page_number }}" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+</div>
+{% endblock %}
+
+

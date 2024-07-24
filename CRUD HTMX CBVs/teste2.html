@@ -1,0 +1,192 @@
+<!-- produto/templates/produto/list_produto.html -->
+<!-- 
+    O atributo hx-get especifica a URL para a qual a requisição GET deve ser enviada (a view check_produto)
+    O atributo hx-trigger define o evento que deve acionar a requisição (no caso, o evento keyup, que ocorre sempre que o usuário solta uma tecla no campo de entrada)
+    o atributo hx-target indica o elemento alvo na página que deve ser atualizado com a resposta da requisição (o elemento com ID produto-out)
+-->
+<!-- produto/templates/produto/list_produto.html -->
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md">
+            <button class="btn btn-primary my-2" data-bs-toggle="modal" data-bs-target="#produtoModal">Cadastrar Produto</button>
+            <br>
+        </div>
+    </div>
+    <!-- Div que exibe os produtos cadastrados -->
+    <div id="list-produto">
+        {% include 'produto/partials/htmx_componentes/list_all_produtos.html' %}
+    </div>
+</div>
+
+<!-- Modal para Cadastrar vários produtos até que o usuário feche o modal -->
+<div class="modal fade" id="produtoModal" tabindex="-1" aria-labelledby="produtoModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="produtoModalLabel">Cadastrar Produto</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form hx-post="{% url 'produto:create_produto' %}" 
+                      hx-trigger="submit" 
+                      hx-target="#list-produto" 
+                      hx-swap="innerHTML" 
+                      hx-on="htmx:afterRequest:limparCampos"
+                      enctype="multipart/form-data">
+                    {% csrf_token %}
+                    
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" id="basic-addon1">Nome do produto</span>
+                        <input type="text" id="nome-produto" name="nome_produto" class="form-control" 
+                               hx-get="{% url 'produto:check_produto' %}" 
+                               hx-trigger="keyup" 
+                               hx-target="#produto-out">
+                    </div>
+                    <div id="produto-out"></div>
+                    
+                    <div class="input-group mb-3">
+                        <label class="input-group-text" for="categoria-produto">Categoria</label>
+                        <select id="categoria-produto" name="categoria" class="form-select">
+                            {% for categoria in categorias %}
+                                <option value="{{ categoria.id }}">{{ categoria.nome }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">Descrição</span>
+                        <textarea id="descricao-produto" name="descricao" class="form-control"></textarea>
+                    </div>
+                    
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" id="basic-addon1">Custo</span>
+                        <input type="number" id="custo-produto" name="custo" class="form-control" step="0.01">
+                    </div>
+                    
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" id="basic-addon1">Preço de Venda</span>
+                        <input type="number" id="venda-produto" name="venda" class="form-control" step="0.01">
+                    </div>
+                    
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" id="basic-addon1">Código</span>
+                        <input type="text" id="codigo-produto" name="codigo" class="form-control">
+                    </div>
+                    
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" id="basic-addon1">Estoque</span>
+                        <input type="number" id="estoque-produto" name="estoque" class="form-control">
+                    </div>
+                    
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" id="basic-addon1">Estoque Total</span>
+                        <input type="number" id="estoque-total-produto" name="estoque_total" class="form-control">
+                    </div>
+                    
+                    <div class="input-group mb-3">
+                        <label class="input-group-text" for="imagem-produto">Imagem</label>
+                        <input type="file" id="imagem-produto" name="imagem" class="form-control">
+                    </div>
+                    
+                    <button type="submit" class="btn btn-success">Salvar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para Editar Produto -->
+<div class="modal fade" id="editProdutoModal" tabindex="-1" aria-labelledby="editProdutoModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editProdutoModalLabel">Editar Produto</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editProdutoForm" hx-post="{% url 'produto:update_produto' %}" 
+                      hx-trigger="submit" 
+                      hx-target="#list-produto" 
+                      hx-swap="innerHTML"
+                      enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input type="hidden" name="produto_id" value="{{ produto_id }}">
+                    
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" id="basic-addon1">Nome do produto</span>
+                        <input type="text" id="nome-produto" name="nome_produto" class="form-control" value="{{ form.nome_produto.value }}">
+                    </div>
+                    
+                    <div class="input-group mb-3">
+                        <label class="input-group-text" for="categoria-produto">Categoria</label>
+                        <select id="categoria-produto" name="categoria" class="form-select">
+                            {% for categoria in form.categoria.field.queryset %}
+                                <option value="{{ categoria.id }}" {% if categoria.id == form.categoria.value %}selected{% endif %}>{{ categoria.nome }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">Descrição</span>
+                        <textarea id="descricao-produto" name="descricao" class="form-control">{{ form.descricao.value }}</textarea>
+                    </div>
+                    
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" id="basic-addon1">Custo</span>
+                        <input type="number" id="custo-produto" name="custo" class="form-control" step="0.01" value="{{ form.custo.value }}">
+                    </div>
+                    
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" id="basic-addon1">Preço de Venda</span>
+                        <input type="number" id="venda-produto" name="venda" class="form-control" step="0.01" value="{{ form.venda.value }}">
+                    </div>
+                    
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" id="basic-addon1">Código</span>
+                        <input type="text" id="codigo-produto" name="codigo" class="form-control" value="{{ form.codigo.value }}">
+                    </div>
+                    
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" id="basic-addon1">Estoque</span>
+                        <input type="number" id="estoque-produto" name="estoque" class="form-control" value="{{ form.estoque.value }}">
+                    </div>
+                    
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" id="basic-addon1">Estoque Total</span>
+                        <input type="number" id="estoque-total-produto" name="estoque_total" class="form-control" value="{{ form.estoque_total.value }}">
+                    </div>
+                    
+                    <div class="input-group mb-3">
+                        <label class="input-group-text" for="imagem-produto">Imagem</label>
+                        <input type="file" id="imagem-produto" name="imagem" class="form-control">
+                    </div>
+                    
+                    <button type="submit" class="btn btn-success">Salvar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+<script>
+    //script JavaScript limpa os campos após a submissão do formulário
+    document.body.addEventListener('htmx:afterRequest', function(evt) {
+        if (evt.detail.target.id === 'list-produto') {
+            document.getElementById('nome-produto').value = '';
+            document.getElementById('categoria-produto').value = '';
+            document.getElementById('descricao-produto').value = '';
+            document.getElementById('custo-produto').value = '';
+            document.getElementById('venda-produto').value = '';
+            document.getElementById('codigo-produto').value = '';
+            document.getElementById('estoque-produto').value = '';
+            document.getElementById('estoque-total-produto').value = '';
+            document.getElementById('imagem-produto').value = '';
+        }
+    });
+</script>
+
+
