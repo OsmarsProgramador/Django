@@ -65,38 +65,54 @@
                         hx-on="htmx:afterRequest:limparCampos"
                     >
                         {% csrf_token %}
-                        <label for="nome-produto">Nome do produto</label>
-                        <input type="text" id="nome-produto" name="nome_produto" class="form-control" 
-                            hx-get="{% url 'produto:check_produto' %}" 
-                            hx-trigger="keyup" 
-                            hx-target="#produto-out"
-                        >
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">Nome do produto</span>
+                            <input type="text" id="nome-produto" name="nome_produto" class="form-control" 
+                                hx-get="{% url 'produto:check_produto' %}" 
+                                hx-trigger="keyup" 
+                                hx-target="#produto-out">
+                        </div>
                         <div id="produto-out"></div>
-                        <br>
-                        <label for="categoria-produto">Categoria</label>
-                        <select id="categoria-produto" name="categoria" class="form-control">
-                            {% for categoria in categorias %}
-                                <option value="{{ categoria.id }}">{{ categoria.nome }}</option>
-                            {% endfor %}
-                        </select>
-                        <br>
-                        <label for="descricao-produto">Descrição</label>
-                        <textarea id="descricao-produto" name="descricao" class="form-control"></textarea>
-                        <br>
-                        <label for="custo-produto">Custo</label>
-                        <input type="number" id="custo-produto" name="custo" class="form-control" step="0.01">
-                        <br>
-                        <label for="venda-produto">Preço de Venda</label>
-                        <input type="number" id="venda-produto" name="venda" class="form-control" step="0.01">
-                        <br>
-                        <label for="codigo-produto">Código</label>
-                        <input type="text" id="codigo-produto" name="codigo" class="form-control">
-                        <br>
-                        <label for="estoque-produto">Estoque</label>
-                        <input type="number" id="estoque-produto" name="estoque" class="form-control">
-                        <br>
-                        <label for="estoque-total-produto">Estoque Total</label>
-                        <input type="number" id="estoque-total-produto" name="estoque_total" class="form-control">
+                        
+                        <div class="input-group mb-3">
+                            <label class="input-group-text" for="categoria-produto">Categoria</label>
+                            <select id="categoria-produto" name="categoria" class="form-select">
+                                {% for categoria in categorias %}
+                                    <option value="{{ categoria.id }}">{{ categoria.nome }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">Descrição</span>
+                            <textarea id="descricao-produto" name="descricao" class="form-control"></textarea>
+                        </div>
+                        
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">Custo</span>
+                            <input type="number" id="custo-produto" name="custo" class="form-control" step="0.01">
+                        </div>
+                        
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">Preço de Venda</span>
+                            <input type="number" id="venda-produto" name="venda" class="form-control" step="0.01">
+                        </div>
+                        
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">Código</span>
+                            <input type="text" id="codigo-produto" name="codigo" class="form-control">
+                        </div>
+
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">Estoque</span>
+                            <input type="number" id="estoque-produto" name="estoque" class="form-control">
+                        </div>
+
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">Estoque Total</span>
+                            <input type="number" id="estoque-total-produto" name="estoque_total" class="form-control">
+                        </div>
+
                         <label for="imagem-produto">Imagem</label>
                         <input type="file" id="imagem-produto" name="imagem" class="form-control">
                         <br>
@@ -122,38 +138,54 @@
                         hx-swap="innerHTML"
                     >
                         {% csrf_token %}
-                        <input type="hidden" name="produto_id" value="{{ produto_id }}">
-                        <label for="nome-produto">Nome do produto</label>
-                        <input type="text" id="nome-produto" name="nome_produto" class="form-control" value="{{ form.nome_produto.value }}">
-                        <br>
-                        <label for="categoria-produto">Categoria</label>
-                        <select id="categoria-produto" name="categoria" class="form-control">
-                            {% for categoria in form.categoria.field.queryset %}
-                                <option value="{{ categoria.id }}" {% if categoria.id == form.categoria.value %}selected{% endif %}>{{ categoria.nome }}</option>
-                            {% endfor %}
-                        </select>
-                        <br>
-                        <label for="descricao-produto">Descrição</label>
-                        <textarea id="descricao-produto" name="descricao" class="form-control">{{ form.descricao.value }}</textarea>
-                        <br>
-                        <label for="custo-produto">Custo</label>
-                        <input type="number" id="custo-produto" name="custo" class="form-control" step="0.01" value="{{ form.custo.value }}">
-                        <br>
-                        <label for="venda-produto">Preço de Venda</label>
-                        <input type="number" id="venda-produto" name="venda" class="form-control" step="0.01" value="{{ form.venda.value }}">
-                        <br>
-                        <label for="codigo-produto">Código</label>
-                        <input type="text" id="codigo-produto" name="codigo" class="form-control" value="{{ form.codigo.value }}">
-                        <br>
-                        <label for="estoque-produto">Estoque</label>
-                        <input type="number" id="estoque-produto" name="estoque" class="form-control" value="{{ form.estoque.value }}">
-                        <br>
-                        <label for="estoque-total-produto">Estoque Total</label>
-                        <input type="number" id="estoque-total-produto" name="estoque_total" class="form-control" value="{{ form.estoque_total.value }}">
-                        <br>
-                        <label for="imagem-produto">Imagem</label>
-                        <input type="file" id="imagem-produto" name="imagem" class="form-control">
-                        <br>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">Nome do produto</span>
+                            <input type="text" id="nome-produto" name="nome_produto" class="form-control" value="{{ form.instance.nome_produto }}">
+                        </div>
+                        
+                        <div class="input-group mb-3">
+                            <label class="input-group-text" for="categoria-produto">Categoria</label>
+                            <select id="categoria-produto" name="categoria" class="form-select">
+                                {% for categoria in categorias %}
+                                    <option value="{{ categoria.id }}" {% if form.instance.categoria == categoria %}selected{% endif %}>{{ categoria.nome }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">Descrição</span>
+                            <textarea id="descricao-produto" name="descricao" class="form-control">{{ form.instance.descricao }}</textarea>
+                        </div>
+                        
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">Custo</span>
+                            <input type="number" id="custo-produto" name="custo" class="form-control" step="0.01" value="{{ form.instance.custo }}">
+                        </div>
+                        
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">Preço de Venda</span>
+                            <input type="number" id="venda-produto" name="venda" class="form-control" step="0.01" value="{{ form.instance.venda }}">
+                        </div>
+                        
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">Código</span>
+                            <input type="text" id="codigo-produto" name="codigo" class="form-control" value="{{ form.instance.codigo }}">
+                        </div>
+                        
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">Estoque</span>
+                            <input type="number" id="estoque-produto" name="estoque" class="form-control" value="{{ form.instance.estoque }}">
+                        </div>
+                        
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">Estoque Total</span>
+                            <input type="number" id="estoque-total-produto" name="estoque_total" class="form-control" value="{{ form.instance.estoque_total }}">
+                        </div>
+                        
+                        <div class="input-group mb-3">
+                            <label class="input-group-text" for="imagem-produto">Imagem</label>
+                            <input type="file" id="imagem-produto" name="imagem" class="form-control">
+                        </div>
                         <button type="submit" class="btn btn-success">Salvar</button>
                         <!-- Campos do formulário serão preenchidos dinamicamente -->
                     </form>
