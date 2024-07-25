@@ -10,9 +10,19 @@
     <div class="container">
         <div class="row">
             <div class="col-md">
+                <!-- 
+                class="btn btn-primary my-2": Define a aparência do botão utilizando classes do Bootstrap.
+                data-bs-toggle="modal": Indica que ao clicar no botão, ele deve acionar um modal.
+                data-bs-target="#produtoModal": Especifica o ID do modal que deve ser aberto (#produtoModal) -->
                 <button class="btn btn-primary my-2" data-bs-toggle="modal" data-bs-target="#produtoModal">Cadastrar Produto</button>
-                <br>
             </div>
+            <div class="col-md-6 text-end">
+            <input type="text" id="search-produto" class="form-control" placeholder="Pesquisar produto"
+                hx-post="{% url 'produto:search-produto' %}"
+                hx-trigger="keyup changed delay:500ms"
+                hx-target="#list-produto"
+                hx-swap="innerHTML">
+        </div>
         </div>
         <!-- Div que exibe os produtos cadastrados -->
         <div id="list-produto">
@@ -132,6 +142,8 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
+                    <!--O formulário editProdutoForm dentro do modal editProdutoModal 
+                    tem como objetivo permitir a edição de um produto existente. Ou seja, traz todos os dados para serem editados-->
                     <form id="editProdutoForm" hx-post="{% url 'produto:update_produto' %}" 
                         hx-trigger="submit" 
                         hx-target="#list-produto" 

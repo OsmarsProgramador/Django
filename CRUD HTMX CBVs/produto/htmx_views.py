@@ -128,4 +128,74 @@ class AddCategoriaModalView(View):
             })
         return JsonResponse({'error': form.errors}, status=400)
     
+@method_decorator(csrf_exempt, name='dispatch')
+class EditCategoriaView(View):
+    def get(self, request, id):
+        categoria = get_object_or_404(Categoria, id=id)
+        return JsonResponse({
+            'nome': categoria.nome,
+            'action': f"/produto/edit_categoria/{categoria.id}/"
+        })
+
+    def put(self, request, id):
+        categoria = get_object_or_404(Categoria, id=id)
+        put_data = get_put_data(request)
+        form = CategoriaForm(put_data, instance=categoria)
+        if form.is_valid():
+            form.save()
+            categorias_list = Categoria.objects.all().order_by('nome')
+            paginator = Paginator(categorias_list, 10)  # 10 categorias por página
+            page_number = request.GET.get('page', 1)
+            page_obj = paginator.get_page(page_number)
+            
+            return render(request, 'produto/partials/htmx_componentes/list_all_categoria.html', {
+                'categorias': page_obj.object_list,
+                'page_obj': page_obj,
+                'is_paginated': page_obj.has_other_pages(),
+            })
+        return JsonResponse({'error': form.errors}, status=400)
+
+@method_decorator(csrf_exempt, name='dispatch')
+class DeleteCategoriaView(View):
+    def delete(self, request, id):
+        categoria = Categoria.objects.get(id=id)
+        categoria.delete()
+        categorias_list = Categoria.objects.all().order_by('nome')
+        paginator = Paginator(categorias_list, 10)  # 10 categorias por página
+        page_number = request.GET.get('page', 1)
+        page_obj = paginator.get_page(page_number)
+        
+        return render(request, 'produto/partials/htmx_componentes/list_all_categoria.html', {
+            'categorias': page_obj.object_list,
+            'page_obj': page_obj,
+            'is_paginated': page_obj.has_other_pages(),
+        })
+    
+class CheckProdutoView(View):
+    def get(self, request):
+        produto = request.GET.get('nome_produto')
+        produtos = Produto.objects.filter(nome_produto__icontains=produto)
+        return render(request, 'produto/partials/htmx_componentes/check_produto.html', {'produtos': produtos})
+    
+class SearchProdutoView(View):
+    def get(self, request):
+        query = request.GET.get('query', '')
+        if not query:
+            print("Nenhum parâmetro de consulta fornecido.")
+        else:
+            print(f"Query: {query}")  # Verifique o valor de query
+        
+        produtos_list = Produto.objects.filter(nome_produto__icontains=query).order_by('nome_produto')
+        print(f"Produtos encontrados: {produtos_list}")  # Verifique os produtos filtrados
+        
+        paginator = Paginator(produtos_list, 10)  # 10 produtos por página
+        page_number = request.GET.get('page', 1)
+        page_obj = paginator.get_page(page_number)
+        
+        return render(request, 'produto/partials/htmx_componentes/list_all_produtos.html', {
+            'produtos': page_obj.object_list,
+            'page_obj': page_obj,
+            'is_paginated': page_obj.has_other_pages(),
+        })
+
 

@@ -21,7 +21,9 @@ htmx_urlpatterns = [
     path('delete_produto/<int:id>/', htmx_views.DeleteProdutoView.as_view(), name='delete_produto'),
     path('edit_produto/<int:id>/', htmx_views.EditProdutoView.as_view(), name='edit_produto'),
     path('update_produto/', htmx_views.UpdateProdutoView.as_view(), name='update_produto'),
-
+    path('edit_categoria/<int:id>/', htmx_views.EditCategoriaView.as_view(), name='edit_categoria'),
+    path('delete_categoria/<int:id>/', htmx_views.DeleteCategoriaView.as_view(), name='delete_categoria'),
+    path('search-produto/', htmx_views.SearchProdutoView.as_view(), name='search-produto'),
 ]
 
 urlpatterns += htmx_urlpatterns
