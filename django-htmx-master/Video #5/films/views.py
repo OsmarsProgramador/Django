@@ -75,13 +75,16 @@ def delete_film(request, pk):
 @login_required
 def search_film(request):
     search_text = request.POST.get('search')
-
+    print(f'Pesquisando {search_text}')
     # look up all films that contain the text
     # exclude user films
     userfilms = request.user.films.all()
+    print(f'Usuarios {userfilms}')
     results = Film.objects.filter(name__icontains=search_text).exclude(
         name__in=userfilms.values_list('name', flat=True)
     )
+    results2 = Film.objects.filter(name__icontains=search_text)
+    print(f'Resultado {results2}')
     context = {"results": results}
     return render(request, 'partials/search-results.html', context)
 

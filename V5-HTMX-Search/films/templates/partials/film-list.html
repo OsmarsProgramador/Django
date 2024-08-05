@@ -1,0 +1,21 @@
+<!-- films/templates/partials/film-list.html -->
+<div class="d-flex justify-content-between">
+    <section class="col-6">
+        {% if show_messages and messages %}
+        <ul class="messages" hx-get="{% url 'clear' %}" hx-trigger="load delay:3s">
+            {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+
+        <div id="film-list-items">
+            {% include 'partials/film-list-items.html' %}
+        </div>
+    </section>    
+</div>
+
+
+
+            
+    

@@ -1,0 +1,27 @@
+<!-- films/templates/partials/navbar.html -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="{% url 'index' %}">Aplicativo Lista de Filmes</a>
+
+    <div id="navbarNav">
+        <ul class="navbar-nav ml-auto">
+            {% if user.is_authenticated %}
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'film-list' %}">Filmes</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'logout' %}">Sair</a>
+            </li>
+            {% else %}
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'login' %}">Entrar</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'register' %}">Registre-se</a>
+            </li>
+            {% endif %}
+
+        </ul>
+    </div>
+</nav>
+
+

@@ -2,8 +2,7 @@
 
 No terminal do Visual Studio Code, você pode digitar o seguinte comando:
 
-bash
-Copiar
+
 tasklist | findstr /i python
 Isso irá listar os processos que contenham a palavra "python" no nome. Assim, você poderá ver os processos relacionados ao Python em execução no seu sistema.
 

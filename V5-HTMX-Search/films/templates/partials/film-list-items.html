@@ -1,0 +1,16 @@
+<!--films/templates/partials/film-list-items.html-->
+<ul class="list-group col-xs-12">
+    {% for film in films %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            {{ film.name }}
+            <span class="badge badge-danger badge-pill" 
+                style="cursor: pointer;"
+                hx-delete="{% url 'delete-film' film.pk %}"
+                hx-target="#film-list"
+                hx-confirm="Tem certeza de que deseja excluir?">X</span>
+        </li>
+    {% endfor %}
+</ul>
+{% if not films %}
+    <p>Você não tem nenhum filme na sua lista</p>
+{% endif %}

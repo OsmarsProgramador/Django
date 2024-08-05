@@ -1,0 +1,61 @@
+<!-- films/templates/partials/search.html -->
+<!--hx-target='#results'-->
+<div class="d-flex align-items-center">
+    <input type="text"
+        hx-post="{% url 'search-film' %}" 
+        hx-target='#film-list'
+        hx-trigger="input changed delay:500ms, search"
+        name="search"
+        class="form-control-sm mr-2" 
+        placeholder="Pesquisar filmes..."
+    />
+</div>
+
+
+
+<!--
+    hx-post: Define a URL para onde o dado será enviado. Neste caso, search-film.
+    hx-target='#film-list': Define o alvo onde a resposta da requisição será inserida. 
+Neste caso, o div com id film-list.
+    hx-trigger="keyup changed delay:500ms": Define os eventos que disparam a requisição HTMX. 
+Aqui, são os eventos keyup e changed com um atraso de 500ms.
+
+Usuário digita no campo de busca: Quando o usuário começa a digitar no campo de busca, a requisição é enviada após 500ms de atraso.
+HTMX envia uma requisição POST para search-film: Com o texto digitado pelo usuário.
+A view search_film processa a requisição: Realiza a pesquisa no banco de dados, excluindo filmes já adicionados pelo usuário, e retorna um template parcial com os resultados.
+Resposta é inserida no div com id results: O conteúdo do template parcial partials/search-results.html é inserido diretamente no div alvo.
+
+O atributo name="search" no elemento <input> define o nome da variável que será enviada ao servidor 
+quando o formulário for submetido. Esse nome é usado para identificar o valor do campo de entrada no 
+lado do servidor.
+
+    Definição do Campo de Entrada:
+
+    O <input> define um campo de texto onde o usuário pode digitar.
+    O atributo name="search" especifica que o valor digitado será identificado como 
+search quando enviado para o servidor.
+
+Na Requisição HTMX
+
+Quando o usuário digita algo no campo de entrada, uma requisição HTMX (hx-post) é disparada.
+A URL da requisição é {% url 'search-film' %}.
+O valor do campo de entrada (search) é incluído no corpo da requisição como uma variável POST.
+
+                O que acontece na view
+Obtendo o Valor do Campo:
+
+search_text = request.POST.get('search'): Esta linha obtém o valor enviado pelo campo 
+de entrada search na requisição POST.
+
+    Realizando a Busca:
+
+    A variável search_text contém o valor que o usuário digitou.
+    Esse valor é usado para filtrar os filmes no banco de dados, 
+buscando por filmes cujos nomes contenham o texto digitado.
+    
+    Renderizando a Resposta:
+
+    Os resultados da busca são passados para o template partials/search-results.html, 
+que renderiza os resultados da busca.
+    A resposta renderizada é inserida no elemento alvo definido por hx-target='#results'.
+-->
