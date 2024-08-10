@@ -3,45 +3,33 @@
 {% load static %}
 {% block content %}
     <div class="container mt-4">
+        <div class="row align-items-center justify-content-between"> <!-- Justify-content-between coloca os elementos nas extremidades -->
+            <div class="col-md-auto"> <!-- Botão ocupará o espaço necessário apenas -->
+                <!-- 
+                class="btn btn-primary my-2": Define a aparência do botão utilizando classes do Bootstrap.
+                data-bs-toggle="modal": Indica que ao clicar no botão, ele deve acionar um modal.
+                data-bs-target="#produtoModal": Especifica o ID do modal que deve ser aberto (#produtoModal) -->
+                <button class="btn btn-primary my-2" data-bs-toggle="modal" data-bs-target="#produtoModal">
+                    Cadastrar Produto
+                </button>
+            </div>
+            <div class="col-md-6 text-end"> <!-- Barra de pesquisa ocupando 6 colunas e alinhada à direita -->
+                <input type="text"  
+                    hx-post="{% url 'produto:search-produto' %}"
+                    hx-target="#list-produto"
+                    hx-trigger="input changed delay:500ms, search"
+                    name="search"
+                    class="form-control"
+                    placeholder="Pesquisar produtos..."/>
+            </div>
+        </div>
+        <!-- Div que exibe os produtos cadastrados -->
         <div id="list-produto">
             {% include 'produto/partials/htmx_componentes/list_all_produtos.html' %}
         </div>
-        
-        <div class="row mt-2">
-            <div class="col-md-6">
-                <div class="pagination">
-                    {% if is_paginated %}
-                    <ul class="pagination">
-                        {% if page_obj.has_previous %}
-                            <li class="page-item">
-                                <a class="page-link" href="?page=1">&laquo; primeira</a>
-                            </li>
-                            <li class="page-item">
-                                <a class="page-link" href="?page={{ page_obj.previous_page_number }}">anterior</a>
-                            </li>
-                        {% endif %}
-                        <li class="page-item disabled">
-                            <span class="page-link">{{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span>
-                        </li>
-                        {% if page_obj.has_next %}
-                            <li class="page-item">
-                                <a class="page-link" href="?page={{ page_obj.next_page_number }}">próxima</a>
-                            </li>
-                            <li class="page-item">
-                                <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">última &raquo;</a>
-                            </li>
-                        {% endif %}
-                    </ul>
-                    {% endif %}
-                </div>
-            </div>
-            <div class="col-md-6 text-end">
-                <button class="btn btn-success mb-2" data-bs-toggle="modal" data-bs-target="#produtoModal">Adicionar Produto</button>
-            </div>
-        </div>
     </div>
 
-    <!-- Modal para Cadastrar Produto -->
+    <!-- Modal para Cadastrar vários produtos até que o usuário feche o modal -->
     <div class="modal fade" id="produtoModal" tabindex="-1" aria-labelledby="produtoModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -57,50 +45,57 @@
                         hx-on="htmx:afterRequest:limparCampos"
                     >
                         {% csrf_token %}
-                        <div class="mb-3">
-                            <label for="nome-produto">Nome do produto</label>
-                            <input type="text" id="nome-produto" name="nome_produto" class="form-control"
-                                hx-get="{% url 'produto:check_produto' %}"
-                                hx-trigger="keyup"
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">Nome do produto</span>
+                            <input type="text" id="nome-produto" name="nome_produto" class="form-control" 
+                                hx-get="{% url 'produto:check_produto' %}" 
+                                hx-trigger="keyup" 
                                 hx-target="#produto-out">
                         </div>
                         <div id="produto-out"></div>
-                        <div class="mb-3">
-                            <label for="categoria-produto">Categoria</label>
-                            <select id="categoria-produto" name="categoria" class="form-control">
+                        
+                        <div class="input-group mb-3">
+                            <label class="input-group-text" for="categoria-produto">Categoria</label>
+                            <select id="categoria-produto" name="categoria" class="form-select">
                                 {% for categoria in categorias %}
                                     <option value="{{ categoria.id }}">{{ categoria.nome }}</option>
                                 {% endfor %}
                             </select>
                         </div>
-                        <div class="mb-3">
-                            <label for="descricao-produto">Descrição</label>
+
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">Descrição</span>
                             <textarea id="descricao-produto" name="descricao" class="form-control"></textarea>
                         </div>
-                        <div class="mb-3">
-                            <label for="custo-produto">Custo</label>
+                        
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">Custo</span>
                             <input type="number" id="custo-produto" name="custo" class="form-control" step="0.01">
                         </div>
-                        <div class="mb-3">
-                            <label for="venda-produto">Preço de Venda</label>
+                        
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">Preço de Venda</span>
                             <input type="number" id="venda-produto" name="venda" class="form-control" step="0.01">
                         </div>
-                        <div class="mb-3">
-                            <label for="codigo-produto">Código</label>
+                        
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">Código</span>
                             <input type="text" id="codigo-produto" name="codigo" class="form-control">
                         </div>
-                        <div class="mb-3">
-                            <label for="estoque-produto">Estoque</label>
+
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">Estoque</span>
                             <input type="number" id="estoque-produto" name="estoque" class="form-control">
                         </div>
-                        <div class="mb-3">
-                            <label for="estoque-total-produto">Estoque Total</label>
+
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">Estoque Total</span>
                             <input type="number" id="estoque-total-produto" name="estoque_total" class="form-control">
                         </div>
-                        <div class="mb-3">
-                            <label for="imagem-produto">Imagem</label>
-                            <input type="file" id="imagem-produto" name="imagem" class="form-control">
-                        </div>
+
+                        <label for="imagem-produto">Imagem</label>
+                        <input type="file" id="imagem-produto" name="imagem" class="form-control">
+                        <br>
                         <button type="submit" class="btn btn-success">Salvar</button>
                     </form>
                 </div>
@@ -116,9 +111,66 @@
                     <h5 class="modal-title" id="editProdutoModalLabel">Editar Produto</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body" id="edit-produto-content">
-                    <!-- O conteúdo do formulário de edição será carregado aqui -->
-                    
+                <div class="modal-body">
+                    <!--O formulário editProdutoForm dentro do modal editProdutoModal 
+                    tem como objetivo permitir a edição de um produto existente. Ou seja, traz todos os dados para serem editados-->
+                    <form id="editProdutoForm" hx-post="{% url 'produto:update_produto' %}" 
+                        hx-trigger="submit" 
+                        hx-target="#list-produto" 
+                        hx-swap="innerHTML"
+                    >
+                        {% csrf_token %}
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">Nome do produto</span>
+                            <input type="text" id="nome-produto" name="nome_produto" class="form-control" value="{{ form.instance.nome_produto }}">
+                        </div>
+                        
+                        <div class="input-group mb-3">
+                            <label class="input-group-text" for="categoria-produto">Categoria</label>
+                            <select id="categoria-produto" name="categoria" class="form-select">
+                                {% for categoria in categorias %}
+                                    <option value="{{ categoria.id }}" {% if form.instance.categoria == categoria %}selected{% endif %}>{{ categoria.nome }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">Descrição</span>
+                            <textarea id="descricao-produto" name="descricao" class="form-control">{{ form.instance.descricao }}</textarea>
+                        </div>
+                        
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">Custo</span>
+                            <input type="number" id="custo-produto" name="custo" class="form-control" step="0.01" value="{{ form.instance.custo }}">
+                        </div>
+                        
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">Preço de Venda</span>
+                            <input type="number" id="venda-produto" name="venda" class="form-control" step="0.01" value="{{ form.instance.venda }}">
+                        </div>
+                        
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">Código</span>
+                            <input type="text" id="codigo-produto" name="codigo" class="form-control" value="{{ form.instance.codigo }}">
+                        </div>
+                        
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">Estoque</span>
+                            <input type="number" id="estoque-produto" name="estoque" class="form-control" value="{{ form.instance.estoque }}">
+                        </div>
+                        
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">Estoque Total</span>
+                            <input type="number" id="estoque-total-produto" name="estoque_total" class="form-control" value="{{ form.instance.estoque_total }}">
+                        </div>
+                        
+                        <div class="input-group mb-3">
+                            <label class="input-group-text" for="imagem-produto">Imagem</label>
+                            <input type="file" id="imagem-produto" name="imagem" class="form-control">
+                        </div>
+                        <button type="submit" class="btn btn-success">Salvar</button>
+                        <!-- Campos do formulário serão preenchidos dinamicamente -->
+                    </form>
                 </div>
             </div>
         </div>
@@ -142,19 +194,6 @@ Usamos HTMX para capturar o evento após a requisição e limpar os campos "Nome
             document.getElementById('estoque-produto').value = '';
             document.getElementById('estoque-total-produto').value = '';
             document.getElementById('imagem-produto').value = '';
-        }
-    });
-
-    document.body.addEventListener('htmx:configRequest', function(evt) {
-        if (evt.detail.target.classList.contains('edit-produto-link')) {
-            evt.detail.headers['HX-Request'] = 'true';
-            evt.detail.headers['X-Modal-Request'] = 'true';
-        }
-    });
-
-    document.body.addEventListener('htmx:afterOnLoad', function(evt) {
-        if (evt.detail.elt.classList.contains('edit-produto-link')) {
-            new bootstrap.Modal(document.getElementById('editProdutoModal')).show();
         }
     });
 </script>

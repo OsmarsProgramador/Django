@@ -1,5 +1,4 @@
 <!-- produto/templates/produto/partials/htmx_componentes/list_all_produtos.html -->
-
 {% if produtos %}
     <table class="table table-striped">
         <thead>
@@ -18,24 +17,53 @@
                     <td>{{ produto.venda }}</td>
                     <td>{{ produto.codigo }}</td>
                     <td>{{ produto.estoque }}</td>
-                    <td>
-                        <p style="float: right; cursor: pointer;" class="badge bg-danger"
+                    <td class="text-end">
+                        <button class="btn btn-warning" style="cursor: pointer;"
+                            data-bs-toggle="modal" data-bs-target="#editProdutoModal"
+                            hx-get="{% url 'produto:edit_produto' produto.id %}" 
+                            hx-target="#editProdutoForm">Editar</button>
+                        <button class="btn btn-danger" style="cursor: pointer;"
                             hx-delete="{% url 'produto:delete_produto' produto.id %}"
                             hx-trigger="click"
-                            hx-target="#list-produto"
-                        >x</p>
-                        <p style="float: right; cursor: pointer; margin-right: 10px;" class="badge bg-primary edit-produto-link"
-                            hx-get="{% url 'produto:edit_produto' produto.id %}"
-                            hx-target="#edit-produto-content"
-                        >Editar</p>
-                        <div id="edit-produto-{{ produto.id }}"></div>
+                            hx-target="#list-produto">Excluir</button>
                     </td>
                 </tr>
             {% endfor %}
         </tbody>
     </table>
+
+    <!-- Controles de Paginação -->
+    <div class="row mt-2">
+        <div class="col-md-12">
+            <nav aria-label="Navegação de página">
+                <ul class="pagination">
+                    {% if page_obj.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page=1">&laquo; primeira</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}">anterior</a>
+                        </li>
+                    {% endif %}
+                    <li class="page-item disabled">
+                        <span class="page-link">Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span>
+                    </li>
+                    {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.next_page_number }}">próxima</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">última &raquo;</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </div>
+
 {% else %}
     <h4>Nenhum produto cadastrado.</h4>
 {% endif %}
+
 
 

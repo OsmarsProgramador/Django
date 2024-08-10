@@ -8,54 +8,29 @@
 {% load static %}
 {% block content %}
     <div class="container">
-        <div class="row">
-            <div class="col-md">
+        <div class="row align-items-center justify-content-between"> <!-- Justify-content-between coloca os elementos nas extremidades -->
+            <div class="col-md-auto"> <!-- Botão ocupará o espaço necessário apenas -->
                 <!-- 
                 class="btn btn-primary my-2": Define a aparência do botão utilizando classes do Bootstrap.
                 data-bs-toggle="modal": Indica que ao clicar no botão, ele deve acionar um modal.
                 data-bs-target="#produtoModal": Especifica o ID do modal que deve ser aberto (#produtoModal) -->
-                <button class="btn btn-primary my-2" data-bs-toggle="modal" data-bs-target="#produtoModal">Cadastrar Produto</button>
+                <button class="btn btn-primary my-2" data-bs-toggle="modal" data-bs-target="#produtoModal">
+                    Cadastrar Produto
+                </button>
             </div>
-            <div class="col-md-6 text-end">
-            <input type="text" id="search-produto" class="form-control" placeholder="Pesquisar produto"
-                hx-post="{% url 'produto:search-produto' %}"
-                hx-trigger="keyup changed delay:500ms"
-                hx-target="#list-produto"
-                hx-swap="innerHTML">
-        </div>
+            <div class="col-md-6 text-end"> <!-- Barra de pesquisa ocupando 6 colunas e alinhada à direita -->
+                <input type="text"  
+                    hx-post="{% url 'produto:search-produto' %}"
+                    hx-target="#list-produto"
+                    hx-trigger="input changed delay:500ms, search"
+                    name="search"
+                    class="form-control"
+                    placeholder="Pesquisar produtos..."/>
+            </div>
         </div>
         <!-- Div que exibe os produtos cadastrados -->
         <div id="list-produto">
             {% include 'produto/partials/htmx_componentes/list_all_produtos.html' %}
-        </div>
-    </div>
-
-    <!-- Controles de Paginação -->
-    <div class="row mt-2">
-        <div class="col-md-12">
-            <nav aria-label="Navegação de página">
-                <ul class="pagination">
-                    {% if page_obj.has_previous %}
-                        <li class="page-item">
-                            <a class="page-link" href="?page=1">&laquo; primeira</a>
-                        </li>
-                        <li class="page-item">
-                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}">anterior</a>
-                        </li>
-                    {% endif %}
-                    <li class="page-item disabled">
-                        <span class="page-link">Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span>
-                    </li>
-                    {% if page_obj.has_next %}
-                        <li class="page-item">
-                            <a class="page-link" href="?page={{ page_obj.next_page_number }}">próxima</a>
-                        </li>
-                        <li class="page-item">
-                            <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">última &raquo;</a>
-                        </li>
-                    {% endif %}
-                </ul>
-            </nav>
         </div>
     </div>
 

@@ -26,7 +26,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # Pe terceiros. Para autenticação e registro dousuario
+    # app de terceiros. Para autenticação e registro dousuario
     'widget_tweaks', # pip install django-widget-tweaks
     'django_extensions', # pip install django-extensions
     # meu app

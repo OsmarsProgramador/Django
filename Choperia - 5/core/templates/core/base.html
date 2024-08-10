@@ -32,39 +32,45 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'core:index' %}">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'empresa:empresa_list' %}">Empresas</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-bs-toggle="dropdown">Produtos</a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{% url 'produto:list_produto' %}">Listar Produtos</a></li>
-                            <li><a class="dropdown-item" href="{% url 'produto:categoria_list' %}">Listar Categorias</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'mesa:mesa_list' %}">Mesas</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'estoque:estoque_list' %}">Estoque</a>
-                    </li>
+                    {% if user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'core:index' %}">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'empresa:empresa_list' %}">Empresas</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-bs-toggle="dropdown">Produtos</a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="{% url 'produto:list_produto' %}">Listar Produtos</a></li>
+                                <li><a class="dropdown-item" href="{% url 'produto:categoria_list' %}">Listar Categorias</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'mesa:mesa_list' %}">Mesas</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'estoque:estoque_list' %}">Estoque</a>
+                        </li>
+                    {% else %}
+                
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'usuario:login' %}">Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'usuario:signup' %}">Cadastro</a>
+                        </li>
+                    {% endif %}
                 </ul>
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'usuario:login' %}">Login</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'usuario:signup' %}">Cadastro</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'usuario:logout' %}">
-                            <i class="fa fa-window-close-o" aria-hidden="true"></i>
-                            <span class="text">Sair</span>
-                        </a>
-                    </li>
+                    {% if user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'usuario:logout' %}">
+                                <i class="fa fa-window-close-o" aria-hidden="true"></i>
+                                <span class="text">Sair</span>
+                            </a>
+                        </li>
+                    {% endif %}
                     <!-- Adição do trocador de tema -->
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="themeDropdown" data-bs-toggle="dropdown" aria-expanded="false">
@@ -101,6 +107,34 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>
     <script src="{% static 'js/script.js' %}"></script>
+    <script>
+        // hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}': Este atributo faz com que o HTMX envie 
+        // o token CSRF como um cabeçalho HTTP, que é necessário para que o Django aceite a requisição POST
+        
+        // Função para obter o token CSRF
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    // Verifica se este cookie é o desejado
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        const csrftoken = getCookie('csrftoken');
+
+        // Adiciona o token CSRF em todas as requisições HTMX
+        document.body.addEventListener('htmx:configRequest', (event) => {
+            event.detail.headers['X-CSRFToken'] = csrftoken;
+        });
+    </script>
 </body>
 </html>
     

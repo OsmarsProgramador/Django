@@ -1,0 +1,13 @@
+<!--templates/tarefas/listar_tarefas.html-->
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Minhas Tarefas</h1>
+<a href="{% url 'criar_tarefa' %}">Criar Nova Tarefa</a>
+<ul>
+  {% for tarefa in tarefas %}
+    <li>{{ tarefa.titulo }} - {{ tarefa.descricao }} <a href="{% url 'editar_tarefa' tarefa.id %}">Editar</a></li>
+  {% endfor %}
+</ul>
+{% endblock %}
+

@@ -1,25 +1,29 @@
 # produto/views.py
+from django.core.paginator import Paginator
+from django.shortcuts import render
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from .models import Produto, Categoria
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 class ProdutoListView(LoginRequiredMixin, ListView):
-    """
-    -model: Especifica o modelo a ser listado (neste caso, Produto).
-    -template_name: Indica o template a ser usado para renderizar a listagem.
-    -context_object_name: Define o nome do objeto a ser passado para o template.
-    -paginate_by: Determina a quantidade de itens a serem exibidos por página.
-    """
-    model = Produto
-    template_name = 'produto/list_produto.html'
-    context_object_name = 'produtos'
-    paginate_by = 10
+    def get_queryset(self):
+        return Produto.objects.all().order_by('nome_produto')
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['categorias'] = Categoria.objects.all()
-        return context
+    def get(self, request):
+        produtos_list = self.get_queryset()
+        categorias = Categoria.objects.all()
+        
+        paginator = Paginator(produtos_list, 10)  # 10 produtos por página
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+        
+        return render(request, 'produto/list_produto.html', {
+            'produtos': page_obj.object_list,
+            'categorias': categorias,
+            'page_obj': page_obj,
+            'is_paginated': page_obj.has_other_pages(),
+        })
 
 '''class ProdutoCreateView(LoginRequiredMixin, CreateView):
     """
