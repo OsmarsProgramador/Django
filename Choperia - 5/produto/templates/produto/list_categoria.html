@@ -13,7 +13,7 @@
             <input type="text"  
                 hx-post="{% url 'produto:search-categoria' %}"
                 hx-target="#list-categoria"
-                hx-trigger="input changed delay:500ms, search"
+                hx-trigger="input changed, search"
                 name="search"
                 class="form-control"
                 placeholder="Pesquisar categorias..."/>

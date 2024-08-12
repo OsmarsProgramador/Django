@@ -1,10 +1,11 @@
 <!-- produto/templates/produto/partials/htmx_componentes/edit_produto_form.html -->
 {% load custom_filters %}
-<form id="editProdutoForm" hx-post="{% url 'produto:update_produto' %}" 
-      hx-trigger="submit" 
-      hx-target="#list-produto" 
-      hx-swap="innerHTML"
-      enctype="multipart/form-data">
+    <form id="editProdutoForm" 
+        hx-post="{% url 'produto:update_produto' %}" 
+        hx-trigger="submit" 
+        hx-target="#produto-{{ produto.id }}" 
+        hx-swap="outerHTML"
+        enctype="multipart/form-data">
     {% csrf_token %}
     <input type="hidden" name="produto_id" value="{{ produto.id }}">
     

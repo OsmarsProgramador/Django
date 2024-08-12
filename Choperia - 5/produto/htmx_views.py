@@ -65,17 +65,10 @@ class UpdateProdutoView(View):
         form = ProdutoForm(request.POST, instance=produto)
         if form.is_valid():
             form.save()
-            # Paginação
-            produtos_list = Produto.objects.all().order_by('nome_produto')
-            paginator = Paginator(produtos_list, 10)  # 10 produtos por página
-            page_number = request.GET.get('page', 1)
-            page_obj = paginator.get_page(page_number)
-            
-            return render(request, 'produto/partials/htmx_componentes/list_all_produtos.html', {
-                'produtos': page_obj.object_list,
-                'page_obj': page_obj,
-                'is_paginated': page_obj.has_other_pages(),
-        })
+            # Renderiza apenas a linha do produto atualizado
+            return render(request, 'produto/partials/htmx_componentes/produto_row.html', {'produto': produto})
+        return JsonResponse({'error': form.errors}, status=400)
+
 
 @method_decorator(csrf_exempt, name='dispatch')
 class DeleteProdutoView(View):

@@ -5,7 +5,7 @@ from django.views.generic import ListView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Categoria, Produto
 
-class ProdutoListView(LoginRequiredMixin, ListView):
+"""class ProdutoListView(LoginRequiredMixin, ListView):
     def get(self, request):
         produtos_list = Produto.objects.all().order_by('nome_produto')
         categorias = Categoria.objects.all()
@@ -19,7 +19,18 @@ class ProdutoListView(LoginRequiredMixin, ListView):
             'categorias': categorias,
             'page_obj': page_obj,
             'is_paginated': page_obj.has_other_pages(),
+        })"""
+
+class ProdutoListView(LoginRequiredMixin, ListView):
+    def get(self, request):
+        produtos_list = Produto.objects.all().order_by('nome_produto')
+        categorias = Categoria.objects.all()
+        
+        return render(request, 'produto/list_produto.html', {
+            'produtos': produtos_list,
+            'categorias': categorias,
         })
+
 
 class CategoriaListView(LoginRequiredMixin, ListView):
     def get(self, request):

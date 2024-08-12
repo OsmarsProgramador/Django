@@ -4,16 +4,19 @@
 {% block content %}
     <div class="container mt-4">
         <div class="row align-items-center justify-content-between"> <!-- Justify-content-between coloca os elementos nas extremidades -->
-            <div class="col-md-auto"> <!-- Botão ocupará o espaço necessário apenas -->
+            <!-- 
+            <div class="col-md-auto"> --> <!-- Botão ocupará o espaço necessário apenas -->
                 <!-- 
                 class="btn btn-primary my-2": Define a aparência do botão utilizando classes do Bootstrap.
                 data-bs-toggle="modal": Indica que ao clicar no botão, ele deve acionar um modal.
                 data-bs-target="#produtoModal": Especifica o ID do modal que deve ser aberto (#produtoModal) -->
+                <!-- 
                 <button class="btn btn-primary my-2" data-bs-toggle="modal" data-bs-target="#produtoModal">
                     Cadastrar Produto
                 </button>
             </div>
-            <div class="col-md-6 text-end"> <!-- Barra de pesquisa ocupando 6 colunas e alinhada à direita -->
+            <div class="col-md-6 text-end"> --> <!-- Barra de pesquisa ocupando 6 colunas e alinhada à direita -->
+                <!-- 
                 <input type="text"  
                     hx-post="{% url 'produto:search-produto' %}"
                     hx-target="#list-produto"
@@ -21,7 +24,7 @@
                     name="search"
                     class="form-control"
                     placeholder="Pesquisar produtos..."/>
-            </div>
+            </div> -->
         </div>
         <!-- Div que exibe os produtos cadastrados -->
         <div id="list-produto">

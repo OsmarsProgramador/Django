@@ -18,6 +18,10 @@
 
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+    <!--Importação Datatables-->
+    <link href="https://cdn.datatables.net/v/bs5/dt-2.1.3/datatables.min.css" rel="stylesheet">
+ 
 </head>
 <!--Estilo do <body>: Adicionei style="padding-top: 56px;" para garantir que o 
     corpo da página tenha um padding suficiente para não esconder o conteúdo sob a barra de navegação 
@@ -107,6 +111,12 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>
     <script src="{% static 'js/script.js' %}"></script>
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/v/bs5/dt-2.1.3/datatables.min.js"></script>
+    
+    <!-- DataTables Buttons JS -->
+    <script src="https://cdn.datatables.net/buttons/2.1.1/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.1.1/js/buttons.bootstrap5.min.js"></script>
     <script>
         // hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}': Este atributo faz com que o HTMX envie 
         // o token CSRF como um cabeçalho HTTP, que é necessário para que o Django aceite a requisição POST
@@ -134,7 +144,51 @@
         document.body.addEventListener('htmx:configRequest', (event) => {
             event.detail.headers['X-CSRFToken'] = csrftoken;
         });
+
+        
     </script>
+    <script>
+        $(document).ready(function() {
+            $('#tabela-listar').DataTable({
+                responsive: true,
+                paging: true,
+                aaSorting: [],
+                pageLength: 10,
+                language: {
+                    lengthMenu: "Mostrar _MENU_ registros",
+                    search: "Procurar:",
+                    info: "Mostrando _START_ até _END_ de _TOTAL_ registros",
+                    paginate: {
+                        first: "Primeiro",
+                        last: "Último",
+                        next: "Seguinte",
+                        previous: "Anterior"
+                    },
+                    emptyTable: "Sem dados disponíveis",
+                    zeroRecords: "Nenhum resultado encontrado"
+                },
+                // Configuração para alinhamento correto
+                dom: '<"row align-items-center"<"col-md-4"l><"col-md-4 text-center"B><"col-md-4"f>>' +
+                    '<"row"<"col-sm-12"tr>>' +
+                    '<"row align-items-center"<"col-md-6"i><"col-md-6 d-flex justify-content-end"p>>',
+                buttons: [
+                    {
+                        text: 'Cadastrar Produto',
+                        className: 'btn btn-primary',
+                        action: function (e, dt, node, config) {
+                            $('#produtoModal').modal('show');
+                        }
+                    }
+                ]
+            });
+        });
+
+    </script>
+    
+          
+    {% block scripts %}
+
+    {% endblock %}
 </body>
 </html>
     
