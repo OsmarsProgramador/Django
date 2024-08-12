@@ -1,0 +1,33 @@
+<!-- produto/partials/htmx_componentes/edit_produto_row.html -->
+{% load custom_filters %}
+<tr hx-trigger='cancel' class='editing' hx-get="{% url 'produto:edit_produto' produto.id %}">
+    <td><input name='nome_produto' value='{{ form.instance.nome_produto }}' class="form-control"></td>
+    <td><input name='venda' value="{{ form.instance.venda|stringformat:"f"|floatformat:2|replace_comma }}" type="number" step="0.01" class="form-control"></td>
+    <td><input name='codigo' value='{{ form.instance.codigo }}' class="form-control"></td>
+    <td><input name='estoque' value='{{ form.instance.estoque }}' type="number" class="form-control"></td>
+
+    <!-- Campos Ocultos 
+     Como esses campos não precisam ser exibidos na interface, mas são obrigatórios para a 
+     validação do formulário, você pode incluir esses campos como hidden no formulário de edição. 
+     Dessa forma, os valores corretos são enviados, mas o usuário não precisa interagir com eles.
+     -->
+     <input type="hidden" name="categoria" value="{{ form.instance.categoria.id }}">
+     <input type="hidden" name="custo" value="{{ form.instance.custo }}">
+     <input type="hidden" name="estoque_total" value="{{ form.instance.estoque_total }}">
+ 
+     <td class="text-end">
+         <button class="btn btn-danger"
+                 hx-get="{% url 'produto:list_produto' %}">
+             Cancelar
+         </button>
+         <button class="btn btn-success"
+                 hx-put="{% url 'produto:update_produto' produto.id %}"
+                 hx-include="closest tr"
+                 hx-swap="outerHTML">  <!-- Usa outerHTML para substituir a linha -->
+            Salvar
+        </button>
+    </td>
+</tr>
+
+
+

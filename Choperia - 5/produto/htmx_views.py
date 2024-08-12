@@ -43,12 +43,10 @@ class SaveProdutoView(View):
         produtos = Produto.objects.all()
         return render(request, 'produto/partials/htmx_componentes/list_all_produtos.html', {'produtos': produtos})
 
-
 def get_put_data(request):
     # Cria um QueryDict a partir dos dados do corpo da requisição
     return QueryDict(request.body)
 
-@method_decorator(csrf_exempt, name='dispatch')
 class EditProdutoView(View):
     def get(self, request, id):
         produto = get_object_or_404(Produto, id=id)
@@ -59,28 +57,6 @@ class EditProdutoView(View):
             'produto': produto,
             'categorias': categorias
         })
-
-    def put(self, request, id):
-        produto = get_object_or_404(Produto, id=id)
-        put_data = get_put_data(request)
-        form = ProdutoForm(put_data, instance=produto)
-        if form.is_valid():
-            form.save()
-            produtos_list = Produto.objects.all().order_by('nome_produto')
-            paginator = Paginator(produtos_list, 10)  # 10 produtos por página
-            page_number = request.GET.get('page', 1)
-            page_obj = paginator.get_page(page_number)
-            
-            return render(request, 'produto/partials/htmx_componentes/list_all_produtos.html', {
-                'produtos': page_obj.object_list,
-                'page_obj': page_obj,
-                'is_paginated': page_obj.has_other_pages(),
-            })
-        return render(request, 'produto/partials/htmx_componentes/edit_produto_form.html', {
-            'form': form,
-            'produto': produto,
-            'categorias': Categoria.objects.all()
-        })
     
 class UpdateProdutoView(View):
     def post(self, request):
@@ -90,12 +66,16 @@ class UpdateProdutoView(View):
         if form.is_valid():
             form.save()
             # Paginação
-            page_number = request.POST.get('page', 1)
-            produtos_list = Produto.objects.all()
+            produtos_list = Produto.objects.all().order_by('nome_produto')
             paginator = Paginator(produtos_list, 10)  # 10 produtos por página
+            page_number = request.GET.get('page', 1)
             page_obj = paginator.get_page(page_number)
-            return render(request, 'produto/partials/htmx_componentes/list_all_produtos.html', {'produtos': page_obj})
-        return JsonResponse({'error': form.errors}, status=400)
+            
+            return render(request, 'produto/partials/htmx_componentes/list_all_produtos.html', {
+                'produtos': page_obj.object_list,
+                'page_obj': page_obj,
+                'is_paginated': page_obj.has_other_pages(),
+        })
 
 @method_decorator(csrf_exempt, name='dispatch')
 class DeleteProdutoView(View):
@@ -150,9 +130,10 @@ class AddCategoriaModalView(View):
 class EditCategoriaView(View):
     def get(self, request, id):
         categoria = get_object_or_404(Categoria, id=id)
-        return JsonResponse({
-            'nome': categoria.nome,
-            'action': f"/produto/edit_categoria/{categoria.id}/"
+        form = CategoriaForm(instance=categoria)
+        return render(request, 'produto/partials/htmx_componentes/edit_categoria_form.html', {
+            'form': form,
+            'categoria': categoria
         })
 
     def put(self, request, id):
@@ -171,8 +152,26 @@ class EditCategoriaView(View):
                 'page_obj': page_obj,
                 'is_paginated': page_obj.has_other_pages(),
             })
-        return JsonResponse({'error': form.errors}, status=400)
+        return render(request, 'produto/partials/htmx_componentes/edit_categoria_form.html', {
+            'form': form,
+            'categoria': categoria,
+        })
 
+class UpdateCategoriaView(View):
+    def post(self, request):
+        categoria_id = request.POST.get('categoria_id')
+        categoria = get_object_or_404(Categoria, id=categoria_id)
+        form = CategoriaForm(request.POST, instance=categoria)
+        if form.is_valid():
+            form.save()
+            # Paginação
+            page_number = request.POST.get('page', 1)
+            categorias_list = Categoria.objects.all()
+            paginator = Paginator(categorias_list, 10)  # 10 categorias por página
+            page_obj = paginator.get_page(page_number)
+            return render(request, 'produto/partials/htmx_componentes/list_all_categoria.html', {'categorias': page_obj})
+        return JsonResponse({'error': form.errors}, status=400)
+    
 @method_decorator(csrf_exempt, name='dispatch')
 class DeleteCategoriaView(View):
     def delete(self, request, id):
@@ -195,4 +194,18 @@ class CheckCategoriaView(View):
         categorias = Categoria.objects.filter(nome__icontains=categoria)
         return render(request, 'produto/partials/htmx_componentes/check_categoria.html', {'categorias': categorias})
 
-    
+def search_categoria(request): 
+    search_text = request.POST.get('search', '')
+
+    categorias_list = Categoria.objects.filter(nome__icontains=search_text).order_by('nome')
+
+    paginator = Paginator(categorias_list, 10)  # 10 produtos por página
+    page_number = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'produto/partials/htmx_componentes/list_all_categoria.html', {
+        'categorias': page_obj.object_list,
+        'page_obj': page_obj,
+        'is_paginated': page_obj.has_other_pages(),
+    })
+

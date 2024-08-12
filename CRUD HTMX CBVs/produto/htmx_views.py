@@ -9,6 +9,11 @@ from .models import Produto, Categoria
 from .forms import ProdutoForm, CategoriaForm
 from django.http import QueryDict
 
+import logging
+
+logger = logging.getLogger(__name__)
+
+
 def get_put_data(request):
     # Cria um QueryDict a partir dos dados do corpo da requisição
     return QueryDict(request.body)
@@ -42,7 +47,69 @@ class CreateProdutoView(View):
             })
         return JsonResponse({'error': form.errors}, status=400)
 
-@method_decorator(csrf_exempt, name='dispatch')
+class EditProdutoView(View):
+    def get(self, request, id):
+        produto = get_object_or_404(Produto, id=id)
+        form = ProdutoForm(instance=produto)
+        return render(request, 'produto/partials/htmx_componentes/edit_produto_row.html', {
+            'form': form,
+            'produto': produto,
+        })
+
+    def put(self, request, id):
+        produto = get_object_or_404(Produto, id=id)
+        form = ProdutoForm(request.POST, instance=produto)
+        if form.is_valid():
+            form.save()
+            produtos_list = Produto.objects.all().order_by('nome_produto')
+            paginator = Paginator(produtos_list, 10)  # 10 produtos por página
+            page_number = request.GET.get('page', 1)
+            page_obj = paginator.get_page(page_number)
+            return render(request, 'produto/partials/htmx_componentes/list_all_produtos.html', {
+                'produtos': page_obj.object_list,
+                'page_obj': page_obj,
+                'is_paginated': page_obj.has_other_pages(),
+            })
+        return render(request, 'produto/partials/htmx_componentes/edit_produto_row.html', {
+            'form': form,
+            'produto': produto,
+        })
+
+# produto/htmx_views.py
+class UpdateProdutoView(View):
+    def put(self, request, id):
+        put_data = get_put_data(request)
+
+        # Log da requisição
+        print(f"Received PUT data: {put_data}")
+
+        # Converter a vírgula decimal para ponto decimal
+        if 'custo' in put_data:
+            put_data = put_data.copy()
+            put_data['custo'] = put_data['custo'].replace(',', '.')
+
+        produto = get_object_or_404(Produto, id=id)
+        form = ProdutoForm(put_data, instance=produto)
+
+        if form.is_valid():
+            form.save()
+
+            # Renderizar apenas a linha atualizada
+            response = render(request, 'produto/partials/htmx_componentes/produto_row.html', {
+                'form': form,
+                'produto': produto,
+            })
+
+            # Log da resposta renderizada
+            print(response.content.decode('utf-8'))  # Log para verificar o HTML que está sendo retornado
+
+            return response
+
+        # Log de erros do formulário
+        print(f"Form errors: {form.errors}")
+        return JsonResponse({'error': form.errors}, status=400)
+
+"""@method_decorator(csrf_exempt, name='dispatch')
 class EditProdutoView(View):
     def get(self, request, id):
         produto = get_object_or_404(Produto, id=id)
@@ -75,7 +142,7 @@ class EditProdutoView(View):
             'produto': produto,
             'categorias': Categoria.objects.all()
         })
-    
+
 class UpdateProdutoView(View):
     def post(self, request):
         produto_id = request.POST.get('produto_id')
@@ -89,7 +156,7 @@ class UpdateProdutoView(View):
             paginator = Paginator(produtos_list, 10)  # 10 produtos por página
             page_obj = paginator.get_page(page_number)
             return render(request, 'produto/partials/htmx_componentes/list_all_produtos.html', {'produtos': page_obj})
-        return JsonResponse({'error': form.errors}, status=400)
+        return JsonResponse({'error': form.errors}, status=400)"""
 
 
 class SaveProdutoView(View):

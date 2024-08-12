@@ -1,45 +1,27 @@
 <!-- produto/templates/produto/list_categoria.html -->
 {% extends "core/base.html" %}
-
+{% load static %}
 {% block content %}
 <div class="container mt-4">
-    <h2>Lista de Categorias</h2>
-
-    <div id="list-categoria">
-        {% include 'produto/partials/htmx_componentes/list_all_categoria.html' %}
-    </div>
-
-    <div class="row mt-2">
-        <div class="col-md-6">
-            <div class="pagination">
-                {% if is_paginated %}
-                <ul class="pagination">
-                    {% if page_obj.has_previous %}
-                    <li class="page-item">
-                        <a class="page-link" href="?page=1">&laquo; primeira</a>
-                    </li>
-                    <li class="page-item">
-                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}">anterior</a>
-                    </li>
-                    {% endif %}
-                    <li class="page-item disabled">
-                        <span class="page-link">{{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span>
-                    </li>
-                    {% if page_obj.has_next %}
-                    <li class="page-item">
-                        <a class="page-link" href="?page={{ page_obj.next_page_number }}">próxima</a>
-                    </li>
-                    <li class="page-item">
-                        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">última &raquo;</a>
-                    </li>
-                    {% endif %}
-                </ul>
-                {% endif %}
-            </div>
+    <div class="row align-items-center justify-content-between">
+        <div class="col-md-auto">
+            <button class="btn btn-primary my-2" data-bs-toggle="modal" data-bs-target="#categoriaModal">
+                Cadastrar Categoria
+            </button>
         </div>
         <div class="col-md-6 text-end">
-            <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#categoriaModal">Adicionar Nova Categoria</button>
+            <input type="text"  
+                hx-post="{% url 'produto:search-categoria' %}"
+                hx-target="#list-categoria"
+                hx-trigger="input changed delay:500ms, search"
+                name="search"
+                class="form-control"
+                placeholder="Pesquisar categorias..."/>
         </div>
+    </div>
+    <!-- Div que exibe as categorias cadastradas -->
+    <div id="list-categoria">
+        {% include 'produto/partials/htmx_componentes/list_all_categoria.html' %}
     </div>
 </div>
 
@@ -58,7 +40,7 @@
                     hx-swap="innerHTML">
                     {% csrf_token %}
                     <label for="nome-categoria">Nome da Categoria</label>
-                    <input type="text" id="nome-categoria" name="nome" class="form-control"
+                    <input type="text" id="nome-categoria" name="nome" class="form-control" value="{{ form.instance.nome }}"
                         hx-get="{% url 'produto:check_categoria' %}"
                         hx-trigger="keyup"
                         hx-target="#categoria-out">
@@ -80,39 +62,21 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="editCategoriaForm" hx-put="{% url 'produto:edit_categoria' 0 %}"
-                    hx-trigger="submit"
-                    hx-target="#list-categoria"
-                    hx-swap="innerHTML">
+                <form id="editCategoriaForm" hx-post="{% url 'produto:update_categoria' %}" 
+                    hx-trigger="submit" 
+                    hx-target="#list-categoria" 
+                    hx-swap="innerHTML"
+                >
                     {% csrf_token %}
-                    <label for="edit-nome-categoria">Nome da Categoria</label>
-                    <input type="text" id="edit-nome-categoria" name="nome" class="form-control">
-                    <br>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" id="basic-addon1">Nome da Categoria</span>
+                        <input type="text" id="edit-nome-categoria" name="nome" class="form-control" value="{{ form.instance.nome }}">
+                    </div>
                     <button type="submit" class="btn btn-success">Salvar</button>
                 </form>
             </div>
         </div>
     </div>
 </div>
+
 {% endblock %}
-
-<script>
-    document.addEventListener('click', function(event) {
-        if (event.target.matches('.btn-warning')) {
-            const categoriaId = event.target.getAttribute('data-id');
-            fetch(`/produto/edit_categoria/${categoriaId}/`)
-                .then(response => response.json())
-                .then(data => loadEditForm(data))
-                .catch(error => console.error('Error:', error));
-        }
-    });
-
-    function loadEditForm(data) {
-        document.getElementById('editCategoriaForm').action = data.action;
-        document.getElementById('edit-nome-categoria').value = data.nome;
-    }
-</script>
-
-
-
-

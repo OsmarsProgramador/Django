@@ -1,0 +1,13 @@
+<!-- produto/partials/htmx_componentes/produto_row.html -->
+<tr hx-trigger='edit' hx-get="{% url 'produto:edit_produto' produto.id %}" hx-target="closest tr" hx-swap="outerHTML">
+    <td>{{ produto.nome_produto }}</td>
+    <td>{{ produto.venda|floatformat:2 }}</td>  <!-- Formata o valor com 2 casas decimais -->
+    <td>{{ produto.codigo }}</td>
+    <td>{{ produto.estoque }}</td>
+    <td class="text-end">
+        <button class="btn btn-warning"
+                hx-get="{% url 'produto:edit_produto' produto.id %}">
+            Editar
+        </button>
+    </td>
+</tr>

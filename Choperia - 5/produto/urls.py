@@ -22,10 +22,14 @@ htmx_urlpatterns = [
     path('edit_produto/<int:id>/', htmx_views.EditProdutoView.as_view(), name='edit_produto'),  # Adicionada URL para edição
     path('update_produto/', htmx_views.UpdateProdutoView.as_view(), name='update_produto'),  # URL para atualizar
     path('search-produto/', htmx_views.search_produto, name='search-produto'),
+        
+    # Adicionando as rotas para edição de categorias
     path('criar_categoria_modal/', htmx_views.AddCategoriaModalView.as_view(), name='criar_categoria_modal'),
     path('edit_categoria/<int:id>/', htmx_views.EditCategoriaView.as_view(), name='edit_categoria'),
+    path('update_categoria/', htmx_views.UpdateCategoriaView.as_view(), name='update_categoria'),
     path('delete_categoria/<int:id>/', htmx_views.DeleteCategoriaView.as_view(), name='delete_categoria'),
     path('check_categoria/', htmx_views.CheckCategoriaView.as_view(), name='check_categoria'),
+    path('search-categoria/', htmx_views.search_categoria, name='search-categoria'),
 ]
 
 urlpatterns += htmx_urlpatterns

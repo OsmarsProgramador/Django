@@ -44,10 +44,9 @@ from django.shortcuts import render, redirect
 from django.conf import settings
 import os
 import pandas as pd
+import decimal
+
 def create_produtos():
-    """if Produto.objects.exists():
-        return redirect('produto:produto_list')
-    else:"""
     # caminho do arquivo
     file_path = os.path.join(settings.BASE_DIR, 'produto', 'tabelas/produtos.xlsx')
     df = pd.read_excel(file_path, header=1)  # Lendo o cabeçalho a partir da linha 2
@@ -56,12 +55,15 @@ def create_produtos():
         categoria_nome = item['categoria']
         # Categoria.objects.create(nome=nome)
         categoria, created = Categoria.objects.get_or_create(nome=categoria_nome)
-        Produto.objects.create( # já cria no BD direto
+        # Convertendo os valores para decimal
+        custo = decimal.Decimal(str(item['custo']).replace(',', '.'))
+        venda = decimal.Decimal(str(item['venda']).replace(',', '.'))
+        Produto.objects.create(
             nome_produto=item['nome_produto'],
             categoria=categoria,
             descricao=item['descricao'],
-            custo=item['custo'],
-            venda=item['venda'],
+            custo=custo,
+            venda=venda,
             codigo=item['codigo'],
             estoque=item['estoque'],
             estoque_total=item['estoque_total'],
@@ -75,12 +77,12 @@ def create_mesas():
         Mesa.objects.create(nome=f'{str(i).zfill(2)}') # Cria um numero com 2 digitos
 
 
-"""def add_produtos_to_mesas():
+def add_produtos_to_mesas():
     produtos = list(Produto.objects.all())
     for mesa in Mesa.objects.all():
         itens = random.sample(produtos, k=random.randint(1, 5))
         mesa.itens = [{"produto_id": produto.id, "quantidade": random.randint(1, 5)} for produto in itens]
-        mesa.save()"""
+        mesa.save()
 
 def create_estoque():
     empresas = list(Empresa.objects.all())

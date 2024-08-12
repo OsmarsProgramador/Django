@@ -1,6 +1,6 @@
 <!-- produto/partials/htmx_componentes/list_all_produtos.html -->
 {% if produtos %}
-    <table class="table table-striped">
+    <table class="table delete-row-example">
         <thead>
             <tr>
                 <th scope="col">Nome</th>
@@ -10,28 +10,40 @@
                 <th scope="col" class="text-end">Ações</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody hx-target="closest tr" hx-swap="outerHTML">
             {% for produto in produtos %}
-                <tr>
-                    <td>{{ produto.nome_produto }}</td>
-                    <td>{{ produto.venda }}</td>
-                    <td>{{ produto.codigo }}</td>
-                    <td>{{ produto.estoque }}</td>
-                    <td class="text-end">
-                        <button class="btn btn-warning" style="cursor: pointer;"
-                            data-bs-toggle="modal" data-bs-target="#editProdutoModal"
-                            hx-get="{% url 'produto:edit_produto' produto.id %}" 
-                            hx-target="#editProdutoForm">Editar</button>
-                        <button class="btn btn-danger" style="cursor: pointer;"
-                            hx-delete="{% url 'produto:delete_produto' produto.id %}"
-                            hx-trigger="click"
-                            hx-target="#list-produto">Excluir</button>
-                    </td>
-                </tr>
+            <tr>
+                <td>{{ produto.nome_produto }}</td>
+                <td>{{ produto.venda }}</td>
+                <td>{{ produto.codigo }}</td>
+                <td>{{ produto.estoque }}</td>
+                <td class="text-end">
+                    <button class="btn btn-warning"
+                            hx-get="{% url 'produto:edit_produto' produto.id %}"
+                            hx-trigger="edit"
+                            onClick="let editing = document.querySelector('.editing');
+                                    if(editing) {
+                                        Swal.fire({
+                                            title: 'Já está editando',
+                                            showCancelButton: true,
+                                            confirmButtonText: 'Sim, editar esta linha',
+                                            text: 'Você já está editando uma linha! Deseja cancelar a edição e continuar?'
+                                        }).then((result) => {
+                                            if(result.isConfirmed) {
+                                                htmx.trigger(editing, 'cancel');
+                                                htmx.trigger(this, 'edit');
+                                            }
+                                        });
+                                    } else {
+                                        htmx.trigger(this, 'edit');
+                                    }">
+                        Editar
+                    </button>
+                </td>
+            </tr>
             {% endfor %}
         </tbody>
     </table>
-
     <!-- Controles de Paginação -->
     <div class="row mt-2">
         <div class="col-md-12">
