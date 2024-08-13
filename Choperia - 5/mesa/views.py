@@ -18,7 +18,7 @@ from reportlab.pdfgen import canvas
 
 """ 
 Resumo Visual do Passo a Passo
-Template URL Tag: {% url 'mesa:mesa_list' %}
+Template URL Tag: {% url 'mesa:list_mesa' %}
 Resolução da URL: Encontrar a URL correspondente em urls.py
 Mapeamento para View: views.MesaListView.as_view()
 Chamada de as_view: Criação da função de view
@@ -32,7 +32,7 @@ Isso mostra como Django sabe como chegar ao método get_context_data quando voc�
 
 class MesaListView(LoginRequiredMixin, ListView):
     model = Mesa
-    template_name = 'mesa/mesa_list.html'
+    template_name = 'mesa/list_mesa.html'
     context_object_name = 'mesas'
     paginate_by = 10
 
@@ -99,7 +99,7 @@ class MesaCreateView(LoginRequiredMixin, CreateView):
     model = Mesa
     form_class = MesaForm
     template_name = 'mesa/mesa_form.html'
-    success_url = reverse_lazy('mesa:mesa_list')
+    success_url = reverse_lazy('mesa:list_mesa')
 
 
 
@@ -137,63 +137,4 @@ class ExcluirItemView(LoginRequiredMixin, View):
             mesa.save()
 
         return redirect('mesa:abrir_mesa', pk=pk)
-
-    
-from django.template.loader import render_to_string
-
-class AdicionarProdutoView(View):
-    def post(self, request, mesa_id, produto_id):
-        print("Iniciando AdicionarProdutoView...")  # Debugging inicial
-        mesa = get_object_or_404(Mesa, pk=mesa_id)
-        produto = get_object_or_404(Produto, pk=produto_id)
-        quantidade = int(request.POST.get('quantidade', 1))
-
-        print(f"Produto: {produto.nome_produto}, Quantidade: {quantidade}")  # Debugging
-        print(f"Estoque disponível: {produto.estoque}")
-
-        if produto.estoque >= quantidade:
-            produto.estoque -= quantidade
-            produto.save()
-
-            encontrou = False
-            for item in mesa.itens:
-                if item['codigo'] == produto.codigo:
-                    item['quantidade'] += quantidade
-                    encontrou = True
-                    break
-            
-            if not encontrou:
-                mesa.itens.append({
-                    'nome_produto': produto.nome_produto,
-                    'categoria': produto.categoria.nome,
-                    'custo': float(produto.custo),
-                    'venda': float(produto.venda),
-                    'codigo': produto.codigo,
-                    'estoque': produto.estoque,
-                    'estoque_total': produto.estoque_total,
-                    'descricao': produto.descricao,
-                    'imagem': produto.imagem.url if produto.imagem else '',
-                    'quantidade': quantidade,
-                    'preco_unitario': float(produto.venda)
-                })
-
-            mesa.status = 'Aberta'
-
-            if mesa.pedido == 0:
-                ultimo_pedido = Mesa.objects.filter().order_by('-pedido').first()
-                if ultimo_pedido:
-                    mesa.pedido = ultimo_pedido.pedido + 1
-                else:
-                    mesa.pedido = 1
-            mesa.save()
-            
-            context = {
-                'mesa': mesa
-            }
-            item_list_html = render_to_string('mesa/partials/item_list.html', context)
-            print("Produto adicionado com sucesso!")  # Debugging
-            return JsonResponse({'success': True, 'item_list_html': item_list_html})
-        else:
-            print("Estoque insuficiente.")  # Debugging
-            return JsonResponse({'success': False, 'error': 'Estoque insuficiente'})
 

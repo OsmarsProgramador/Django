@@ -14,23 +14,39 @@
         <tbody>
             {% for produto in produtos %}
                 <tr id="produto-{{ produto.id }}">
-                    <td>{{ produto.nome_produto }}</td>
-                    <td>{{ produto.venda }}</td>
-                    <td>{{ produto.codigo }}</td>
-                    <td>{{ produto.estoque }}</td>
-                    <td class="text-end">
+                    <td class="align-middle">{{ produto.nome_produto }}</td>
+                    <td class="align-middle">{{ produto.venda }}</td>
+                    <td class="align-middle">{{ produto.codigo }}</td>
+                    <td class="align-middle">{{ produto.estoque }}</td>
+                    <td class="text-end align-middle">
                         <button class="btn btn-warning" style="cursor: pointer;"
                             data-bs-toggle="modal" data-bs-target="#editProdutoModal"
                             hx-get="{% url 'produto:edit_produto' produto.id %}" 
-                            hx-target="#editProdutoForm">Editar</button>
+                            hx-target="#editProdutoForm">
+                            <i class="fa fa-edit"></i>
+                        </button>
                         <button class="btn btn-danger" style="cursor: pointer;"
                             hx-delete="{% url 'produto:delete_produto' produto.id %}"
                             hx-trigger="click"
-                            hx-target="#list-produto">Excluir</button>
+                            hx-target="#list-produto">
+                            <i class="fa fa-trash"></i>
+                        </button>
                     </td>
                 </tr>
             {% endfor %}
         </tbody>
+               
+        <!--
+        <tfoot>
+            <tr>
+                <th scope="col">Nome</th>
+                <th scope="col">Preço</th>
+                <th scope="col">Código</th>
+                <th scope="col">Estoque</th>
+                <th scope="col" class="text-end">Ações</th>
+            </tr>
+        </tfoot>
+        -->
     </table>
 
     <!-- Controles de Paginação -->
