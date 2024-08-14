@@ -146,46 +146,7 @@
         });
 
         
-    </script>
-    <script>
-        $(document).ready(function() {
-            $('#tabela-listar').DataTable({
-                responsive: true,
-                paging: true,
-                aaSorting: [],
-                pageLength: 10,
-                language: {
-                    lengthMenu: "Mostrar _MENU_ registros",
-                    search: "Procurar:",
-                    info: "Mostrando _START_ até _END_ de _TOTAL_ registros",
-                    infoFiltered: "(filtrados de um total de _MAX_ registros)",
-                    paginate: {
-                        first: "Primeiro",
-                        last: "Último",
-                        next: "Seguinte",
-                        previous: "Anterior"
-                    },
-                    emptyTable: "Sem dados disponíveis",
-                    zeroRecords: "Nenhum resultado encontrado"
-                },
-                // Configuração para alinhamento correto
-                dom: '<"row align-items-center"<"col-md-4"l><"col-md-4 text-center"B><"col-md-4"f>>' +
-                    '<"row"<"col-sm-12"tr>>' +
-                    '<"row align-items-center"<"col-md-6"i><"col-md-6 d-flex justify-content-end"p>>',
-                buttons: [
-                    {
-                        text: 'Cadastrar Produto',
-                        className: 'btn btn-primary',
-                        action: function (e, dt, node, config) {
-                            $('#produtoModal').modal('show');
-                        }
-                    }
-                ]
-            });
-        });
-
-    </script>
-    
+    </script>  
           
     {% block scripts %}
 

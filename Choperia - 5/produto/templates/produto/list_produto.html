@@ -200,4 +200,52 @@ Usamos HTMX para capturar o evento após a requisição e limpar os campos "Nome
         }
     });
 </script>
+{% block scripts %}
+<!-- DataTables JS -->
+<script src="https://cdn.datatables.net/v/bs5/dt-2.1.3/datatables.min.js"></script>
+    
+<!-- DataTables Buttons JS -->
+<script src="https://cdn.datatables.net/buttons/2.1.1/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.1.1/js/buttons.bootstrap5.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#tabela-listar').DataTable({
+            responsive: true,
+            paging: true,
+            aaSorting: [],
+            pageLength: 10,
+            language: {
+                lengthMenu: "Mostrar _MENU_ registros",
+                search: "Procurar:",
+                info: "Mostrando _START_ até _END_ de _TOTAL_ registros",
+                infoFiltered: "(filtrados de um total de _MAX_ registros)",
+                paginate: {
+                    first: "Primeiro",
+                    last: "Último",
+                    next: "Seguinte",
+                    previous: "Anterior"
+                },
+                emptyTable: "Sem dados disponíveis",
+                zeroRecords: "Nenhum resultado encontrado"
+            },
+            // Configuração para alinhamento correto
+            dom: '<"row align-items-center"<"col-md-4"l><"col-md-4 text-center"B><"col-md-4"f>>' +
+                '<"row"<"col-sm-12"tr>>' +
+                '<"row align-items-center"<"col-md-6"i><"col-md-6 d-flex justify-content-end"p>>',
+            buttons: [
+                {
+                    text: 'Cadastrar Produto',
+                    className: 'btn btn-primary',
+                    action: function (e, dt, node, config) {
+                        $('#produtoModal').modal('show');
+                    }
+                }
+            ]
+        });
+    });
+
+</script>
+
+
+{% endblock %}
 
