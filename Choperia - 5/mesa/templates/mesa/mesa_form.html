@@ -4,16 +4,15 @@
 {% block content %}
 <div class="container mt-5">
     <h2>Cadastro de Nova Mesa</h2>
-    <form class="add-produto-form" 
-        method="post" 
-        hx-post="{% url 'mesa:adicionar_item_mesa' mesa.id produto.id %}" 
-        hx-target="#item-list" 
-        hx-swap="outerHTML"
-    >
+    <form method="post" action="{% url 'mesa:nova_mesa' %}">
         {% csrf_token %}
-        <input type="number" name="quantidade" value="1" min="1" class="form-control" style="width: 60px; display: inline-block;">
-        <button type="submit" class="btn btn-success">Adicionar</button>
-    </form>    
+        <div class="mb-3">
+            <label for="nomeMesa" class="form-label">Nome da Mesa</label>
+            <input type="text" class="form-control" id="nomeMesa" name="nome" required>
+        </div>
+        <button type="submit" class="btn btn-success">Salvar Mesa</button>
+    </form>
 </div>
 {% endblock %}
+
 

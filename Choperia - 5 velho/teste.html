@@ -1,0 +1,158 @@
+<!-- produto/templates/produto/produto_list.html -->
+{% extends "core/base.html" %}
+{% load static %}
+{% block content %}
+<div class="container mt-4">
+    <div id="list-produto">
+        {% include 'produto/partials/htmx_componentes/list_all_produtos.html' %}
+    </div>
+    
+    <div class="row mt-2">
+        <div class="col-md-6">
+            <div class="pagination">
+                {% if is_paginated %}
+                <ul class="pagination">
+                    {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page=1">&laquo; primeira</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}">anterior</a>
+                    </li>
+                    {% endif %}
+                    <li class="page-item disabled">
+                        <span class="page-link">{{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span>
+                    </li>
+                    {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}">próxima</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">última &raquo;</a>
+                    </li>
+                    {% endif %}
+                </ul>
+                {% endif %}
+            </div>
+        </div>
+        <div class="col-md-6 text-end">
+            <button class="btn btn-success mb-2" data-bs-toggle="modal" data-bs-target="#produtoModal">Adicionar Produto</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block modals %}
+<!-- Modal para Cadastrar Produto -->
+<div class="modal fade" id="produtoModal" tabindex="-1" aria-labelledby="produtoModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="produtoModalLabel">Cadastrar Produto</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form hx-post="{% url 'produto:create_produto' %}" hx-trigger="submit" hx-target="#list-produto" hx-swap="innerHTML" hx-on="htmx:afterRequest:limparCampos">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="nome-produto" class="form-label">Nome do produto</label>
+                        <input type="text" id="nome-produto" name="nome_produto" class="form-control"
+                            hx-get="{% url 'produto:check_produto' %}"
+                            hx-trigger="keyup"
+                            hx-target="#produto-out">
+                    </div>
+                    <div id="produto-out"></div>
+                    <div class="mb-3">
+                        <label for="categoria-produto" class="form-label">Categoria</label>
+                        <select id="categoria-produto" name="categoria" class="form-control">
+                            {% for categoria in categorias %}
+                                <option value="{{ categoria.id }}">{{ categoria.nome }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="descricao-produto" class="form-label">Descrição</label>
+                        <textarea id="descricao-produto" name="descricao" class="form-control"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="custo-produto" class="form-label">Custo</label>
+                        <input type="number" id="custo-produto" name="custo" class="form-control" step="0.01">
+                    </div>
+                    <div class="mb-3">
+                        <label for="venda-produto" class="form-label">Preço de Venda</label>
+                        <input type="number" id="venda-produto" name="venda" class="form-control" step="0.01">
+                    </div>
+                    <div class="mb-3">
+                        <label for="codigo-produto" class="form-label">Código</label>
+                        <input type="text" id="codigo-produto" name="codigo" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label for="estoque-produto" class="form-label">Estoque</label>
+                        <input type="number" id="estoque-produto" name="estoque" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label for="estoque-total-produto" class="form-label">Estoque Total</label>
+                        <input type="number" id="estoque-total-produto" name="estoque_total" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label for="imagem-produto" class="form-label">Imagem</label>
+                        <input type="file" id="imagem-produto" name="imagem" class="form-control">
+                    </div>
+                    <button type="submit" class="btn btn-success">Salvar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para Editar Produto -->
+<div class="modal fade" id="editProdutoModal" tabindex="-1" aria-labelledby="editProdutoModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editProdutoModalLabel">Editar Produto</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="edit-produto-content">
+                <!-- O conteúdo do formulário de edição será carregado aqui -->
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+<!-- 
+Adicionamos um evento htmx:afterRequest no script para limpar os campos após a submissão do formulário.
+Usamos HTMX para capturar o evento após a requisição e limpar os campos "Nome do produto" e "Preço do produto". 
+-->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.body.addEventListener('htmx:afterRequest', function(evt) {
+        if (evt.detail.target.id === 'list-produto') {
+            document.getElementById('nome-produto').value = '';
+            document.getElementById('preco-produto').value = '';
+            document.getElementById('descricao-produto').value = '';
+            document.getElementById('custo-produto').value = '';
+            document.getElementById('venda-produto').value = '';
+            document.getElementById('codigo-produto').value = '';
+            document.getElementById('estoque-produto').value = '';
+            document.getElementById('estoque-total-produto').value = '';
+            document.getElementById('imagem-produto').value = '';
+        }
+    });
+
+    document.body.addEventListener('htmx:configRequest', function(evt) {
+        if (evt.detail.target.classList.contains('edit-produto-link')) {
+            evt.detail.headers['HX-Request'] = 'true';
+            evt.detail.headers['X-Modal-Request'] = 'true';
+        }
+    });
+
+    document.body.addEventListener('htmx:afterOnLoad', function(evt) {
+        if (evt.detail.elt.classList.contains('edit-produto-link')) {
+            new bootstrap.Modal(document.getElementById('editProdutoModal')).show();
+        }
+    });
+</script>
+
+

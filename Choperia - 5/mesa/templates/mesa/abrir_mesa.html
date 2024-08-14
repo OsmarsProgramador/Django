@@ -35,8 +35,8 @@
                         </li>
                     </ul>
                     <div class="tab-content" id="myTabContent">
+                        <!-- Conteúdo da Tabela -->
                         <div class="tab-pane fade show active" id="table" role="tabpanel" aria-labelledby="table-tab">
-                            <!-- Conteúdo da Tabela -->
                             <table class="table mt-3">
                                 <thead>
                                     <tr>
@@ -53,7 +53,10 @@
                                         <td>{{ produto.categoria.nome }}</td>
                                         <td>{{ produto.venda }}</td>
                                         <td>
-                                            <form class="add-produto-form" method="post" hx-post="{% url 'mesa:adicionar_item_mesa' mesa.id produto.id %}" hx-target="#item-list" hx-swap="innerHTML">
+                                            <form hx-post="{% url 'mesa:adicionar_item_mesa' mesa.id produto.id %}" 
+                                                  hx-target="#item-list" 
+                                                  hx-swap="innerHTML" 
+                                                  hx-include="[name='quantidade']">
                                                 {% csrf_token %}
                                                 <input type="number" name="quantidade" value="1" min="1" class="form-control mb-2">
                                                 <button type="submit" class="btn btn-success">Adicionar</button>
@@ -64,8 +67,8 @@
                                 </tbody>
                             </table>
                         </div>
+                        <!-- Conteúdo da Grade -->
                         <div class="tab-pane fade" id="grid" role="tabpanel" aria-labelledby="grid-tab">
-                            <!-- Conteúdo da Grade -->
                             <div class="row mt-3">
                                 {% for produto in produtos %}
                                 <div class="col-md-4">
@@ -80,12 +83,14 @@
                                             <h5 class="card-title">{{ produto.nome_produto }}</h5>
                                             <p class="card-text">{{ produto.categoria.nome }}</p>
                                             <p class="card-text">R${{ produto.venda }}</p>
-                                            <form class="add-produto-form" method="post" hx-post="{% url 'mesa:adicionar_item_mesa' mesa.id produto.id %}" hx-target="#item-list" hx-swap="innerHTML">
+                                            <form hx-post="{% url 'mesa:adicionar_item_mesa' mesa.id produto.id %}" 
+                                                  hx-target="#item-list" 
+                                                  hx-swap="innerHTML" 
+                                                  hx-include="[name='quantidade']">
                                                 {% csrf_token %}
                                                 <input type="number" name="quantidade" value="1" min="1" class="form-control mb-2">
                                                 <button type="submit" class="btn btn-success">Adicionar</button>
                                             </form>
-                                            
                                         </div>
                                     </div>
                                 </div>
@@ -139,6 +144,8 @@
 
 
     </script>
+    
 
 {% endblock %}
+
 

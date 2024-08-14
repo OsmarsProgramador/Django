@@ -1,8 +1,12 @@
 # mesa/htmx_views.py
 from django.views import View
 from django.shortcuts import render, get_object_or_404
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseRedirect
+from django.urls import reverse_lazy
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic.edit import CreateView
 from .models import Mesa
+from .forms import MesaForm
 from produto.models import Produto
 
 class AdicionarProdutoView(View):
@@ -47,11 +51,39 @@ class AdicionarProdutoView(View):
                     mesa.pedido = 1
             mesa.save()
 
-            # Adicionar o cabeçalho HTMX para a resposta
-            response = render(request, 'mesa/partials/item_list.html', {'mesa': mesa})
-            response['HX-Trigger'] = 'updateItems'  # Dispara um evento HTMX personalizado, se necessário
-            return response
+            # Renderiza apenas a lista de itens da mesa
+            return render(request, 'mesa/partials/htmx_componentes/item_list.html', {'mesa': mesa})
         else:
-            return JsonResponse({'success': False, 'error': 'Estoque insuficiente'})
-        
-        
+            return JsonResponse({'success': False, 'error': 'Estoque insuficiente'}, status=400)
+
+"""class MesaCreateView(LoginRequiredMixin, CreateView):
+    model = Mesa
+    form_class = MesaForm
+    template_name = 'mesa/mesa_form.html'
+    success_url = reverse_lazy('mesa:list_mesa')"""
+
+class MesaCreateView(LoginRequiredMixin, CreateView):
+    model = Mesa
+    form_class = MesaForm
+    template_name = 'mesa/mesa_form.html'
+
+    def form_valid(self, form):
+        # Verifica se a requisição é feita via HTMX pelo cabeçalho HX-Request
+        if self.request.headers.get('HX-Request'):
+            response = super().form_valid(form)
+            mesas_abertas = Mesa.objects.filter(status='Aberta')
+            mesas_fechadas = Mesa.objects.filter(status='Fechada')             
+                
+            return render(self.request, 'mesa/partials/htmx_componentes/lista_mesas.html', {
+                'mesas_abertas': mesas_abertas,
+                'mesas_fechadas': mesas_fechadas,
+            })
+        else:
+            return super().form_valid(form)
+
+    def get_success_url(self):
+        # Caso a requisição seja HTMX, não faça redirecionamento
+        if self.request.headers.get('HX-Request'):
+            return ''
+        return reverse_lazy('mesa:list_mesa')
+

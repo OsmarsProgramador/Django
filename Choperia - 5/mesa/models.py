@@ -1,6 +1,7 @@
 # mesa/models.py
-from django.contrib.auth.models import User
+from django.urls import reverse
 from django.db import models
+from django.contrib.auth.models import User
 
 class Mesa(models.Model):
     nome = models.CharField(max_length=50)
@@ -11,5 +12,9 @@ class Mesa(models.Model):
 
     def __str__(self):
         return self.nome
+
+    def get_absolute_url(self):
+        return reverse('mesa:abrir_mesa', args=[self.id])
+
 
 

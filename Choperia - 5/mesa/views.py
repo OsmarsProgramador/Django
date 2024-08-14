@@ -44,11 +44,20 @@ class MesaListView(LoginRequiredMixin, ListView):
         context = super().get_context_data(**kwargs)
         context['mesas_abertas'] = Mesa.objects.filter(status='Aberta').order_by('nome')
         context['mesas_fechadas'] = Mesa.objects.filter(status='Fechada').order_by('nome')
+        
+        # Obtém as mesas já existentes no banco de dados
+        mesas_existentes = set(Mesa.objects.values_list('nome', flat=True))
+
+        # Gera uma lista de mesas entre 1 e 30 que não estão no banco de dados
+        context['mesas_disponiveis'] = [f'{str(i).zfill(2)}' for i in range(1, 31) if f'{str(i).zfill(2)}' not in mesas_existentes]
+
         return context
 
+
 class AbrirMesaView(View):
-    def get(self, request, pk):
-        mesa = get_object_or_404(Mesa, pk=pk)
+    def get(self, request, id_mesa):
+        print(f'Abrindo mesa na função AbrirMesaView')
+        mesa = get_object_or_404(Mesa, id=id_mesa)
         usuarios = User.objects.exclude(username='admin')
         produtos = Produto.objects.all()
         return render(request, 'mesa/abrir_mesa.html', {'mesa': mesa, 'usuarios': usuarios, 'produtos': produtos})
@@ -93,15 +102,6 @@ class GerarComandaPDFView(LoginRequiredMixin, View):
         p.showPage()
         p.save()
         return response
-
-
-class MesaCreateView(LoginRequiredMixin, CreateView):
-    model = Mesa
-    form_class = MesaForm
-    template_name = 'mesa/mesa_form.html'
-    success_url = reverse_lazy('mesa:list_mesa')
-
-
 
 class ExcluirItemView(LoginRequiredMixin, View):
     def post(self, request, pk):

@@ -1,0 +1,3 @@
+Execute o script para popular o banco de dados:
+
+py scripts/gerar_dados.py
