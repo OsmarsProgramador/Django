@@ -1,7 +1,7 @@
 # mesa/htmx_views.py
 from django.views import View
-from django.shortcuts import render, get_object_or_404
-from django.http import JsonResponse, HttpResponseRedirect
+from django.shortcuts import render, get_object_or_404, redirect
+from django.http import JsonResponse
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.edit import CreateView
@@ -9,7 +9,59 @@ from .models import Mesa
 from .forms import MesaForm
 from produto.models import Produto
 
-class AdicionarProdutoView(View):
+from .forms import AdicionarItemForm
+
+def adicionar_item(request, mesa_id):
+    mesa = get_object_or_404(Mesa, id=mesa_id)
+
+    if request.method == 'POST':
+        produto_id = request.POST.get('produto_id')
+        quantidade = int(request.POST.get('quantidade', 1))
+
+        produto = get_object_or_404(Produto, id=produto_id)
+
+        if produto.estoque >= quantidade:
+            produto.estoque -= quantidade
+            produto.save()
+
+            encontrou = False
+            for item in mesa.itens:
+                if item['codigo'] == produto.codigo:
+                    item['quantidade'] += quantidade
+                    encontrou = True
+                    break
+
+            if not encontrou:
+                mesa.itens.append({
+                    'nome_produto': produto.nome_produto,
+                    'categoria': produto.categoria.nome,
+                    'custo': float(produto.custo),
+                    'venda': float(produto.venda),
+                    'codigo': produto.codigo,
+                    'estoque': produto.estoque,
+                    'estoque_total': produto.estoque_total,
+                    'descricao': produto.descricao,
+                    'imagem': produto.imagem.url if produto.imagem else '',
+                    'quantidade': quantidade,
+                    'preco_unitario': float(produto.venda)
+                })
+
+            mesa.status = 'Aberta'
+            if mesa.pedido == 0:
+                ultimo_pedido = Mesa.objects.order_by('-pedido').first()
+                mesa.pedido = (ultimo_pedido.pedido + 1) if ultimo_pedido else 1
+            mesa.save()
+
+    return redirect('mesa:abrir_mesa', mesa_id=mesa_id)
+
+""" implementar a lógica para adicionar produtos à mesa, considerando a manipulação do estoque e a atualização da lista de itens da mesa. """   
+class AdicionarItemView(View):
+    def get(self, request, mesa_id):
+        mesa = get_object_or_404(Mesa, pk=mesa_id)
+        produtos = Produto.objects.all()  # Obtém todos os produtos
+        return render(request, 'mesa/adicionar_item.html', {'mesa': mesa, 'produtos': produtos})
+       
+
     def post(self, request, mesa_id, produto_id):
         mesa = get_object_or_404(Mesa, pk=mesa_id)
         produto = get_object_or_404(Produto, pk=produto_id)
@@ -25,8 +77,63 @@ class AdicionarProdutoView(View):
                     item['quantidade'] += quantidade
                     encontrou = True
                     break
+
+            if not encontrou:
+                mesa.itens.append({
+                    'nome_produto': produto.nome_produto,
+                    'categoria': produto.categoria.nome,
+                    'custo': float(produto.custo),
+                    'venda': float(produto.venda),
+                    'codigo': produto.codigo,
+                    'estoque': produto.estoque,
+                    'estoque_total': produto.estoque_total,
+                    'descricao': produto.descricao,
+                    'imagem': produto.imagem.url if produto.imagem else '',
+                    'quantidade': quantidade,
+                    'preco_unitario': float(produto.venda)
+                })
+
+            mesa.status = 'Aberta'
+
+            if mesa.pedido == 0:
+                ultimo_pedido = Mesa.objects.order_by('-pedido').first()
+                mesa.pedido = (ultimo_pedido.pedido + 1) if ultimo_pedido else 1
+
+            mesa.save()
+
+            return redirect('mesa:abrir_mesa', id_mesa=mesa.id)
+        else:
+            return render(request, 'mesa/adicionar_item.html', {
+                'mesa': mesa,
+                'produtos': Produto.objects.all(),  # Recarregar os produtos para exibir a lista novamente
+                'error': 'Estoque insuficiente'
+            })
+
+class AdicionarProdutoView(View):
+    def post(self, request, mesa_id, produto_id):
+        # Obter a mesa e o produto correspondentes
+        mesa = get_object_or_404(Mesa, pk=mesa_id)
+        produto = get_object_or_404(Produto, pk=produto_id)
+        
+        # Obter a quantidade de produtos a serem adicionados
+        quantidade = int(request.POST.get('quantidade', 1))
+
+        # Verificar se o estoque é suficiente
+        if produto.estoque >= quantidade:
+            # Atualizar o estoque do produto
+            produto.estoque -= quantidade
+            produto.save()
+
+            # Adicionar ou atualizar o item na mesa
+            encontrou = False
+            for item in mesa.itens:
+                if item['codigo'] == produto.codigo:
+                    item['quantidade'] += quantidade
+                    encontrou = True
+                    break
             
             if not encontrou:
+                # Adicionar novo item se ainda não existir na mesa
                 mesa.itens.append({
                     'nome_produto': produto.nome_produto,
                     'categoria': produto.categoria.nome,
@@ -49,6 +156,8 @@ class AdicionarProdutoView(View):
                     mesa.pedido = ultimo_pedido.pedido + 1
                 else:
                     mesa.pedido = 1
+            
+            # Salvar a mesa com os novos itens
             mesa.save()
 
             # Renderiza apenas a lista de itens da mesa

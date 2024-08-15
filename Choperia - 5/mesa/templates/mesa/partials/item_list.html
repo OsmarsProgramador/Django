@@ -1,14 +1,10 @@
 <!-- mesa/templates/mesa/partials/htmx_componentes/item_list.html -->
 <ul id="item-list">
     {% for item in mesa.itens %}
-        {% if item.quantidade > 0 %}
-        <li class="d-flex justify-content-between align-items-center">
-            <span>{{ item.nome_produto }} - {{ item.quantidade }} - R$ {{ item.preco_unitario|floatformat:2 }}</span>
-            <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#excluirItemModal" data-item-codigo="{{ item.codigo }}">Excluir</button>
-        </li>
-        {% endif %}
+        <li>{{ item.nome_produto }} - {{ item.quantidade }} - R$ {{ item.preco_unitario|floatformat:2 }}</li>
     {% endfor %}
 </ul>
+
 
 
 

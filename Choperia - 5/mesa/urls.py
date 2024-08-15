@@ -15,7 +15,8 @@ urlpatterns = [
 
 # urls exclusiva para receber requisição do htmx
 htmx_urlpatterns = [
-    path('adicionar_item_mesa/<int:mesa_id>/<int:produto_id>/', htmx_views.AdicionarProdutoView.as_view(), name='adicionar_item_mesa'),
+    path('adicionar_item/<int:mesa_id>/', htmx_views.adicionar_item, name='adicionar_item'),
+    path('adicionar_item/<int:mesa_id>/<int:produto_id>/', htmx_views.AdicionarItemView.as_view(), name='adicionar_item'),
     path('nova/', htmx_views.MesaCreateView.as_view(), name='nova_mesa'),
 ]
 

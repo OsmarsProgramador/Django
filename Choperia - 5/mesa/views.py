@@ -6,15 +6,11 @@ from .models import Mesa
 from produto.models import Produto
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
-from django.http import HttpResponse, JsonResponse
-
-from django.views.generic.edit import CreateView
-from .forms import MesaForm
+from django.http import HttpResponse
 
 # pip install reportlab - para imprimir comanda
 # from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
-
 
 """ 
 Resumo Visual do Passo a Passo
