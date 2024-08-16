@@ -58,8 +58,19 @@ class AbrirMesaView(View):
         usuarios = User.objects.exclude(username='admin')
         produtos = Produto.objects.all()
 
-        # Cálculo do total no backend
-        total = sum(item['quantidade'] * item['preco_unitario'] for item in mesa.itens)
+        # Cálculo do total de cada item e o total geral no backend
+        itens_calculados = []
+        total_geral = 0
+        
+        for item in mesa.itens:
+            total_item = item['quantidade'] * item['preco_unitario']
+            itens_calculados.append({
+                'nome_produto': item['nome_produto'],
+                'quantidade': item['quantidade'],
+                'preco_unitario': item['preco_unitario'],
+                'total_item': total_item,
+            })
+            total_geral += total_item
 
         # Obter a data e hora atual
         now = timezone.now()
@@ -68,9 +79,11 @@ class AbrirMesaView(View):
             'mesa': mesa, 
             'usuarios': usuarios, 
             'produtos': produtos,
-            'total': total,  # Enviar o total para o template
+            'itens_calculados': itens_calculados,  # Enviar os itens calculados para o template
+            'total_geral': total_geral,  # Enviar o total geral para o template
             'now': now,  # Passar a data e hora atual para o template
         })
+
 
 class UpdateUserView(View):
     def post(self, request, pk):

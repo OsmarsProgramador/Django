@@ -56,9 +56,20 @@ class AdicionarItemView(View):
                 mesa.pedido = (ultimo_pedido.pedido + 1) if ultimo_pedido else 1
 
             mesa.save()
+
+            # Cálculo do total de cada item e do total geral
+            itens_calculados = []
+            total_geral = 0
             
-            # Cálculo do total no backend
-            total = sum(item['quantidade'] * item['preco_unitario'] for item in mesa.itens)
+            for item in mesa.itens:
+                total_item = item['quantidade'] * item['preco_unitario']
+                itens_calculados.append({
+                    'nome_produto': item['nome_produto'],
+                    'quantidade': item['quantidade'],
+                    'preco_unitario': item['preco_unitario'],
+                    'total_item': total_item,
+                })
+                total_geral += total_item
 
             # Obter a data e hora atual
             now = timezone.now()
@@ -67,7 +78,8 @@ class AdicionarItemView(View):
             if request.headers.get('HX-Request'):
                 return render(request, 'mesa/partials/htmx_componentes/item_list.html', {
                     'mesa': mesa,
-                    'total': total,  # Enviar o total para o template
+                    'itens_calculados': itens_calculados,  # Enviar os itens calculados para o template
+                    'total_geral': total_geral,  # Enviar o total geral para o template
                     'now': now,  # Passar a data e hora atual para o template
                 })
             else:
@@ -77,7 +89,8 @@ class AdicionarItemView(View):
                 'mesa': mesa,
                 'produtos': Produto.objects.all(),
                 'error': 'Estoque insuficiente'
-            })    
+            })
+ 
 
 class MesaCreateView(LoginRequiredMixin, CreateView):
     model = Mesa

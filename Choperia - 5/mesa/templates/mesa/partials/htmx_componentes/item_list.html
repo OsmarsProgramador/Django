@@ -1,5 +1,5 @@
 <!-- mesa/templates/mesa/partials/htmx_componentes/item_list.html -->
-{% if mesa.itens %}
+{% if itens_calculados %}
     <table class="table table-bordered">
         <thead>
             <tr>
@@ -10,19 +10,19 @@
             </tr>
         </thead>
         <tbody>
-            {% for item in mesa.itens %}
+            {% for item in itens_calculados %}
             <tr>
                 <td>{{ item.nome_produto }}</td>
                 <td>{{ item.quantidade }}</td>
                 <td>R$ {{ item.preco_unitario|floatformat:2 }}</td>
-                <td>R$ {{ item.quantidade|floatformat:2 }}</td>
+                <td>R$ {{ item.total_item|floatformat:2 }}</td> <!-- Usando o total calculado no backend -->
             </tr>
             {% endfor %}
         </tbody>
         <tfoot>
             <tr>
                 <td colspan="3" class="text-end"><strong>Total:</strong></td>
-                <td><strong>R$ {{ total|floatformat:2 }}</strong></td> <!-- Usando o valor calculado -->
+                <td><strong>R$ {{ total_geral|floatformat:2 }}</strong></td> <!-- Usando o valor calculado -->
             </tr>
         </tfoot>
     </table>
