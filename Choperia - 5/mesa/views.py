@@ -7,6 +7,7 @@ from produto.models import Produto
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.http import HttpResponse
+from django.utils import timezone
 
 # pip install reportlab - para imprimir comanda
 # from reportlab.lib.pagesizes import letter
@@ -56,7 +57,20 @@ class AbrirMesaView(View):
         mesa = get_object_or_404(Mesa, id=id_mesa)
         usuarios = User.objects.exclude(username='admin')
         produtos = Produto.objects.all()
-        return render(request, 'mesa/abrir_mesa.html', {'mesa': mesa, 'usuarios': usuarios, 'produtos': produtos})
+
+        # Cálculo do total no backend
+        total = sum(item['quantidade'] * item['preco_unitario'] for item in mesa.itens)
+
+        # Obter a data e hora atual
+        now = timezone.now()
+
+        return render(request, 'mesa/abrir_mesa.html', {
+            'mesa': mesa, 
+            'usuarios': usuarios, 
+            'produtos': produtos,
+            'total': total,  # Enviar o total para o template
+            'now': now,  # Passar a data e hora atual para o template
+        })
 
 class UpdateUserView(View):
     def post(self, request, pk):

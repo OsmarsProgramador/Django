@@ -1,0 +1,38 @@
+<!-- mesa/templates/mesa/partials/htmx_componentes/item_list.html -->
+{% if mesa.itens %}
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Item</th>
+                <th>Quantidade</th>
+                <th>Preço Unitário</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in mesa.itens %}
+            <tr>
+                <td>{{ item.nome_produto }}</td>
+                <td>{{ item.quantidade }}</td>
+                <td>R$ {{ item.preco_unitario|floatformat:2 }}</td>
+                <td>R$ {{ item.quantidade|floatformat:2 }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="3" class="text-end"><strong>Total:</strong></td>
+                <td><strong>R$ {{ total|floatformat:2 }}</strong></td> <!-- Usando o valor calculado -->
+            </tr>
+        </tfoot>
+    </table>
+    <a href="{% url 'mesa:gerar_comanda_pdf' mesa.id %}" class="btn btn-secondary mt-3">Imprimir Comanda</a>
+{% else %}
+    <p>Nenhum item adicionado.</p>
+{% endif %}
+
+
+
+
+
+

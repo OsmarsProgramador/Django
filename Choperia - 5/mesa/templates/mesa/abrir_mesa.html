@@ -1,20 +1,64 @@
+<!-- mesa\templates\mesa\abrir_mesa.html -->
+
 {% extends "core/base.html" %}
 
 {% block content %}
 <div class="container mt-5">
     <div class="row">
         <!-- Card 1: Nome da Mesa e Usuário -->
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Mesa: {{ mesa.nome }}</h5>
-                    <p class="card-text">Usuário: {{ user.username }}</p>
+        <!-- Informações da mesa e do atendente -->
+        <div class="col-md-4" style="height: 100%;">
+            <div class="card border-light mb-3 h-100">
+                <div class="card-header">
+                    <div class="card-header" style="margin-right: 5px;">
+                        <span style="color: green; font-weight: bold;">Mesa: {{ mesa.nome }}</span>
+                    </div>
                 </div>
-            </div>
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <div class="card-body" style="display: flex; align-items: center; height: 5vh;">
+                            <ul class="list-group list-group-flush" style="display: flex; align-items: center; list-style: none; padding: 0; margin: 0;">
+                                <li class="list-group-item" style="color: black; font-weight: bold; margin-right: 5px;">Pedido: {{ mesa.pedido }}</li>
+                            </ul>
+                            <ul class="list-group list-group-flush" style="display: flex; align-items: center; list-style: none; padding: 0; margin: 0;">
+                                <li class="list-group-item" style="background-color: green; color: white; font-weight: bold;">Em aberto</li>
+                            </ul>
+                        </div>
+                    </h5>
+                    <p class="card-text">
+                        <div class="col-md">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item" style="color: black;">
+                                    Data: {{ now|date:"d/m/Y" }}
+                                </li>
+                                <li class="list-group-item" style="color: black;">
+                                    Hora: <span id="hora">{{ now|date:"H:i:s" }}</span>
+                                </li>
+                            </ul>
+                            <hr>
+                            <form method="post" action="{% url 'mesa:update_user' mesa.id %}">
+                                {% csrf_token %}
+                                <div class="form-group mx-2">
+                                    <label for="usuario">Atendente:</label>
+                                    <select id="usuario" name="usuario" class="form-control">
+                                        {% for user in usuarios %}
+                                            <option value="{{ user.id }}" {% if user.id == mesa.usuario.id %}selected{% endif %}>
+                                                {{ user.username }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <button type="submit" class="btn btn-primary mt-3 mx-2">Atualizar Usuário</button>
+                            </form>
+                        </div>
+                    </p>
+                </div>
+            </div> 
         </div>
 
         <!-- Card 2: Itens da Mesa -->
-        <div class="col-md-6">
+        <!-- Informações da Comanda de pedido -->
+        <div class="col-md-8">
             <div class="card">
                 <div class="card-body">
                     <!-- Botão para abrir o modal de adicionar produto -->
@@ -23,16 +67,11 @@
                             Adicionar Produto
                         </button>
                     </div>
-                    <h5 class="card-title">Itens da Mesa</h5>
-                    {% if mesa.itens %}
-                        <ul id="item-list">
-                            {% for item in mesa.itens %}
-                                <li>{{ item.nome_produto }} - {{ item.quantidade }} x R$ {{ item.preco_unitario }}</li>
-                            {% endfor %}
-                        </ul>
-                    {% else %}
-                        <p>Nenhum item adicionado.</p>
-                    {% endif %}
+                    <h5 class="card-title">Comanda de Pedido: {{ mesa.pedido }}</h5>
+
+                    <div id="item-list-container">
+                        {% include 'mesa/partials/htmx_componentes/item_list.html' %}
+                    </div>
                 </div>
             </div>
         </div>
@@ -65,7 +104,9 @@
                             <td>{{ produto.categoria.nome }}</td>
                             <td>R${{ produto.venda|floatformat:2 }}</td>
                             <td>
-                                <form method="post" action="{% url 'mesa:adicionar_item' mesa.id produto.id %}">
+                                <form hx-post="{% url 'mesa:adicionar_item' mesa.id produto.id %}"
+                                      hx-target="#item-list-container"
+                                      hx-swap="innerHTML">
                                     {% csrf_token %}
                                     <input type="number" name="quantidade" value="1" min="1" class="form-control mb-2" style="width: 60px;">
                                     <button type="submit" class="btn btn-success">Adicionar</button>
@@ -79,4 +120,23 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function atualizarHora() {
+        const agora = new Date();
+        const horas = String(agora.getHours()).padStart(2, '0');
+        const minutos = String(agora.getMinutes()).padStart(2, '0');
+        const segundos = String(agora.getSeconds()).padStart(2, '0');
+        const horaAtual = `${horas}:${minutos}:${segundos}`;
+        document.getElementById('hora').innerText = horaAtual;
+    }
+
+    // Atualiza a hora imediatamente ao carregar a página
+    atualizarHora();
+    
+    // Atualiza a hora a cada segundo
+    setInterval(atualizarHora, 1000);
+</script>
 {% endblock %}
