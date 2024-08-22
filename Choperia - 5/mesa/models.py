@@ -2,6 +2,7 @@
 from django.urls import reverse
 from django.db import models
 from django.contrib.auth.models import User
+from empresa.models import Empresa
 
 class Mesa(models.Model):
     nome = models.CharField(max_length=50)
@@ -9,6 +10,7 @@ class Mesa(models.Model):
     status = models.CharField(max_length=10, default='Fechada')
     pedido = models.PositiveIntegerField(default=0)
     usuario = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
+    # empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE, related_name='mesas')
 
     def __str__(self):
         return self.nome

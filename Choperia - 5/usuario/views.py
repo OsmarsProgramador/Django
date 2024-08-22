@@ -36,7 +36,7 @@ class UserLoginView(View):
         else:
             return render(request, 'usuario/login.html', {'error': 'Invalid credentials'})
 
-class UserLogoutView(LoginRequiredMixin, View):
+class UserLogoutView(View):
     def get(self, request):
         logout(request)
         return redirect('usuario:login')
@@ -49,7 +49,7 @@ class UserSignupView(View):
     def post(self, request):
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
-            form.save()
+            form.save() # lá no formulário vai ser salvo em Usuario e User
             return redirect('usuario:login')
         return render(request, 'usuario/cadastro.html', {'form': form})
 

@@ -1,10 +1,11 @@
-from usuario.models import Usuario
+# usuario/admin.py
 from django.contrib import admin
+from .models import Usuario
 
-@admin.register(Usuario)
 class UsuarioAdmin(admin.ModelAdmin):
-    list_display = ('nome', 'email', 'ativo')
-    list_editable = ('email',)
-    readonly_fields = ('senha',) # naõ permite que no campoa admin altere, tornando o compo somente para leitura
-    search_fields = ('nome', 'email')
-    list_filter = ('ativo',)
+    list_display = ('nome', 'ativo')  # Ajuste para campos reais do modelo Usuario
+    list_editable = ('ativo',)  # Ajuste para campos que existem
+    readonly_fields = ('user',)  # Se você precisar de algum campo readonly, ajuste aqui # naõ permite que no campoa admin altere, tornando o compo somente para leitura
+
+admin.site.register(Usuario, UsuarioAdmin)
+

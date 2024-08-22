@@ -1,6 +1,10 @@
 import os
 from pathlib import Path
 
+# Define o ID da empresa padrão
+# defina pelo CNPJ
+DEFAULT_EMPRESA_CNPJ = "57.851.872/3504-08"                        
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 

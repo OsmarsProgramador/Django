@@ -89,8 +89,7 @@ class AdicionarItemView(View):
                 'mesa': mesa,
                 'produtos': Produto.objects.all(),
                 'error': 'Estoque insuficiente'
-            })
- 
+            }) 
 
 class MesaCreateView(LoginRequiredMixin, CreateView):
     model = Mesa

@@ -26,6 +26,7 @@
             </tr>
         </tfoot>
     </table>
+    <!-- Usando 'user_mesa.id' para passar o ID do usuário associado à mesa -->
     <a href="{% url 'mesa:gerar_comanda_pdf' mesa.id %}" class="btn btn-secondary mt-3">Imprimir Comanda</a>
 {% else %}
     <p>Nenhum item adicionado.</p>

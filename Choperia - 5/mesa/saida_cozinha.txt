@@ -1,0 +1,13 @@
+---- COMANDA DE COZINHA ----
+Mesa: 06  Pedido: 4
+Data: 21/08/2024
+Hora: 21:01:12
+-----------------------------
+Suco de morango - 1
+Descrição: Morango e água
+Balde de Eisenbahn - 1
+Descrição: Balde de Eisenbahn 10un
+Porção de Calabresa - 1
+Descrição: Calabresa frita com cebola
+-----------------------------
+Preparar com atenção!
