@@ -4,33 +4,44 @@
         <thead>
             <tr>
                 <th>Item</th>
-                <th>Quantidade</th>
+                <th>Qtd</th>
                 <th>Preço Unitário</th>
                 <th>Total</th>
+                <th>Ações</th> <!-- Nova coluna para ações -->
             </tr>
         </thead>
         <tbody>
             {% for item in itens_calculados %}
-            <tr>
-                <td>{{ item.nome_produto }}</td>
-                <td>{{ item.quantidade }}</td>
-                <td>R$ {{ item.preco_unitario|floatformat:2 }}</td>
-                <td>R$ {{ item.total_item|floatformat:2 }}</td> <!-- Usando o total calculado no backend -->
-            </tr>
+                <tr id="item-{{ item.id }}"> <!-- ID do item para referência -->
+                    <td>{{ item.nome_produto }}</td>
+                    <td>{{ item.quantidade }}</td>
+                    <td>R$ {{ item.preco_unitario|floatformat:2 }}</td>
+                    <td>R$ {{ item.total_item|floatformat:2 }}</td>
+                    <td>
+                        <button type="button" 
+                            class="btn btn-danger btn-sm"
+                            data-bs-toggle="modal" 
+                            data-bs-target="#excluirItemModal" 
+                            data-item-codigo="{{ item.codigo }}">
+                                Excluir
+                        </button>
+                    </td>
+                </tr>
+            
             {% endfor %}
         </tbody>
         <tfoot>
             <tr>
-                <td colspan="3" class="text-end"><strong>Total:</strong></td>
-                <td><strong>R$ {{ total_geral|floatformat:2 }}</strong></td> <!-- Usando o valor calculado -->
+                <td colspan="4" class="text-end"><strong>Total a pagar: </strong><strong>R$ {{ total_geral|floatformat:2 }}</strong></td>
+                <td></td>
             </tr>
         </tfoot>
     </table>
-    <!-- Usando 'user_mesa.id' para passar o ID do usuário associado à mesa -->
     <a href="{% url 'mesa:gerar_comanda_pdf' mesa.id %}" class="btn btn-secondary mt-3">Imprimir Comanda</a>
 {% else %}
     <p>Nenhum item adicionado.</p>
 {% endif %}
+
 
 
 

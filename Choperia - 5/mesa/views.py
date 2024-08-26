@@ -79,13 +79,14 @@ class AbrirMesaView(View):
         print("Abrir mesa em Get")
         mesa = get_object_or_404(Mesa, id=id_mesa)
         usuarios = Usuario.objects.all()
-        print(f"Todos Usuarios: {usuarios}")
-        produtos = Produto.objects.all()
+        
+        # Filtrar produtos com estoque maior que 0
+        produtos = Produto.objects.filter(estoque__gt=0)
 
         # Cálculo do total de cada item e o total geral no backend
         itens_calculados = []
-        total_geral = 0
-        
+        total_geral = 0       
+                    
         for item in mesa.itens:
             total_item = item['quantidade'] * item['preco_unitario']
             itens_calculados.append({
@@ -93,6 +94,14 @@ class AbrirMesaView(View):
                 'quantidade': item['quantidade'],
                 'preco_unitario': item['preco_unitario'],
                 'total_item': total_item,
+                'categoria': item['categoria'],
+                'custo': item['custo'],
+                'venda': item['venda'],
+                'codigo': item['codigo'],
+                'estoque': item['estoque'],
+                'estoque_total': item['estoque_total'],
+                'descricao': item['descricao'],
+                'imagem': item['imagem'],
             })
             total_geral += total_item
 
@@ -101,7 +110,8 @@ class AbrirMesaView(View):
 
         # Inclua o `usuario` atualmente associado à mesa no contexto
         usuario_atual = self.request.user.usuario  # Acessa o modelo Usuario relacionado ao User
-        print(f"Usuario Atual: {usuario_atual}")
+         
+
         return render(request, 'mesa/abrir_mesa.html', {
             'mesa': mesa, 
             'usuarios': usuarios, 
@@ -192,12 +202,12 @@ from django.utils import timezone
 
 # Modelo usado para uma visão do usuário, não indicado para impressão térmica
 class GerarComandaPDFView(LoginRequiredMixin, View):
-    def get(self, request, mesa_id):
-        mesa = get_object_or_404(Mesa, pk=mesa_id)
+    def get(self, request, id_mesa):
+        mesa = get_object_or_404(Mesa, pk=id_mesa)
 
         # Configura o response para PDF
         response = HttpResponse(content_type='application/pdf')
-        response['Content-Disposition'] = f'attachment; filename="comanda_{mesa_id}.pdf"'
+        response['Content-Disposition'] = f'attachment; filename="comanda_{id_mesa}.pdf"'
 
         # Define o tamanho do papel: 80mm de largura, altura ajustável
         largura = 80 * mm
@@ -302,21 +312,21 @@ from reportlab.platypus import SimpleDocTemplate, Paragraph, Table, TableStyle
 
 # Método que gera a comanda do caixa em PDF
 class GerarComandaPDFView(LoginRequiredMixin, View):
-    def get(self, request, mesa_id):
+    def get(self, request, id_mesa):
        # Obtenha o usuário autenticado
         user = request.user
         
         # Encontre o correspondente no modelo Usuario (se for necessário)
         usuario_logado = get_object_or_404(Usuario, user=user)
 
-        mesa = get_object_or_404(Mesa, pk=mesa_id)
+        mesa = get_object_or_404(Mesa, pk=id_mesa)
         empresa = get_empresa_padrao() 
 
         usuarios = Usuario.objects.all()
         print(f"Funcionario: {usuario_logado.nome}")              
 
         response = HttpResponse(content_type='application/pdf')
-        response['Content-Disposition'] = f'inline; filename="comanda_{mesa_id}.pdf"'
+        response['Content-Disposition'] = f'inline; filename="comanda_{id_mesa}.pdf"'
 
         p = canvas.Canvas(response)
 
@@ -378,7 +388,7 @@ class GerarComandaPDFView(LoginRequiredMixin, View):
         # Subtotal e Total
         p.drawString(5, y, f"Subtotal:           R$ {total:.2f}".replace('.', ','))
         y -= 10
-
+        # TODO: fazer a opção de desconto somente quando for realizado o pagamento, onde terá também a opção de dividir a conta
         desconto = 5.00  # Exemplo
         p.drawString(5, y, f"Desconto:           R$ {desconto:.2f}".replace('.', ','))
         y -= 10
@@ -404,8 +414,8 @@ class GerarComandaPDFView(LoginRequiredMixin, View):
 
         return response
 
-    def enviar_para_cozinha(self, request, mesa_id):
-        response = EnviarParaCozinhaView().post(request, mesa_id)
+    def enviar_para_cozinha(self, request, id_mesa):
+        response = EnviarParaCozinhaView().post(request, id_mesa)
         return response
 
     
@@ -417,8 +427,8 @@ from .models import Mesa
 from datetime import datetime
 
 """class EnviarParaCozinhaView(View): # Envia via ip
-    def post(self, request, mesa_id):
-        mesa = get_object_or_404(Mesa, pk=mesa_id)
+    def post(self, request, id_mesa):
+        mesa = get_object_or_404(Mesa, pk=id_mesa)
         
         try:
             # Conecte-se à impressora via IP
@@ -453,8 +463,8 @@ from datetime import datetime
             return HttpResponse(f"Erro ao enviar para a cozinha: {str(e)}", status=500)"""
 
 class EnviarParaCozinhaView(View): # Envia via arquivo txt
-    def post(self, request, mesa_id):
-        mesa = get_object_or_404(Mesa, pk=mesa_id)
+    def post(self, request, id_mesa):
+        mesa = get_object_or_404(Mesa, pk=id_mesa)
         itens_calculados = [
             {
                 'nome_produto': item['nome_produto'],
@@ -486,14 +496,14 @@ class EnviarParaCozinhaView(View): # Envia via arquivo txt
 
 
 class ExcluirItemView(LoginRequiredMixin, View):
-    def post(self, request, pk):
-        mesa = get_object_or_404(Mesa, pk=pk)
+    def post(self, request, id_mesa):
+        mesa = get_object_or_404(Mesa, pk=id_mesa)
         item_codigo = request.POST.get('item_codigo')
         quantidade = int(request.POST.get('quantidade', 1))
-
         item_removido = False
-        for item in mesa.itens:
+        for item in mesa.itens:            
             if item['codigo'] == item_codigo:
+                print("Procurando item a ser excluido foi localizado!")
                 if item['quantidade'] > quantidade:
                     item['quantidade'] -= quantidade
                 else:
@@ -518,7 +528,9 @@ class ExcluirItemView(LoginRequiredMixin, View):
 
             mesa.save()
 
-        return redirect('mesa:abrir_mesa', pk=pk)
+        return redirect('mesa:abrir_mesa', id_mesa=id_mesa)
+
+
 
 
 

@@ -8,13 +8,16 @@
         <button class="btn btn-warning" style="cursor: pointer;"
             data-bs-toggle="modal" data-bs-target="#editProdutoModal"
             hx-get="{% url 'produto:edit_produto' produto.id %}" 
-            hx-target="#editProdutoForm">Editar</button>
+            hx-target="#editProdutoForm">
+            <i class="fa fa-edit"></i>
+        </button>
         <button class="btn btn-danger" style="cursor: pointer;"
             hx-delete="{% url 'produto:delete_produto' produto.id %}"
             hx-trigger="click"
-            hx-target="#list-produto">Excluir</button>
+            hx-target="#list-produto">
+            <i class="fa fa-trash"></i>
+        </button>
     </td>
 </tr>
-
 
 

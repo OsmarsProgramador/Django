@@ -1,8 +1,9 @@
 # mesa/htmx_views.py
+from django.contrib import messages
 from django.views import View
 from django.shortcuts import render, get_object_or_404, redirect
-from django.http import JsonResponse
-from django.urls import reverse_lazy
+from django.http import HttpResponse, JsonResponse
+from django.urls import reverse, reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.edit import CreateView
 from .models import Mesa
@@ -10,18 +11,22 @@ from .forms import MesaForm
 from produto.models import Produto
 
 from django.utils import timezone
-from .forms import AdicionarItemForm
+
+# TODO: Sempre que um modal que adiciona produto a mesa for fechado ele deve 
+# ter os dados incicial sem quantidade > 1. Isso deve ser feito no template abrir_mesa 
 
 """ implementar a lógica para adicionar produtos à mesa, considerando a manipulação do estoque e a atualização da lista de itens da mesa. """   
 class AdicionarItemView(View):
-    def get(self, request, mesa_id):
-        mesa = get_object_or_404(Mesa, pk=mesa_id)
-        produtos = Produto.objects.all()
+    def get(self, request, id_mesa):
+        mesa = get_object_or_404(Mesa, pk=id_mesa)
+        produtos = Produto.objects.filter(estoque__gt=0)  # Filtrar apenas produtos com estoque disponível
         return render(request, 'mesa/adicionar_item.html', {'mesa': mesa, 'produtos': produtos})
 
-    def post(self, request, mesa_id, produto_id):
-        mesa = get_object_or_404(Mesa, pk=mesa_id)
+    def post(self, request, id_mesa, produto_id):
+        mesa = get_object_or_404(Mesa, pk=id_mesa)
         produto = get_object_or_404(Produto, pk=produto_id)
+        
+        # Captura a quantidade do POST
         quantidade = int(request.POST.get('quantidade', 1))
 
         if produto.estoque >= quantidade:
@@ -74,22 +79,34 @@ class AdicionarItemView(View):
             # Obter a data e hora atual
             now = timezone.now()
 
+            # Verificar se o estoque do produto zerou
+            if produto.estoque == 0 and request.headers.get('HX-Request'):
+                messages.warning(request, f'O produto "{produto.nome_produto}" está esgotado no estoque.')
+                # Se o estoque zerar e a requisição for HTMX, forçar um redirecionamento completo
+                response = HttpResponse(status=204)  # Resposta vazia para HTMX
+                response['HX-Redirect'] = reverse('mesa:abrir_mesa', kwargs={'id_mesa': id_mesa})
+                return response
+
             # Se a requisição for via HTMX, renderizar apenas o componente parcial
             if request.headers.get('HX-Request'):
                 return render(request, 'mesa/partials/htmx_componentes/item_list.html', {
                     'mesa': mesa,
                     'itens_calculados': itens_calculados,  # Enviar os itens calculados para o template
                     'total_geral': total_geral,  # Enviar o total geral para o template
-                    'now': now,  # Passar a data e hora atual para o template
                 })
-            else:
-                return redirect('mesa:abrir_mesa', id_mesa=mesa.id)
+
+            # Se não for via HTMX, redirecionar normalmente
+            return redirect('mesa:abrir_mesa', id_mesa=id_mesa)
+
         else:
-            return render(request, 'mesa/adicionar_item.html', {
-                'mesa': mesa,
-                'produtos': Produto.objects.all(),
-                'error': 'Estoque insuficiente'
-            }) 
+            if request.headers.get('HX-Request'):
+                messages.warning(request, f'O produto "{produto.nome_produto}" está esgotado no estoque.')
+                # Se o estoque zerar e a requisição for HTMX, forçar um redirecionamento completo
+                response = HttpResponse(status=204)  # Resposta vazia para HTMX
+                response['HX-Redirect'] = reverse('mesa:abrir_mesa', kwargs={'id_mesa': id_mesa})
+                return response
+            # Se o estoque não for suficiente, recarregar a página inteira
+            return redirect('mesa:abrir_mesa', id_mesa=id_mesa)        
 
 class MesaCreateView(LoginRequiredMixin, CreateView):
     model = Mesa
