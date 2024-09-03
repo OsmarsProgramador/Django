@@ -1,0 +1,14 @@
+<!-- mesa/templates/mesa/pagamento_confirmacao.html -->
+{% extends "core/base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1>Confirmação de Pagamento</h1>
+    <p>Mesa: {{ mesa.nome }}</p>
+    <p>Total com desconto: R$ {{ total|floatformat:2 }}</p>
+    <p>Dividido por {{ divisao }} pessoas: R$ {{ total_por_pessoa|floatformat:2 }} por pessoa</p>
+    <a href="{% url 'mesa:imprimir_recibo' mesa.id %}" target="_blank" class="btn btn-secondary mt-3 mx-2">
+        Imprimir Recibo
+    </a>
+</div>
+{% endblock %}

@@ -1,0 +1,20 @@
+<!-- mesa/templates/mesa/pagamento.html -->
+{% extends "core/base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1>Pagamento da Mesa {{ mesa.nome }}</h1>
+    <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="desconto" class="form-label">Desconto</label>
+            <input type="number" step="0.01" name="desconto" id="desconto" class="form-control" value="0">
+        </div>
+        <div class="mb-3">
+            <label for="divisao" class="form-label">Dividir conta em quantas partes?</label>
+            <input type="number" name="divisao" id="divisao" class="form-control" value="1" min="1">
+        </div>
+        <button type="submit" class="btn btn-success">Confirmar Pagamento</button>
+    </form>
+</div>
+{% endblock %}

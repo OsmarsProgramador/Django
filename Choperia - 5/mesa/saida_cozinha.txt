@@ -1,9 +1,13 @@
 ---- COMANDA DE COZINHA ----
 Mesa: 03  Pedido: 1
-Data: 02/09/2024
-Hora: 22:43:36
+Data: 03/09/2024
+Hora: 00:20:29
 -----------------------------
-Mini pizza baiana - 1
+Mini pizza baiana - 2
 Descrição: Massa e mussarela
+Suco de morango - 1
+Descrição: Morango e água
+Whisky_Jack_Daniel´s - 1
+Descrição: Whisky_Jack_Daniel´s 1L
 -----------------------------
 Preparar com atenção!

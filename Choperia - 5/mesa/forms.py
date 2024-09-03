@@ -6,7 +6,8 @@ from produto.models import Produto
 class MesaForm(forms.ModelForm):
     class Meta:
         model = Mesa
-        fields = ['nome']
+        # fields = ['nome']
+        fields = ['nome', 'itens', 'status', 'pedido', 'usuario']  # Certifique-se de usar campos válidos
 
     def clean_nome(self):
         nome = self.cleaned_data['nome']

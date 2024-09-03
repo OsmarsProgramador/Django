@@ -53,6 +53,15 @@
                                 </li>
                             </ul>
                             <hr>
+                            <!-- Botão para redirecionar para a página de pagamento -->
+                            <a href="{% url 'mesa:pagamento' mesa.id %}" class="btn btn-success mt-3 mx-2">
+                                Realizar Pagamento
+                            </a>
+                            <!-- Botão para imprimir comanda -->
+                            <a href="{% url 'mesa:gerar_comanda_pdf' mesa.id %}" target="_blank" class="btn btn-secondary mt-3 mx-2">
+                                Imprimir Comanda
+                            </a>
+                            <!-- Botão para trocar usuário -->
                             <button type="button" onclick="openPasswordModal()" class="btn btn-primary mt-3 mx-2">
                                 Trocar usuário
                             </button> 
@@ -61,6 +70,7 @@
                 </div>
             </div> 
         </div>
+
 
         <!-- TODO: Inserir e implementar o botão para redirecionar para realizar pagamento 
         e mudar o botão de imprimir para o template de pagamento -->

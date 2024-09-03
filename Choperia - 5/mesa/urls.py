@@ -12,6 +12,8 @@ urlpatterns = [
     path('gerar_comanda_pdf/<int:id_mesa>/', views.GerarComandaPDFView.as_view(), name='gerar_comanda_pdf'),
     path('excluir_item/<int:id_mesa>/', views.ExcluirItemView.as_view(), name='excluir_item'),
     path('enviar_para_cozinha/<int:id_mesa>/', views.EnviarParaCozinhaView.as_view(), name='enviar_para_cozinha'),
+    path('pagamento/<int:id_mesa>/', views.PagamentoView.as_view(), name='pagamento'),
+    path('imprimir_recibo/<int:id_mesa>/', views.GerarReciboPDFView.as_view(), name='imprimir_recibo'),
 ]
 
 

@@ -506,6 +506,48 @@ class ExcluirItemView(LoginRequiredMixin, View):
 
         return redirect('mesa:abrir_mesa', id_mesa=id_mesa)
 
+class PagamentoView(LoginRequiredMixin, View):
+    def get(self, request, id_mesa):
+        mesa = get_object_or_404(Mesa, pk=id_mesa)
+        total = mesa.calcular_total()  # Método que você precisará implementar para calcular o total da mesa
+        return render(request, 'mesa/pagamento.html', {'mesa': mesa, 'total': total})
+
+    def post(self, request, id_mesa):
+        mesa = get_object_or_404(Mesa, pk=id_mesa)
+        desconto = float(request.POST.get('desconto', 0))
+        divisao = int(request.POST.get('divisao', 1))
+
+        total = mesa.calcular_total() - desconto
+        total_por_pessoa = total / divisao
+
+        # Processar o pagamento...
+
+        return render(request, 'mesa/pagamento_confirmacao.html', {
+            'mesa': mesa,
+            'total': total,
+            'total_por_pessoa': total_por_pessoa,
+            'divisao': divisao,
+            'desconto': desconto
+        })
+    
+class GerarReciboPDFView(LoginRequiredMixin, View):
+    def get(self, request, id_mesa):
+        mesa = get_object_or_404(Mesa, pk=id_mesa)
+        total = mesa.calcular_total()
+
+        response = HttpResponse(content_type='application/pdf')
+        response['Content-Disposition'] = f'inline; filename="recibo_{id_mesa}.pdf"'
+
+        p = canvas.Canvas(response, pagesize=A4)
+
+        p.setFont("Courier", 10)
+        p.drawString(100, 800, f"Recibo - Mesa {mesa.nome}")
+        p.drawString(100, 780, f"Total: R$ {total:.2f}")
+
+        p.showPage()
+        p.save()
+
+        return response
 
 
 

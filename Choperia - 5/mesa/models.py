@@ -18,5 +18,9 @@ class Mesa(models.Model):
     def get_absolute_url(self):
         return reverse('mesa:abrir_mesa', args=[self.id])
 
-
+    def calcular_total(self):
+        total = 0
+        for item in self.itens:
+            total += item['quantidade'] * item['preco_unitario']
+        return total
 
