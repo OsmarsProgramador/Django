@@ -1,0 +1,38 @@
+/* static/css/style.css */
+
+/* Card para mesas abertas (sem produtos) */
+.bg-lightgreen {
+    background-color: #d4edda;
+}
+
+/* Card para mesas fechadas (com produtos) */
+.bg-lightblue {
+    background-color: #cce5ff;
+}
+
+.card-header.bg-success {
+    background-color: #28a745 !important;
+}
+
+.card-header.bg-primary {
+    background-color: #007bff !important;
+}
+
+/* static/css/style.css */
+
+/* Personalizando os cards */
+.card-header.bg-primary {
+    background-color: #007bff !important;
+}
+
+.card-header.bg-success {
+    background-color: #28a745 !important;
+}
+
+/* Personalizando o modal */
+.modal-content {
+    border-radius: 5px;
+    padding: 20px;
+}
+
+

@@ -1,0 +1,14 @@
+<!-- templates/usuario/usuario_confirm_delete.html -->
+{% extends 'base.html' %}
+
+{% block title %}Confirmar Exclusão{% endblock %}
+
+{% block content %}
+<h1>Excluir Usuário</h1>
+<p>Você tem certeza que deseja excluir o usuário "{{ usuario.username }}"?</p>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Excluir</button>
+    <a href="{% url 'usuario:usuario_list' %}" class="btn btn-secondary">Cancelar</a>
+</form>
+{% endblock %}

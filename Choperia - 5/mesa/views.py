@@ -1,5 +1,6 @@
 # mesa/views.py
 import os
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
 from django.views.generic import ListView, View
 from django.urls import reverse_lazy
@@ -8,7 +9,6 @@ from .models import Mesa
 from produto.models import Produto
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
-from usuario.models import Usuario
 from django.http import HttpResponse
 from django.utils import timezone
 
@@ -53,13 +53,6 @@ class MesaListView(LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        # Verifique se o usuário logado tem um perfil de Usuario
-        try:
-            context['usuario_logado'] = self.request.user.usuario
-        except Usuario.DoesNotExist:
-            # Se não houver perfil, você pode definir um comportamento padrão
-            context['usuario_logado'] = None  # Ou qualquer tratamento desejado
-
         context['mesas_abertas'] = Mesa.objects.filter(status='Aberta').order_by('nome')
         context['mesas_fechadas'] = Mesa.objects.filter(status='Fechada').order_by('nome')
         
@@ -70,23 +63,23 @@ class MesaListView(LoginRequiredMixin, ListView):
         context['mesas_disponiveis'] = [f'{str(i).zfill(2)}' for i in range(1, 31) if f'{str(i).zfill(2)}' not in mesas_existentes]
 
         # Adiciona o usuário logado ao contexto
-        context['usuario_logado'] = self.request.user.usuario  # Acessa o modelo Usuario relacionado ao User
+        # Não precisamos do modelo Usuario, podemos usar request.user diretamente
+        context['usuario_logado'] = self.request.user if self.request.user.is_authenticated else None
 
         return context
 
-class AbrirMesaView(View):
+class AbrirMesaView(LoginRequiredMixin, View):
     def get(self, request, id_mesa):
-        print("Abrir mesa em Get")
         mesa = get_object_or_404(Mesa, id=id_mesa)
-        usuarios = Usuario.objects.all()
-        
+        usuarios = User.objects.all()  # Listando todos os usuários
+
         # Filtrar produtos com estoque maior que 0
         produtos = Produto.objects.filter(estoque__gt=0)
 
         # Cálculo do total de cada item e o total geral no backend
         itens_calculados = []
         total_geral = 0       
-                    
+
         for item in mesa.itens:
             total_item = item['quantidade'] * item['preco_unitario']
             itens_calculados.append({
@@ -108,18 +101,17 @@ class AbrirMesaView(View):
         # Obter a data e hora atual
         now = timezone.now()
 
-        # Inclua o `usuario` atualmente associado à mesa no contexto
-        usuario_atual = self.request.user.usuario  # Acessa o modelo Usuario relacionado ao User
-         
+        # Usando request.user diretamente sem depender do modelo Usuario
+        usuario_atual = request.user if request.user.is_authenticated else None
 
         return render(request, 'mesa/abrir_mesa.html', {
             'mesa': mesa, 
             'usuarios': usuarios, 
             'usuario_atual_nome': usuario_atual,
             'produtos': produtos,            
-            'itens_calculados': itens_calculados,  # Enviar os itens calculados para o template
-            'total_geral': total_geral,  # Enviar o total geral para o template
-            'now': now,  # Passar a data e hora atual para o template
+            'itens_calculados': itens_calculados,  
+            'total_geral': total_geral,  
+            'now': now,  
         })
 
 from usuario.forms import PasswordForm
@@ -135,28 +127,19 @@ class UpdateUserView(View):
 
         try:
             # Obtenha o ID do usuário e a senha do POST
-            usuario_id = request.POST.get('usuario')
+            user_id = request.POST.get('usuario')
             password = request.POST.get('password')
-            print(f"ID do Usuário Selecionado: {usuario_id}")
+            print(f"ID do Usuário Selecionado: {user_id}")
         except Exception as e:
             print(f"Erro ao obter dados do formulário: {e}")
             return render(request, 'usuario/login.html', {'error': 'Erro ao obter dados do formulário.'})
 
         try:
-            # Obtenha o objeto Usuario diretamente pelo ID
-            usuario = get_object_or_404(Usuario, pk=usuario_id)
-            user = usuario.user  # Agora obtemos o User relacionado a partir do Usuario
-            print(f"Usuário relacionado obtido: {usuario.nome}")
+            # Obtenha o objeto User diretamente pelo ID
+            user = get_object_or_404(User, pk=user_id)
+            print(f"Usuário relacionado obtido: {user.username}")
         except Exception as e:
-            print(f"Erro ao obter o Usuario: {e}")
-            return render(request, 'usuario/login.html', {'error': 'Usuário relacionado não encontrado.'})
-
-        try:
-            # Obtenha o objeto Usuario relacionado ao User
-            usuario = get_object_or_404(Usuario, user=user)
-            print(f"Usuário relacionado obtido: {usuario.nome}")
-        except Exception as e:
-            print(f"Erro ao obter o Usuario: {e}")
+            print(f"Erro ao obter o User: {e}")
             return render(request, 'usuario/login.html', {'error': 'Usuário relacionado não encontrado.'})
 
         try:
@@ -169,12 +152,12 @@ class UpdateUserView(View):
 
         if user_authenticated is not None:
             try:
-                # Atualize o nome do objeto Usuario conforme o usuário selecionado
-                usuario.nome = user.username  # Atribui o nome de usuário correto
-                usuario.save()
-                print(f"Usuário atualizado: {usuario.nome}")
+                # Aqui, o nome do usuário não é alterado no banco de dados, 
+                # já que estamos utilizando diretamente o modelo User
+                # Você pode atualizar outros campos se necessário, mas no exemplo, não há mudanças
+                print(f"Usuário autenticado: {user.username}")
             except Exception as e:
-                print(f"Erro ao salvar o Usuario: {e}")
+                print(f"Erro ao salvar o User: {e}")
                 return render(request, 'usuario/login.html', {'error': 'Erro ao salvar o usuário.'})
 
             try:
@@ -191,7 +174,6 @@ class UpdateUserView(View):
             # Se a autenticação falhar, mostre uma mensagem de erro
             print("Falha na autenticação. Senha incorreta.")
             return render(request, 'usuario/login.html', {'error': 'Senha incorreta. Tente novamente.'})
-
 
 """
 from reportlab.lib.units import mm
@@ -314,16 +296,10 @@ from reportlab.platypus import SimpleDocTemplate, Paragraph, Table, TableStyle
 class GerarComandaPDFView(LoginRequiredMixin, View):
     def get(self, request, id_mesa):
        # Obtenha o usuário autenticado
-        user = request.user
+        user = request.user      
         
-        # Encontre o correspondente no modelo Usuario (se for necessário)
-        usuario_logado = get_object_or_404(Usuario, user=user)
-
         mesa = get_object_or_404(Mesa, pk=id_mesa)
-        empresa = get_empresa_padrao() 
-
-        usuarios = Usuario.objects.all()
-        print(f"Funcionario: {usuario_logado.nome}")              
+        empresa = get_empresa_padrao()        
 
         response = HttpResponse(content_type='application/pdf')
         response['Content-Disposition'] = f'inline; filename="comanda_{id_mesa}.pdf"'
@@ -346,7 +322,7 @@ class GerarComandaPDFView(LoginRequiredMixin, View):
 
         # Exibindo a Mesa e Funcionário
         p.drawString(5, altura - 80, f"Mesa: {mesa.nome}")
-        p.drawString(5, altura - 90, f"Funcionário: {usuario_logado.nome}")
+        p.drawString(5, altura - 90, f"Funcionário: {user.username}")  # Usando o nome do usuário autenticado
         p.drawString(5, altura - 100, "------------------------------")
         
         # Data e Hora

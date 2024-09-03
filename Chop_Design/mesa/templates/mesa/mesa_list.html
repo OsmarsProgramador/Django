@@ -1,0 +1,66 @@
+<!-- templates/mesa/mesa_list.html -->
+{% extends 'base.html' %}
+
+{% block title %}Lista de Mesas{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1>Mesas</h1>
+    <a href="{% url 'mesa:mesa_create' %}" class="btn btn-primary mb-3">Adicionar Mesa</a>
+
+    <!-- Card para Mesas Abertas -->
+    <div class="card mb-4">
+        {% if mesas_abertas %}
+            <div class="card-header bg-success text-white">
+                Mesas Abertas
+            </div>
+            <div class="card-body">
+                <div class="row">
+                
+                    {% for mesa in mesas_abertas %}
+                        <div class="col-md-2"> <!-- Ajuste para 6 mesas por linha -->
+                            <div class="card mb-4 bg-lightgreen">
+                                <div class="card-body">
+                                    <h5 class="card-title">Mesa {{ mesa.numero }}</h5>
+                                    <p class="card-text">Capacidade: {{ mesa.capacidade }} pessoas</p>
+                                    <a href="{% url 'mesa:abrir_mesa' mesa.numero %}" class="btn btn-success">Ver</a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}                
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Card para Mesas Fechadas -->
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            Mesas Fechadas
+        </div>
+        <div class="card-body">
+            <div class="row">
+                {% if mesas_fechadas %}
+                    {% for mesa in mesas_fechadas %}
+                        <div class="col-md-2"> <!-- Ajuste para 6 mesas por linha -->
+                            <div class="card mb-4 bg-lightblue">
+                                <div class="card-body">
+                                    <h5 class="card-title">Mesa {{ mesa.numero }}</h5>
+                                    <p class="card-text">Capacidade: {{ mesa.capacidade }} pessoas</p>
+                                    <a href="{% url 'mesa:detalhes_mesa' mesa.numero %}" class="btn btn-primary">Abrir</a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="text-muted">Não há mesas fechadas no momento.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+
+</div>
+{% endblock %}
+
+

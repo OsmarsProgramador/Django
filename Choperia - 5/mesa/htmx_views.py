@@ -17,11 +17,6 @@ from django.utils import timezone
 
 """ implementar a lógica para adicionar produtos à mesa, considerando a manipulação do estoque e a atualização da lista de itens da mesa. """   
 class AdicionarItemView(View):
-    def get(self, request, id_mesa):
-        mesa = get_object_or_404(Mesa, pk=id_mesa)
-        produtos = Produto.objects.filter(estoque__gt=0)  # Filtrar apenas produtos com estoque disponível
-        return render(request, 'mesa/adicionar_item.html', {'mesa': mesa, 'produtos': produtos})
-
     def post(self, request, id_mesa, produto_id):
         mesa = get_object_or_404(Mesa, pk=id_mesa)
         produto = get_object_or_404(Produto, pk=produto_id)

@@ -1,9 +1,9 @@
 ---- COMANDA DE COZINHA ----
 Mesa: 03  Pedido: 1
-Data: 25/08/2024
-Hora: 14:26:38
+Data: 02/09/2024
+Hora: 22:43:36
 -----------------------------
-Fanta 350ml - 1
-Descrição: Fanta lata 350ml
+Mini pizza baiana - 1
+Descrição: Massa e mussarela
 -----------------------------
 Preparar com atenção!

@@ -1,0 +1,14 @@
+<!-- templates/mesa/mesa_form.html -->
+{% extends 'base.html' %}
+
+{% block title %}Adicionar Mesa{% endblock %}
+
+{% block content %}
+<h1>{{ form.instance.pk|default:"Adicionar" }} Mesa</h1>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-success">Salvar</button>
+    <a href="{% url 'mesa:mesa_list' %}" class="btn btn-secondary">Cancelar</a>
+</form>
+{% endblock %}

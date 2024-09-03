@@ -222,7 +222,7 @@
                         <label for="usuario">Selecione o Usuário:</label>
                         <select id="usuario" name="usuario" class="form-control">
                             {% for user in usuarios %}
-                                <option value="{{ user.id }}">{{ user.user.username }}</option> <!-- user.user.username pertence ao modelo Usuario e user.username ao User -->
+                                <option value="{{ user.id }}">{{ user.username }}</option> <!-- user.user.username pertence ao modelo Usuario e user.username ao User -->
                             {% endfor %}
                         </select>
                     </div>

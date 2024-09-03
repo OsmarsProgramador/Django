@@ -1,0 +1,14 @@
+<!-- templates/mesa/mesa_confirm_delete.html -->
+{% extends 'base.html' %}
+
+{% block title %}Confirmar Exclusão{% endblock %}
+
+{% block content %}
+<h1>Excluir Mesa</h1>
+<p>Você tem certeza que deseja excluir a mesa número {{ mesa.numero }}?</p>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Excluir</button>
+    <a href="{% url 'mesa:mesa_list' %}" class="btn btn-secondary">Cancelar</a>
+</form>
+{% endblock %}

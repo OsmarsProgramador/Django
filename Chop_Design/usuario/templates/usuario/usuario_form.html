@@ -1,0 +1,14 @@
+<!-- templates/usuario/usuario_form.html -->
+{% extends 'base.html' %}
+
+{% block title %}Adicionar Usuário{% endblock %}
+
+{% block content %}
+<h1>{{ form.instance.pk|default:"Adicionar" }} Usuário</h1>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-success">Salvar</button>
+    <a href="{% url 'usuario:usuario_list' %}" class="btn btn-secondary">Cancelar</a>
+</form>
+{% endblock %}

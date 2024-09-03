@@ -1,0 +1,25 @@
+<!-- templates/mesa/mesa.html -->
+{% extends 'base.html' %}
+
+{% block title %}Listar Mesas{% endblock %}
+
+{% block content %}
+<h2>Mesas</h2>
+<div class="row">
+    {% for mesa in mesas %}
+    <div class="col-md-4">
+        <div class="card mb-4 {% if mesa.is_aberta %}bg-lightgreen{% elif mesa.is_fechada %}bg-lightblue{% endif %}">
+            <div class="card-body">
+                <h5 class="card-title">Mesa {{ mesa.numero }}</h5>
+                <p class="card-text">Capacidade: {{ mesa.capacidade }} pessoas</p>
+                {% if mesa.is_aberta %}
+                    <a href="{% url 'mesa:abrir_mesa' numero_mesa=mesa.numero %}" class="btn btn-success">Abrir</a>
+                {% elif mesa.is_fechada %}
+                    <a href="{% url 'mesa:detalhes_mesa' numero_mesa=mesa.numero %}" class="btn btn-primary">Ver</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

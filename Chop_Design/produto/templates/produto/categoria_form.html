@@ -1,0 +1,16 @@
+<!-- templates/produto/categoria_form.html -->
+{% extends 'base.html' %}
+
+{% block title %}Adicionar Categoria{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>{{ form.instance.pk|default:"Adicionar" }} Categoria</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-success">Salvar</button>
+        <a href="{% url 'produto:categoria_list' %}" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>
+{% endblock %}

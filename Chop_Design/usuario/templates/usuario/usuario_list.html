@@ -1,0 +1,34 @@
+<!-- templates/usuario/usuario_list.html -->
+{% extends 'base.html' %}
+
+{% block title %}Lista de Usuários{% endblock %}
+
+{% block content %}
+<h1>Lista de Usuários</h1>
+<a href="{% url 'usuario:usuario_create' %}" class="btn btn-primary">Adicionar Usuário</a>
+<table class="table mt-4">
+    <thead>
+        <tr>
+            <th>Nome de Usuário</th>
+            <th>Email</th>
+            <th>Nome</th>
+            <th>Sobrenome</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for usuario in usuarios %}
+        <tr>
+            <td>{{ usuario.username }}</td>
+            <td>{{ usuario.email }}</td>
+            <td>{{ usuario.first_name }}</td>
+            <td>{{ usuario.last_name }}</td>
+            <td>
+                <a href="{% url 'usuario:usuario_update' usuario.pk %}" class="btn btn-warning btn-sm">Editar</a>
+                <a href="{% url 'usuario:usuario_delete' usuario.pk %}" class="btn btn-danger btn-sm">Excluir</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

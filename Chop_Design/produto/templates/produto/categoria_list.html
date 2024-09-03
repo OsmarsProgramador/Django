@@ -1,0 +1,25 @@
+<!-- templates/produto/categoria_list.html -->
+{% extends 'base.html' %}
+
+{% block title %}Lista de Categorias{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1>Lista de Categorias</h1>
+    <a href="{% url 'produto:categoria_create' %}" class="btn btn-primary mb-3">Adicionar Categoria</a>
+    <table class="table mt-4">
+        <thead>
+            <tr>
+                <th>Nome da Categoria</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for categoria in categorias %}
+            <tr>
+                <td>{{ categoria.nome }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
