@@ -11,3 +11,4 @@ class CategoriaForm(forms.ModelForm):
     class Meta:
         model = Categoria
         fields = ['nome']  # Incluímos apenas o campo 'nome'
+

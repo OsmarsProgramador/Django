@@ -11,8 +11,11 @@ urlpatterns = [
     path('update_user/<int:pk>/', views.UpdateUserView.as_view(), name='update_user'),
     path('gerar_comanda_pdf/<int:id_mesa>/', views.GerarComandaPDFView.as_view(), name='gerar_comanda_pdf'),
     path('excluir_item/<int:id_mesa>/', views.ExcluirItemView.as_view(), name='excluir_item'),
+    path('cancelar_pedido/<int:id_mesa>/', views.CancelarPedidoView.as_view(), name='cancelar_pedido'),
     path('enviar_para_cozinha/<int:id_mesa>/', views.EnviarParaCozinhaView.as_view(), name='enviar_para_cozinha'),
-    path('pagamento/<int:id_mesa>/', views.PagamentoView.as_view(), name='pagamento'),
+    path('realizar_pagamento/<int:id_mesa>/', views.RealizarPagamentoView.as_view(), name='realizar_pagamento'),
+    path('pagamento_pessoa/<int:id_mesa>/', views.PagamentoPorPessoaView.as_view(), name='pagamento_pessoa'),
+    path('confirmacao_pagamento/<int:id_mesa>/', views.ConfirmacaoPagamentoView.as_view(), name='confirmacao_pagamento'),
     path('imprimir_recibo/<int:id_mesa>/', views.GerarReciboPDFView.as_view(), name='imprimir_recibo'),
 ]
 

@@ -32,3 +32,4 @@ class MesaForm(forms.ModelForm):
         model = Mesa
         fields = ['numero', 'capacidade', 'usuario']
         
+        

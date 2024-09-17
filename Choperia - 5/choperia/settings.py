@@ -3,7 +3,14 @@ from pathlib import Path
 
 # Define o ID da empresa padrão
 # defina pelo CNPJ
-DEFAULT_EMPRESA_CNPJ = "57.851.872/3504-08"                        
+DEFAULT_EMPRESA_CNPJ = "57.851.872/3504-08"     
+    
+""" 
+nome = Choperia Point do Morro
+endereco = Avenida Cumbica, 784 Vila Gilda 04954-203 Bairro Bom / SP
+telefone = 945876323
+email = choperia@example.net
+cnpj = 57.851.872/3504-08 """
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -18,7 +25,7 @@ SECRET_KEY = 'django-insecure-j1yz#s-@2$-tfr3)rk5*el)6hd&-jg!woa(*rae@7weqx6jgg)
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition

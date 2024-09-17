@@ -99,3 +99,4 @@ def mesa_delete(request, pk):
         mesa.delete()
         return redirect('mesa:mesa_list')
     return render(request, 'mesa/mesa_confirm_delete.html', {'mesa': mesa})
+

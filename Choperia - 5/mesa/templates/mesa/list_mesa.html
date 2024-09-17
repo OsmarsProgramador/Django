@@ -1,35 +1,41 @@
+
 <!-- mesa/templates/mesa/list_mesa.html -->
 {% extends "core/base.html" %}
 
 {% block content %}
 <div class="container">
-    <!-- Botão para abrir o modal de cadastro de nova mesa -->
+    <!-- Botão para abrir o modal de cadastro de nova mesa numerada -->
     <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#novaMesaModal">
         Cadastrar Nova Mesa
     </button>
 
-    
-    <!-- Modal para cadastro de nova mesa via cards -->
+    <!-- Botão para abrir o modal de cadastro de mesa com nome de pessoa -->
+    <button type="button" class="btn btn-info ms-2" data-bs-toggle="modal" data-bs-target="#novaMesaPessoaModal">
+        Pedido no balcão
+    </button>
+
+    <!-- Modal para criar uma nova mesa numerada via cards -->
     <div class="modal fade" id="novaMesaModal" tabindex="-1" aria-labelledby="novaMesaModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="novaMesaModalLabel">Cadastro de Nova Mesa</h5>
+                    <h5 class="modal-title" id="novaMesaModalLabel">Nova Mesa</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
+                    <h3>Mesas Disponíveis</h3>
                     <div class="row">
-                        {% for numero in mesas_disponiveis %}
+                        {% for mesa_disponivel in mesas_disponiveis %}
                             <div class="col-4 col-md-3 mb-3">
-                                <div class="card">
+                                <div class="card text-bg-success mb-3" style="max-width: 18rem;">
+                                    <div class="card-header text-center">
+                                        Mesa {{ mesa_disponivel }}
+                                    </div>
                                     <div class="card-body text-center">
-                                        <h5 class="card-title">Mesa {{ numero }}</h5>
-                                        <form hx-post="{% url 'mesa:nova_mesa' %}" 
-                                            hx-target="#lista-de-mesas" 
-                                            hx-swap="innerHTML"
-                                            hx-on="htmx:afterRequest resetModal">
+                                        <form method="post" action="{% url 'mesa:nova_mesa' %}">
                                             {% csrf_token %}
-                                            <button type="submit" class="btn btn-success" name="nome" value="{{ numero }}">Adicionar</button>
+                                            <input type="hidden" name="nome" value="{{ mesa_disponivel }}">
+                                            <button type="submit" class="btn btn-primary">Escolher</button>
                                         </form>
                                     </div>
                                 </div>
@@ -41,34 +47,29 @@
         </div>
     </div>
 
-    <!-- Modal para cadastro de nova mesa via input -->
-    <div class="modal fade" id="novaMesaModal" tabindex="-1" aria-labelledby="novaMesaModalLabel" aria-hidden="true">
+    <!-- Modal para criar uma nova mesa com nome de pessoa -->
+    <div class="modal fade" id="novaMesaPessoaModal" tabindex="-1" aria-labelledby="novaMesaPessoaModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="novaMesaModalLabel">Cadastro de Nova Mesa</h5>
+                    <h5 class="modal-title" id="novaMesaPessoaModalLabel">Cadastrar Mesa com Nome de Pessoa</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <!-- Formulário de cadastro da nova mesa -->
-                    <form hx-post="{% url 'mesa:nova_mesa' %}" 
-                          hx-target="#lista-de-mesas" 
-                          hx-swap="innerHTML" 
-                          hx-on="htmx:afterRequest:resetModal"
-                          id="formNovaMesa">
+                    <form method="post" action="{% url 'mesa:nova_mesa' %}">
                         {% csrf_token %}
                         <div class="mb-3">
-                            <label for="nomeMesa" class="form-label">Nome da Mesa</label>
-                            <input type="text" class="form-control" id="nomeMesa" name="nome" required>
+                            <label for="nomeMesaPessoa" class="form-label">Nome da Mesa (Pessoa)</label>
+                            <input type="text" class="form-control" id="nomeMesaPessoa" name="nome" placeholder="Digite o nome da pessoa" required>
                         </div>
-                        <button type="submit" class="btn btn-success">Salvar Mesa</button>
+                        <button type="submit" class="btn btn-primary">Cadastrar</button>
                     </form>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Aqui será exibida a lista de mesas -->
+    <!-- Aqui será exibida a lista de mesas abertas e fechadas -->
     <div id="lista-de-mesas">
         {% if mesas_abertas %}
             <h2 style="color:green;">Pedido(s) em andamento</h2>
@@ -100,7 +101,6 @@
                             </div>
                             <div class="card-body">
                               <h5 class="card-title text-center">{{ mesa.nome }}</h5>
-                              <p class="card-text text-center">Pedido: {{ mesa.pedido }}</p>
                             </div>
                         </div>
                     </div>
@@ -110,6 +110,9 @@
     </div>
 </div>
 {% endblock %}
+
+
+
 
 
 

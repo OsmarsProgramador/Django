@@ -22,7 +22,8 @@
         <!-- Card 1: Nome da Mesa e Usuário -->
         <!-- Informações da mesa e do atendente -->
         <div class="col-md-4" style="height: 100%;">
-            <div class="card border-light mb-3 h-100">
+            <div class="card" style="height: 550px;"> <!-- Definindo a altura fixa -->
+            
                 <div class="card-header">
                     <div class="card-header" style="margin-right: 5px;">
                         <span style="color: green; font-weight: bold;">Mesa: {{ mesa.nome }}</span>
@@ -30,7 +31,8 @@
                 </div>
                 <div class="card-body">
                     <h5 class="card-title">
-                        <div class="card-body" style="display: flex; align-items: center; height: 5vh;">
+                        <!-- <div class="card-body" style="display: flex; align-items: center; height: 5vh;"> -->
+                        <div class="card-body">
                             <ul class="list-group list-group-flush" style="display: flex; align-items: center; list-style: none; padding: 0; margin: 0;">
                                 <li class="list-group-item" style="color: white; font-weight: bold; margin-right: 5px;">Pedido: {{ mesa.pedido }}</li>
                             </ul>
@@ -53,13 +55,9 @@
                                 </li>
                             </ul>
                             <hr>
-                            <!-- Botão para redirecionar para a página de pagamento -->
-                            <a href="{% url 'mesa:pagamento' mesa.id %}" class="btn btn-success mt-3 mx-2">
+                            <!-- Botão para redirecionar para a página de pagamento Método Get acionado-->
+                            <a href="{% url 'mesa:realizar_pagamento' mesa.id %}" class="btn btn-success mt-3 mx-2">
                                 Realizar Pagamento
-                            </a>
-                            <!-- Botão para imprimir comanda -->
-                            <a href="{% url 'mesa:gerar_comanda_pdf' mesa.id %}" target="_blank" class="btn btn-secondary mt-3 mx-2">
-                                Imprimir Comanda
                             </a>
                             <!-- Botão para trocar usuário -->
                             <button type="button" onclick="openPasswordModal()" class="btn btn-primary mt-3 mx-2">
@@ -72,13 +70,12 @@
         </div>
 
 
-        <!-- TODO: Inserir e implementar o botão para redirecionar para realizar pagamento 
-        e mudar o botão de imprimir para o template de pagamento -->
+        <!-- TODO: Implementar o botão para excluir/cancela o pedido -->
 
         <!-- Card 2: Itens da Mesa -->
         <!-- Informações da Comanda de pedido -->
         <div class="col-md-8">
-            <div class="card">
+            <div class="card" style="height: 550px;"> <!-- Definindo a altura fixa -->
                 <div class="card-body">
                     
                     <!-- Botão para abrir o modal de adicionar produto -->
@@ -92,7 +89,13 @@
                     <div id="item-list-container">
                         {% include 'mesa/partials/htmx_componentes/item_list.html' %}
                     </div>
-                    
+                    <!-- Botões de Ação -->
+                    <a href="{% url 'mesa:gerar_comanda_pdf' mesa.id %}" class="btn btn-secondary mt-3">Imprimir Comanda</a>
+                    <form action="{% url 'mesa:cancelar_pedido' mesa.id %}" method="post" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger mt-3">Cancelar Pedido</button>
+                    </form>
+
                 </div>
             </div>
         </div>
@@ -118,6 +121,7 @@
                     </li>
                 </ul>
                 <!-- Tab content -->
+                 
                 <div class="tab-content mt-3">
                     <!-- Tabela -->
                     <div class="tab-pane fade show active" id="table" role="tabpanel" aria-labelledby="table-tab">

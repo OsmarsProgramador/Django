@@ -1,0 +1,67 @@
+Acessando Atributos de Produto via Pedido
+No contexto em que o modelo Produto é acessado através do modelo Pedido, o acesso aos atributos de Produto é feito da seguinte forma:
+
+Na View (detalhes_mesa):
+
+A função detalhes_mesa busca todos os pedidos associados a uma mesa específica.
+Cada instância de Pedido contém uma referência ao Produto através da ForeignKey produto.
+Exemplo:
+
+python
+Copiar código
+pedidos = Pedido.objects.filter(mesa=mesa)
+No Template (detalhes_mesa.html):
+
+Quando você itera sobre os pedidos no template, cada pedido possui um atributo produto que permite acessar os atributos do modelo Produto.
+Exemplo no template:
+
+html
+Copiar código
+{% for pedido in pedidos %}
+    <li class="list-group-item d-flex justify-content-between align-items-center">
+        {{ pedido.quantidade }}x {{ pedido.produto.nome }} - R$ {{ pedido.produto.venda }}
+        <form method="post" style="display: inline;">
+            {% csrf_token %}
+            <input type="hidden" name="pedido_id" value="{{ pedido.id }}">
+            <button type="submit" name="remover_produto" class="btn btn-danger btn-sm">Remover</button>
+        </form>
+    </li>
+{% endfor %}
+Aqui, {{ pedido.produto.nome }} acessa o nome do produto, e {{ pedido.produto.venda }} acessa o preço de venda do produto.
+Atributos de Produto Disponíveis:
+Com base no seu modelo Produto, aqui estão os principais atributos que podem ser acessados:
+
+nome: Nome do produto.
+descricao: Descrição detalhada do produto.
+preco: Preço de custo ou preço padrão do produto.
+venda: Preço de venda do produto.
+codigo: Código único do produto.
+estoque: Estoque disponível atualmente.
+estoque_total: Estoque total (pode ser usado para controlar o máximo que você pode ter em estoque).
+imagem: Caminho da imagem associada ao produto.
+categoria: Categoria do produto (relacionamento com o modelo Categoria).
+Exemplo de Uso:
+Se você quiser exibir o nome, a descrição, e o preço de venda de um produto em um template:
+
+html
+Copiar código
+{{ pedido.produto.nome }} - {{ pedido.produto.descricao }} - R$ {{ pedido.produto.venda }}
+Gerenciamento de Estoque:
+No seu código, você também faz a gestão de estoque ao adicionar ou remover produtos da mesa:
+
+Adicionar Produto:
+
+Ao adicionar um produto a uma mesa, o estoque do produto é reduzido de acordo com a quantidade.
+python
+Copiar código
+produto.estoque -= pedido.quantidade  # Reduz o estoque do produto
+produto.save()
+Remover Produto:
+
+Ao remover um produto de uma mesa, o estoque do produto é aumentado novamente.
+python
+Copiar código
+produto.estoque += pedido.quantidade  # Devolve a quantidade ao estoque do produto
+produto.save()
+Resumo
+O acesso aos atributos de Produto é feito através do modelo Pedido, onde cada instância de Pedido tem uma relação com um Produto. No template, você pode acessar os atributos de Produto usando pedido.produto.<atributo>. Além disso, sua lógica de negócios para gerenciar o estoque de produtos ao adicioná-los ou removê-los de uma mesa é implementada diretamente nas views.

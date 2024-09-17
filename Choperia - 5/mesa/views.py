@@ -5,7 +5,7 @@ from django.contrib.auth import authenticate, login
 from django.views.generic import ListView, View
 from django.urls import reverse_lazy
 from django.shortcuts import redirect, get_object_or_404, render
-from .models import Mesa
+from .models import Mesa, Pedido
 from produto.models import Produto
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
@@ -19,26 +19,12 @@ from reportlab.lib.pagesizes import letter
 from reportlab.lib.units import inch
 from reportlab.lib.units import mm
 
-# mesa/views.py
+
 from django.conf import settings
 from empresa.models import Empresa
 
 def get_empresa_padrao():
     return Empresa.objects.get(cnpj=settings.DEFAULT_EMPRESA_CNPJ)
-
-""" 
-Resumo Visual do Passo a Passo
-Template URL Tag: {% url 'mesa:list_mesa' %}
-Resolução da URL: Encontrar a URL correspondente em urls.py
-Mapeamento para View: views.MesaListView.as_view()
-Chamada de as_view: Criação da função de view
-Método dispatch: Determinar o método HTTP e chamar get
-Método get: Chamar get_context_data
-Método get_context_data: Adicionar dados ao contexto
-Renderização: Renderizar o template com o contexto
-Isso mostra como Django sabe como chegar ao método get_context_data quando você clica no link "Listar mesas".
-"""
-"""O uso do LoginRequiredMixin tem como objetivo garantir que apenas usuários autenticados possam acessar essa view."""
 
 class MesaListView(LoginRequiredMixin, ListView):
     model = Mesa
@@ -66,7 +52,15 @@ class MesaListView(LoginRequiredMixin, ListView):
         # Não precisamos do modelo Usuario, podemos usar request.user diretamente
         context['usuario_logado'] = self.request.user if self.request.user.is_authenticated else None
 
+        # Chama o método para excluir mesas fechadas fora do intervalo 01-11
+        self.excluir_mesas_fechadas()
+
         return context
+
+    def excluir_mesas_fechadas(self):
+        # Exclui mesas fechadas que não estão no intervalo de 01 a 11
+        mesas_para_excluir = Mesa.objects.filter(status='Fechada').exclude(nome__in=[f'{str(i).zfill(2)}' for i in range(1, 12)])
+        mesas_para_excluir.delete()
 
 class AbrirMesaView(LoginRequiredMixin, View):
     def get(self, request, id_mesa):
@@ -76,25 +70,26 @@ class AbrirMesaView(LoginRequiredMixin, View):
         # Filtrar produtos com estoque maior que 0
         produtos = Produto.objects.filter(estoque__gt=0)
 
-        # Cálculo do total de cada item e o total geral no backend
+        # Cálculo do total de cada item no pedido e o total geral no backend
         itens_calculados = []
         total_geral = 0       
 
-        for item in mesa.itens:
-            total_item = item['quantidade'] * item['preco_unitario']
+        # Agora, ao invés de acessar `mesa.itens`, acesse os pedidos relacionados
+        pedidos = Pedido.objects.filter(mesa=mesa)
+
+        for pedido in pedidos:
+            total_item = pedido.quantidade * pedido.produto.venda
             itens_calculados.append({
-                'nome_produto': item['nome_produto'],
-                'quantidade': item['quantidade'],
-                'preco_unitario': item['preco_unitario'],
+                'nome_produto': pedido.produto.nome_produto,
+                'quantidade': pedido.quantidade,
+                'preco_unitario': pedido.produto.venda,
                 'total_item': total_item,
-                'categoria': item['categoria'],
-                'custo': item['custo'],
-                'venda': item['venda'],
-                'codigo': item['codigo'],
-                'estoque': item['estoque'],
-                'estoque_total': item['estoque_total'],
-                'descricao': item['descricao'],
-                'imagem': item['imagem'],
+                'categoria': pedido.produto.categoria.nome,
+                'codigo': pedido.produto.codigo,
+                'estoque': pedido.produto.estoque,
+                'estoque_total': pedido.produto.estoque_total,
+                'descricao': pedido.produto.descricao,
+                'imagem': pedido.produto.imagem.url if pedido.produto.imagem else '',
             })
             total_geral += total_item
 
@@ -113,6 +108,72 @@ class AbrirMesaView(LoginRequiredMixin, View):
             'total_geral': total_geral,  
             'now': now,  
         })
+
+from django.db import models
+class ExcluirItemView(LoginRequiredMixin, View):
+    def post(self, request, id_mesa):
+        mesa = get_object_or_404(Mesa, pk=id_mesa)
+        item_codigo = request.POST.get('item_codigo')
+        quantidade = int(request.POST.get('quantidade', 1))
+        item_removido = False
+
+        # Obter o pedido relacionado ao item
+        pedido = get_object_or_404(Pedido, mesa=mesa, produto__codigo=item_codigo)
+        
+        if pedido.quantidade > quantidade:
+            pedido.quantidade -= quantidade
+            pedido.save()  # Atualiza a quantidade no banco de dados
+        else:
+            # Se a quantidade é menor ou igual ao pedido, exclui o item
+            pedido.delete()
+        
+        # Atualiza o estoque do produto
+        try:
+            produto = Produto.objects.get(codigo=item_codigo)
+            produto.estoque += quantidade
+            produto.save()
+        except Produto.DoesNotExist:
+            pass
+
+        # Verifica se restam itens na mesa
+        total_itens = mesa.pedidos.aggregate(total=models.Sum('quantidade'))['total'] or 0
+
+        if total_itens <= 0:
+            # Se não restam itens, reseta o valor_pago e pessoas_pagaram
+            mesa.status = 'Fechada'
+            mesa.pedido = 0
+            mesa.valor_pago = Decimal('0.00')  # Resetar valor pago
+            mesa.pessoas_pagaram = 0  # Resetar pessoas pagaram
+
+        mesa.save()
+
+        return redirect('mesa:abrir_mesa', id_mesa=id_mesa)
+
+class CancelarPedidoView(LoginRequiredMixin, View):
+    def post(self, request, id_mesa):
+        mesa = get_object_or_404(Mesa, pk=id_mesa)
+        
+        # Percorre todos os pedidos da mesa
+        for pedido in mesa.pedidos.all():
+            # Atualiza o estoque do produto
+            try:
+                produto = pedido.produto
+                produto.estoque += pedido.quantidade
+                produto.save()
+            except Produto.DoesNotExist:
+                pass
+        
+        # Excluindo todos os pedidos relacionados à mesa
+        mesa.pedidos.all().delete()
+        
+        # Resetar a mesa
+        mesa.status = 'Fechada'
+        mesa.pedido = 0
+        mesa.valor_pago = Decimal('0.00')  # Resetar valor pago
+        mesa.pessoas_pagaram = 0  # Resetar pessoas pagaram
+        mesa.save()
+        # Redirecionar para a lista de mesas
+        return redirect('mesa:list_mesa')
 
 from usuario.forms import PasswordForm
 
@@ -293,11 +354,14 @@ from reportlab.platypus import SimpleDocTemplate, Paragraph, Table, TableStyle
 # Isso alinha corretamente os dados.
 
 # Método que gera a comanda do caixa em PDF
+from decimal import Decimal
+
 class GerarComandaPDFView(LoginRequiredMixin, View):
     def get(self, request, id_mesa):
-       # Obtenha o usuário autenticado
+        # Obtenha o usuário autenticado
         user = request.user      
         
+        # Obtenha a mesa e a empresa associada
         mesa = get_object_or_404(Mesa, pk=id_mesa)
         empresa = get_empresa_padrao()        
 
@@ -335,15 +399,15 @@ class GerarComandaPDFView(LoginRequiredMixin, View):
         p.drawString(5, altura - 160, "------------------------------")
 
         y = altura - 170
-        total = 0
+        total = Decimal(0)  # Certifique-se de usar Decimal para cálculos financeiros
 
-        # Itens
-        for item in mesa.itens:
-            nome = item['nome_produto']
-            quantidade = str(item['quantidade']).rjust(4)
-            preco_unitario = item['preco_unitario']
-            preco_total = item['quantidade'] * item['preco_unitario']
-            total += preco_total
+        # Itens (acessar os pedidos relacionados)
+        for pedido in mesa.pedidos.all():
+            nome = pedido.produto.nome_produto
+            quantidade = str(pedido.quantidade).rjust(4)
+            preco_unitario = pedido.produto.venda
+            preco_total = pedido.quantidade * pedido.produto.venda
+            total += Decimal(preco_total)  # Certifique-se de que o total seja Decimal
             preco_unitario_str = f"{preco_unitario:,.2f}".replace('.', ',').rjust(6)
             preco_total_str = f"{preco_total:,.2f}".replace('.', ',').rjust(7)
 
@@ -353,7 +417,6 @@ class GerarComandaPDFView(LoginRequiredMixin, View):
             for linha in linhas_nome:
                 p.drawString(5, y, f"{linha.ljust(10)} {quantidade} {preco_unitario_str} {preco_total_str}")
                 y -= 10
-                # Só mostra a quantidade, valor unitário e total na primeira linha
                 quantidade = ""
                 preco_unitario_str = ""
                 preco_total_str = ""
@@ -364,12 +427,14 @@ class GerarComandaPDFView(LoginRequiredMixin, View):
         # Subtotal e Total
         p.drawString(5, y, f"Subtotal:           R$ {total:.2f}".replace('.', ','))
         y -= 10
-        # TODO: fazer a opção de desconto somente quando for realizado o pagamento, onde terá também a opção de dividir a conta
-        desconto = 5.00  # Exemplo
+
+        # Exemplo de desconto
+        desconto = Decimal(0.00)  # Certifique-se de que o desconto também seja Decimal
         p.drawString(5, y, f"Desconto:           R$ {desconto:.2f}".replace('.', ','))
         y -= 10
 
-        total_final = total - desconto
+        # Calcula o total final após o desconto
+        total_final = total - desconto  # Ambos são Decimal agora
         p.drawString(5, y, f"Total:              R$ {total_final:.2f}".replace('.', ','))
         y -= 10
 
@@ -386,14 +451,13 @@ class GerarComandaPDFView(LoginRequiredMixin, View):
         p.save()
 
         # Gera a comanda PDF e envia para a impressora da cozinha
-        self.enviar_para_cozinha(request, mesa.id)  # Aqui usa 'mesa.id' ao invés de 'mesa'
+        self.enviar_para_cozinha(request, mesa.id)
 
         return response
 
     def enviar_para_cozinha(self, request, id_mesa):
         response = EnviarParaCozinhaView().post(request, id_mesa)
         return response
-
     
     
 from escpos.printer import Network
@@ -441,13 +505,15 @@ from datetime import datetime
 class EnviarParaCozinhaView(View): # Envia via arquivo txt
     def post(self, request, id_mesa):
         mesa = get_object_or_404(Mesa, pk=id_mesa)
+        pedidos = mesa.pedidos.all()  # Acessa os pedidos relacionados à mesa
+
         itens_calculados = [
             {
-                'nome_produto': item['nome_produto'],
-                'quantidade': item['quantidade'],
-                'descricao': item.get('descricao', 'N/A')
+                'nome_produto': pedido.produto.nome_produto,
+                'quantidade': pedido.quantidade,
+                'descricao': pedido.produto.descricao if hasattr(pedido.produto, 'descricao') else 'N/A'
             }
-            for item in mesa.itens
+            for pedido in pedidos
         ]
 
         # Simulação de impressão em arquivo
@@ -470,47 +536,133 @@ class EnviarParaCozinhaView(View): # Envia via arquivo txt
 
         return HttpResponse("Comanda enviada para a cozinha (simulada).")
 
+class RealizarPagamentoView(LoginRequiredMixin, View):
+    def get(self, request, id_mesa):
+        mesa = get_object_or_404(Mesa, id=id_mesa)
+        usuarios = User.objects.all()  # Listando todos os usuários
 
-class ExcluirItemView(LoginRequiredMixin, View):
+        # Filtrar produtos com estoque maior que 0
+        produtos = Produto.objects.filter(estoque__gt=0)
+
+        # Cálculo do total de cada item no pedido e o total geral no backend
+        itens_calculados = []
+        total_geral = 0       
+
+        # Agora, ao invés de acessar `mesa.itens`, acesse os pedidos relacionados
+        pedidos = Pedido.objects.filter(mesa=mesa)
+
+        for pedido in pedidos:
+            total_item = pedido.quantidade * pedido.produto.venda
+            itens_calculados.append({
+                'nome_produto': pedido.produto.nome_produto,
+                'quantidade': pedido.quantidade,
+                'preco_unitario': pedido.produto.venda,
+                'total_item': total_item,
+                'categoria': pedido.produto.categoria.nome,
+                'codigo': pedido.produto.codigo,
+                'estoque': pedido.produto.estoque,
+                'estoque_total': pedido.produto.estoque_total,
+                'descricao': pedido.produto.descricao,
+                'imagem': pedido.produto.imagem.url if pedido.produto.imagem else '',
+            })
+            total_geral += total_item
+
+        # Obter a data e hora atual
+        now = timezone.now()
+
+        # Calcular valor faltante
+        faltante = total_geral - mesa.valor_pago
+
+        # Usando request.user diretamente sem depender do modelo Usuario
+        usuario_atual = request.user if request.user.is_authenticated else None
+
+        return render(request, 'mesa/realizar_pagamento.html', {
+            'mesa': mesa, 
+            'usuarios': usuarios, 
+            'usuario_atual_nome': usuario_atual,
+            'produtos': produtos,            
+            'itens_calculados': itens_calculados,  
+            'total_geral': total_geral,  
+            'faltante': total_geral,  # Passando o valor faltante para o template
+            'now': now,  
+        })
+
+from django.http import JsonResponse
+from estoque.models import Estoque
+
+class PagamentoPorPessoaView(LoginRequiredMixin, View):
+    def get(self, request, id_mesa):
+        mesa = get_object_or_404(Mesa, id=id_mesa)
+        forma_pagamento = request.GET.get('forma')
+        total_geral = mesa.calcular_total()
+        pessoas = int(request.GET.get('pessoas', 1))
+        
+        # Divisão da conta por pessoa
+        total_por_pessoa = total_geral / pessoas
+        faltante = total_geral - mesa.valor_pago  # Valor que ainda precisa ser pago
+
+        return render(request, 'mesa/pagamento_por_pessoa.html', {
+            'mesa': mesa,
+            'total_por_pessoa': total_por_pessoa,
+            'faltante': faltante,
+            'pessoas_restantes': pessoas - mesa.pessoas_pagaram,
+            'forma_pagamento': forma_pagamento,
+        })
+
     def post(self, request, id_mesa):
-        mesa = get_object_or_404(Mesa, pk=id_mesa)
-        item_codigo = request.POST.get('item_codigo')
-        quantidade = int(request.POST.get('quantidade', 1))
-        item_removido = False
-        for item in mesa.itens:            
-            if item['codigo'] == item_codigo:
-                print("Procurando item a ser excluido foi localizado!")
-                if item['quantidade'] > quantidade:
-                    item['quantidade'] -= quantidade
-                else:
-                    mesa.itens.remove(item)
-                item_removido = True
-                break
+        mesa = get_object_or_404(Mesa, id=id_mesa)
+        valor_pago = Decimal(request.POST.get('valor_pago'))  # Convertendo para Decimal
+        mesa.valor_pago += valor_pago
+        mesa.pessoas_pagaram += 1  # Atualizar o número de pessoas que pagaram
 
-        if item_removido:
-            try:
-                produto = Produto.objects.get(codigo=item_codigo)
-                produto.estoque += quantidade
-                produto.save()
-            except Produto.DoesNotExist:
-                pass
+        # Verificar se o total foi pago
+        total_geral = mesa.calcular_total()
+        faltante = total_geral - mesa.valor_pago
 
-            total_itens = sum(item['quantidade'] for item in mesa.itens)
-
-            if total_itens <= 0:
-                mesa.itens = []
-                mesa.status = 'Fechada'
-                mesa.pedido = 0
-
+        if faltante <= 0:
+            # Registrar saída no estoque para todos os produtos do pedido
+            for pedido in mesa.pedidos.all():
+                try:
+                    Estoque.objects.create(
+                        empresa=get_empresa_padrao(),  # Assumindo que a mesa tem um campo 'empresa'
+                        produto=pedido.produto,
+                        quantidade=pedido.quantidade,
+                        tipo='saida',
+                        data=timezone.now()
+                    )
+                except Exception as e:
+                    print(f"Erro ao registrar saída no estoque: {e}")
+            
+            # Excluir todos os pedidos relacionados à mesa
+            mesa.pedidos.all().delete()
+            
+            # Fechar a mesa e resetar valores
+            mesa.status = 'Fechada'
+            mesa.pedido = 0
+            mesa.valor_pago = Decimal('0.00')
+            mesa.pessoas_pagaram = 0
             mesa.save()
 
-        return redirect('mesa:abrir_mesa', id_mesa=id_mesa)
+            return JsonResponse({'status': 'concluido'})
+        else:
+            mesa.save()
+            return JsonResponse({
+                'status': 'parcial',
+                'valor_pago': float(mesa.valor_pago),
+                'faltante': float(faltante)
+            })
 
-class PagamentoView(LoginRequiredMixin, View):
+
+        """# Se todos tiverem pago, redireciona para uma página de confirmação
+        if mesa.pessoas_pagaram >= mesa.numero_pessoas:
+            return redirect('mesa:confirmacao_pagamento', id_mesa=mesa.id)
+
+        return redirect('mesa:pagamento_pessoa', id_mesa=mesa.id)"""
+
+class ConfirmacaoPagamentoView(LoginRequiredMixin, View):
     def get(self, request, id_mesa):
-        mesa = get_object_or_404(Mesa, pk=id_mesa)
-        total = mesa.calcular_total()  # Método que você precisará implementar para calcular o total da mesa
-        return render(request, 'mesa/pagamento.html', {'mesa': mesa, 'total': total})
+        mesa = get_object_or_404(Mesa, id=id_mesa)
+        return render(request, 'mesa/confirmacao_pagamento.html', {'mesa': mesa})
 
     def post(self, request, id_mesa):
         mesa = get_object_or_404(Mesa, pk=id_mesa)

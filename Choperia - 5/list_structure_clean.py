@@ -155,6 +155,43 @@ Estrutura do meu projeto:
 │   ├── urls.py
 │   ├── views.py
 
+├── .gitignore                         # Arquivos a serem ignorados pelo Git.
+├── Planilha de Controle de Estoque.xlsx
+├── README.md                          # Arquivo de descrição do projeto.
+├── choperia/                          # Configurações gerais do projeto.
+│   ├── asgi.py
+│   ├── settings.py                    # Configurações do Django.
+│   ├── urls.py                        # Roteamento principal do projeto.
+│   ├── wsgi.py
+├── core/                              # Aplicativo central.
+│   ├── models.py                      # Modelos principais.
+│   ├── templates/                     # Templates do app 'core'.
+│   │   ├── base.html                  # Template base para reutilização.
+│   │   ├── index.html                 # Página inicial.
+│   ├── views.py                       # Lógica das views.
+├── db.sqlite3                         # Banco de dados SQLite.
+├── empresa/                           # App para gerenciamento de empresas.
+│   ├── models.py
+│   ├── templates/
+│   │   ├── empresa_list.html           # Listagem de empresas.
+│   │   ├── empresa_detail.html         # Detalhe de uma empresa.
+├── estoque/                           # App para controle de estoque.
+│   ├── templates/
+│   │   ├── estoque_list.html           # Listagem de estoque.
+│   │   ├── estoque_form.html           # Formulário de estoque.
+├── mesa/                              # Gerenciamento de mesas da choperia.
+│   ├── templates/
+│   │   ├── abrir_mesa.html             # Abrir mesa.
+│   │   ├── list_mesa.html              # Lista de mesas.
+│   │   ├── pagamento.html              # Página de pagamento.
+├── produto/                           # App de produtos.
+│   ├── templates/
+│   │   ├── list_produto.html           # Listagem de produtos.
+│   │   ├── add_categoria_form.html     # Formulário de categorias.
+├── usuario/                           # Gerenciamento de usuários (login, cadastro).
+│   ├── templates/
+│   │   ├── login.html
+│   │   ├── cadastro.html
 
 
 

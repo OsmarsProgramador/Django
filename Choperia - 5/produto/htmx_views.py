@@ -6,20 +6,42 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.core.paginator import Paginator
 from .models import Produto, Categoria
+from estoque.models import Estoque
 from .forms import ProdutoForm, CategoriaForm
 from django.http import QueryDict
+from django.utils import timezone
 
+from django.conf import settings
+from empresa.models import Empresa
+
+def get_empresa_padrao():
+    return Empresa.objects.get(cnpj=settings.DEFAULT_EMPRESA_CNPJ)
 class CheckProdutoView(View):
     def get(self, request):
         produto_nome = request.GET.get('nome_produto')
         produtos = Produto.objects.filter(nome_produto__icontains=produto_nome)
         return render(request, 'produto/partials/htmx_componentes/check_produto.html', {'produtos': produtos})
 
-class CreateProdutoView(View): # equivalente a SaveProdutoView
+class CreateProdutoView(View):  # equivalente a SaveProdutoView
     def post(self, request):
         form = ProdutoForm(request.POST)
         if form.is_valid():
-            form.save()
+            # Salvar o produto
+            produto = form.save()
+            
+            # Criar registro de entrada no estoque
+            try:
+                Estoque.objects.create(
+                    empresa=get_empresa_padrao(),  # Assumindo que Produto tem uma relação com Empresa
+                    produto=produto,
+                    quantidade=produto.estoque,  # Quantidade inicial no estoque
+                    tipo='entrada',
+                    data=timezone.now()
+                )
+            except Exception as e:
+                return JsonResponse({'error': f'Erro ao registrar entrada no estoque: {e}'}, status=400)
+            
+            # Atualizar a lista de produtos
             produtos_list = Produto.objects.all().order_by('nome_produto')
             paginator = Paginator(produtos_list, 10)  # 10 produtos por página
             page_number = request.GET.get('page', 1)
