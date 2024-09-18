@@ -407,3 +407,5 @@ index.html: {% extends "base.html" %}
 
 {% endblock content %}
 
+#   c h o p e r i a _ p o i n t  
+ 
