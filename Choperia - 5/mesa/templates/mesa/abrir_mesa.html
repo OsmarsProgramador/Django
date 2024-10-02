@@ -220,23 +220,21 @@
 
 
 <!-- Modal para inserção da senha e troca de usuário -->
-<div class="modal fade" id="passwordModal" tabindex="-1" role="dialog" aria-labelledby="passwordModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+<div class="modal fade" id="passwordModal" tabindex="-1" aria-labelledby="passwordModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="passwordModalLabel">Trocar Usuário</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <form id="passwordForm" method="post" action="{% url 'mesa:update_user' mesa.id %}">
+            <form method="POST" action="{% url 'mesa:update_user' mesa.id %}">
                 {% csrf_token %}
+                <div class="modal-header">
+                    <h5 class="modal-title" id="passwordModalLabel">Trocar Usuário</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="usuario">Selecione o Usuário:</label>
                         <select id="usuario" name="usuario" class="form-control">
                             {% for user in usuarios %}
-                                <option value="{{ user.id }}">{{ user.username }}</option> <!-- user.user.username pertence ao modelo Usuario e user.username ao User -->
+                                <option value="{{ user.id }}">{{ user.username }}</option>
                             {% endfor %}
                         </select>
                     </div>
@@ -246,13 +244,14 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                     <button type="submit" class="btn btn-primary">Confirmar</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
+
 
 <!-- Modal de confirmação para excluir item -->
 <div class="modal fade" id="excluirItemModal" tabindex="-1" aria-labelledby="excluirItemModalLabel" aria-hidden="true">
